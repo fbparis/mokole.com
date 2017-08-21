@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+	    <meta charset="utf-8">
+	    <title>MOKOLÉ - Le jeu de lettres</title>
+	    <meta name="description" content="MOKOLÉ est un jeu de lettres où il faut deviner les douze lettres formant une grille colorée de six mots.">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="application-name" content="MOKOLÉ">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="MOKOLÉ">
+		<meta property="og:image" content="img/mokole-preview.png">
+		<link rel="apple-touch-icon" sizes="57x57" href="/img/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="/img/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="/img/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="/img/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/img/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="/img/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/img/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="img/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="/img/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="/img/ms-icon-144x144.png">
+		<meta name="theme-color" content="#ffffff">
+	    <link rel="canonical" hre="http://mokole.com/">
+	    <style>
+		    @font-face {
+			    font-family: "myFont";
+			    src: url("/fonts/font1.ttf");
+		    }
+		    body {
+			    background-color: white;
+			    padding: 0px;
+			    margin: 0px;
+		    }
+		    #topbar, #bottombar {
+			    background: black;
+			    color: white;
+			    width: 100%;
+			    height: 7vmin;
+			    z-index: 4;
+			    position: fixed;
+			    vertical-align: middle;
+			    left: 0px;
+			 }
+			 #topbar {
+			    text-align: left;
+			    font-family: "myFont";
+			    font-size: 5vmin;
+			    line-height: 150%;
+			    top: 0px;
+		    }
+		    #bottombar {
+			    text-align: center;
+			    font-family: Arial, Helvetica, sans-serif;
+			    font-size: 3vmin;
+			    line-height: 250%;
+			    bottom: 0px;
+		    }
+		    #bottombar a {
+			    color: white;
+			    text-decoration: none;
+		    }
+		    #topbar span {
+			    display: inline-block;
+			    height: 100%;
+		    }
+		    .left {
+			    float: left;
+			    margin-left: 1em;
+		    }
+		    .right {
+				font-family: Arial, Helvetica, sans-serif;
+			    float: right;
+			    margin-left: 1em;
+			    margin-right: 1em;
+		    }
+		    .lifes {
+			    background: transparent url('/img/life.png') left center no-repeat;
+			    padding-left: 1.5em;
+			    background-size: 1em 1em;
+		    }
+		    .score {
+			    background: transparent url('/img/score.png') left center no-repeat;
+			    padding-left: 1.5em;
+			    background-size: 1em 1em;
+		    }
+		    .highscore {
+			    background: transparent url('/img/highscore.png') left center no-repeat;
+			    padding-left: 1.5em;
+			    background-size: 1em 1em;			    
+		    }
+		    .board {
+			    position: fixed;
+			    left: 0px;
+			    top: 7vmin;
+			    margin-bottom: : 7vmin;		    
+			    width: 100%;
+			    height: 100%;
+			    vertical-align: middle;
+			    padding-top: 0px;	
+			    z-index: 2;
+			    overflow: scroll;
+		    }
+		    #before-game {
+			    width: 95vmin;
+			    padding: 1ex 1em 15vmin 1em;
+			    margin: 0px auto;
+			    text-align: justify;
+			    font-family: Arial, Helvetica, sans-serif;
+			    font-size: 3vmin;
+		    }
+		    #game, #after-game {
+			    display: none;
+		    }
+		    #grid {
+			    padding-top: 0.5vmin;
+		    }
+		    .grille {
+			    font-family: "myFont";
+			    margin: 0px auto;
+			    border-spacing: 1px;
+			    border-collapse: separate;
+		    }
+		    #keyboard {
+			    padding-top: 4vmin;
+			    padding-bottom: 0.5vmin;
+			    width: 100%;
+		    }
+		    #lettres table {
+			    font-family: "myFont";
+			    margin: 0px auto;
+			    border-spacing: 1px;
+			    border-collapse: separate;
+		    }
+		    td {
+			    text-align: center;		
+		    }
+		    .grille td {
+			    width: 8vmin;
+			    height: 8vmin;
+			    cursor: default;
+			    padding: 0px;
+			    font-size: 7vmin;
+			    line-height: 3.5vmin;
+			    color: white;
+		    }
+		    #lettres td {
+			    color: black;
+			    width: 9vmin;
+			    height: 9vmin;			    
+			    background-color: #cfcfc4;
+			    cursor: pointer;
+			    padding: 0px;
+			    font-size: 8vmin;
+			    line-height: 4vmin;
+		    }
+		    #keyboard button {
+			    padding-left: 128px;
+			    padding-right: 1em;
+			    margin: 0px auto;
+				font-family: Arial, Helvetica, sans-serif;	
+				font-size: 3.2vmin;
+				line-height: 1.6vmin;	
+				font-style: italic;
+				background-color: #FAEBD7; 
+				cursor: pointer;
+		    }
+		    #keyboard button h2 {
+			    font-family: "myFont";
+			    text-transform: uppercase;
+			    font-style: normal;
+		    }
+		    #keyboard button:hover {
+			    background-color: #fdfd96;
+		    }
+		    #success {
+			    display: none;
+			    background: url('/success.png') left center no-repeat;
+			    background-size: contain;
+			    color: #25ae88;
+		    }
+		    #failure {
+			    display: none;
+			    background: url('/img/failure.png') left center no-repeat;
+			    background-size: contain;
+			    color: #d75a4a;
+		    }
+		    .level {
+			    padding-bottom: 2em;
+		    }
+		    .level button {
+			    width: 49%;
+			    margin-bottom: 1ex;
+			    padding-left: 24%;
+			    font-size: 2.5vmin;
+			    cursor: pointer;
+				font-family: Arial, Helvetica, sans-serif;
+				cursor: pointer;
+			    background: url('/img/loading.png') left center no-repeat;
+			    background-size: contain;
+		    }
+		    .level button:hover {
+			    background-color: #fdfd96;
+		    }
+		    .level button h2 {
+			    color: #334185;
+		    }
+		    .level button small {
+			    color: #222222;
+			    font-style: italic;
+		    }
+		    .level1, .level3 {
+			    float: left;
+		    }
+		    .level2, .level4 {
+			    float: right;
+		    }
+		    .level1 {
+			    background: url('/img/ice-cream.png') left center no-repeat;
+			    background-size: contain;
+		    }
+		    .level2 {
+			    background: url('/img/glass.png') left center no-repeat;
+			    background-size: contain;
+		    }
+		    .level3 {
+			    background: url('/img/chili.png') left center no-repeat;
+			    background-size: contain;
+		    }
+		    .level4 {
+			    background: url('/img/flame.png') left center no-repeat;
+			    background-size: contain;
+		    }
+		</style>
+		<script type="text/javascript">
+			var datas = [];
+			var data = {};
+			var G = {};
+			var currentGrid = 0;
+			var ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			function shuffle(a) {
+			    var j, x, i;
+			    for (i = a.length; i; i--) {
+			        j = Math.floor(Math.random() * i);
+			        x = a[i - 1];
+			        a[i - 1] = a[j];
+			        a[j] = x;
+			    }
+			}
+			function loadJSON(callback) {   
+			
+			    var xobj = new XMLHttpRequest();
+			        xobj.overrideMimeType("application/json");
+			    xobj.open('GET', '/data/ods7.json', true); 
+			    xobj.onreadystatechange = function () {
+			          if (xobj.readyState == 4 && xobj.status == "200") {
+			            callback(xobj.responseText);
+			          }
+			    };
+			    xobj.send(null);  
+			 }			
+
+			function fix_css() {
+				g = 77 / (2 + data.h);
+				if (g * data.w > 98) {
+					g = 98 / data.w;
+				}
+				rule_grille.style.width = g + 'vmin';
+				rule_grille.style.height = g + 'vmin';
+				rule_grille.style.fontSize = (g-1) + 'vmin';
+				rule_grille.style.lineHeight = (g-1)/2 + 'vmin';				
+				rule_lettres.style.width = (g+1) + 'vmin';
+				rule_lettres.style.height = (g+1) + 'vmin';
+				rule_lettres.style.fontSize = g + 'vmin';
+				rule_lettres.style.lineHeight = g/2 + 'vmin';
+				rule_buttons.style.height = 2 * (g+1) + 'vmin';		
+				rule_buttons.style.paddingLeft = 2 * (g+1) + 'vmin';		
+			}
+			function show_grid() {
+				if (datas.length == 0) {
+					return false;
+				}
+				data = datas[currentGrid];
+				//data = {"hh": ["L", "H", "Y"], "w": 10, "hm": ["L", "U", "H"], "h": 7, "k": ["G_1_3", "G_2_1", "G_1_6", "G_9_4", "G_5_1", "G_8_5", "G_4_0", "G_1_2", "G_4_4", "G_3_6", "G_0_4", "G_4_1", "G_1_1", "G_6_4", "G_5_4", "G_2_6", "G_7_1", "G_4_5", "G_1_4", "G_4_2", "G_1_0", "G_0_1", "G_8_3", "G_4_6", "G_6_1", "G_3_1", "G_7_4", "G_4_3", "G_3_4", "G_2_4", "G_8_4"], "v": ["Z", "U", "M", "Z", "U", "U", "L", "U", "R", "T", "D", "E", "O", "S", "E", "O", "S", "E", "E", "T", "D", "C", "J", "S", "R", "L", "S", "T", "T", "S", "E"], "c": {"C": "#0696BB", "E": "#FAC70C", "D": "#C5037D", "J": "#2A71AF", "M": "#6D398B", "L": "#454E99", "O": "#F28E1C", "S": "#F3E500", "R": "#8DBB25", "U": "#008F5A", "T": "#E96220", "Z": "#E32322"}, "he": ["L", "U", "W"]};
+				currentGrid = (currentGrid + 1) % datas.length;
+				G = {};
+				for (i in data.k) {
+					G[data.k[i]] = data.v[i];
+				}
+				fix_css();
+				while (document.getElementById('grid').hasChildNodes()) {
+					document.getElementById('grid').removeChild(document.getElementById('grid').firstChild);
+				}
+				var table = document.createElement('table');
+				table.className = 'grille';
+				for (row=0 ; row < data.h; row++) {
+					tr = document.createElement('tr');
+					for (col=0 ; col < data.w; col++) {
+						td = document.createElement('td');
+						td.id = "G_" + col + "_" + row;
+						if (G[td.id]) {
+							td.style.backgroundColor = data.c[G[td.id]];
+						} else {
+							td.style.backgroundColor = 'transparent';
+						}
+						td.appendChild(document.createTextNode(' '));
+						tr.appendChild(td);
+					}
+					table.appendChild(tr);
+				}				
+				document.getElementById('grid').appendChild(table);
+				return true;
+			}
+			function fill_grid(y) {
+				if (y == 0) {
+					x = null;
+				} else if (show_grid()) {
+					if (y == 1) {
+						x = data.he;
+					} else if (y == 2) {
+						x = data.hm;
+					} else if (y == 3) {
+						x = data.hh;
+					} else if (y == 4) {
+						x = [];
+					}
+				} else {
+					return false;
+				}
+				if (x != null) {
+					document.getElementById('bottombar').style.display = 'none';
+					document.getElementById('before-game').style.display = 'none';
+					document.getElementById('game').style.display = 'block';
+					document.getElementById('newgame-sound').play();
+					level = y;
+					douze = 12 - 4 + level;
+					for (i=0; i < ABC.length; i++) {
+						document.getElementById("L_" + ABC.charAt(i)).style.backgroundColor = "#cfcfc4";
+						document.getElementById("L_" + ABC.charAt(i)).style.cursor = "pointer";
+					}
+					for (i in x) {
+						document.getElementById("L_" + x[i]).style.cursor = "default";
+						if (x[i] in data.c) {
+							document.getElementById('L_' + x[i]).style.backgroundColor = '#77dd77';
+						} else {
+							document.getElementById('L_' + x[i]).style.backgroundColor = '#ff6961';
+						}
+					}
+				} else {
+					for (i=0; i < ABC.length; i++) {
+						document.getElementById("L_" + ABC.charAt(i)).style.cursor = "default";
+						if (ABC.charAt(i) in data.c) {
+							document.getElementById("L_" + ABC.charAt(i)).style.backgroundColor = "#77dd77";						
+						} else {
+							document.getElementById("L_" + ABC.charAt(i)).style.backgroundColor = "#ff6961";													
+						}
+					}					
+				}
+				for (i in G) {
+					if ((x == null) || (x.indexOf(G[i]) != -1)) {
+						document.getElementById(i).innerHTML = G[i];	
+					} else {
+						document.getElementById(i).innerHTML = " ";
+					}
+				}
+				return true;
+			}
+			function update_highscore(score) {
+				highscore = score;
+				document.getElementById('highscore').innerHTML = score;	
+				localStorage.setItem("highscore", score);			
+			}
+			function update_score(x) {
+				score += x;
+				document.getElementById('score').innerHTML = score;
+				if (score > highscore) {
+					update_highscore(score);
+				}
+			}
+			function update_lifes(x) {
+				lifes += x;
+				document.getElementById('lifes').innerHTML = lifes;
+			}
+			function handle_keypress(x) {
+				alert(x);
+			}
+			function handle_click(id) {
+				if (document.getElementById(id).style.cursor == "pointer") {
+					c = document.getElementById(id).innerHTML;
+					document.getElementById(id).style.cursor = "default";
+					if (c in data.c) {
+						document.getElementById('good-sound').play();
+						douze -= 1;
+						if (level == 4) {
+							update_score(5);
+						} else {
+							update_score(level);							
+						}
+						document.getElementById(id).style.backgroundColor = "#77dd77";
+						for (i in G) {
+							if (G[i] == c) {
+								document.getElementById(i).innerHTML = c;
+							}
+						}											
+					} else {
+						document.getElementById('wrong-sound').play();
+						update_lifes(-1);
+						document.getElementById(id).style.backgroundColor = "#ff6961";													
+					}
+					if (douze == 0 || lifes == 0) {
+						document.getElementById('lettres').style.display= 'none';
+						if (douze == 0) {
+							update_score(lifes);
+							update_lifes(1);
+							document.getElementById('success').style.display = 'block';
+							document.getElementById('win-sound').play();
+						} else {
+							fill_grid(0);
+							document.getElementById('failure').style.display = 'block';
+							document.getElementById('loose-sound').play();
+						}
+					}
+				}
+			}
+			function after_success() {
+				document.getElementById('success').style.display = 'none';
+				document.getElementById('lettres').style.display = 'block';
+				fill_grid(level);
+			}
+			function after_failure() {
+				document.getElementById('failure').style.display = 'none';
+				document.getElementById('lettres').style.display = 'block';
+				document.getElementById('game').style.display = 'none';
+				document.getElementById('before-game').style.display = 'block';
+				document.getElementById('bottombar').style.display = 'block';
+				score = 0;
+				lifes = 5;
+				update_lifes(0);
+				update_score(0);
+			}
+		</script>
+	</head>
+	<body
+		<div class="main">
+			<div id="topbar">
+			    <span class="left">MOKOLÉ</span>
+		        <span id="lifes" class="lifes right" title="Nombre de vies restantes">5</span>
+		        <span id="score" class="score right" title="Score actuel">0</span>
+		        <span id="highscore" class="right highscore" title="Meilleur score">0</span>
+			</div>
+			<div class="board">
+				<div id="before-game">
+					<div class="level">
+						<button onclick="fill_grid(1)" class="level1" disabled>
+							<h2>FORCE 1</h2>
+							<hr>
+							<small>Trouvez 9 lettres parmi 23, 1 point par lettre trouvée</small>
+						</button>
+						<button onclick="fill_grid(2)" class="level2" disabled>
+							<h2>FORCE 2</h2>
+							<hr>
+							<small>Trouvez 10 lettres parmi 23, 2 points par lettre trouvée</small>
+						</button>
+						<button onclick="fill_grid(3)" class="level3" disabled>
+							<h2>FORCE 3</h2>
+							<hr>
+							<small>Trouvez 11 lettres parmi 23, 3 points par lettre trouvée</small>
+						</button>
+						<button onclick="fill_grid(4)" class="level4" disabled>
+							<h2>FORCE 4</h2>
+							<hr>
+							<small>Trouvez 12 lettres parmi 26, 5 points par lettre trouvée</small>
+						</button>
+					</div>
+					<br style="clear: both">
+					<p><b>MOKOLÉ</b> est un jeu de lettres de type Pendu qui consiste à trouver les <b>12 lettres</b> utilisées pour former une grille de <b>6 mots</b>.</p>
+					<p>Pour faciliter la tâche, <b>chacune des lettres à deviner est associée à une couleur</b> dans la grille.</p>
+					<p>Vous commencez la partie avec <b>5 <span class="lifes">vies</span></b> et un <span class="score">score</span> de 0, à chaque lettre trouvée vous gagnez des points mais <b>à chaque erreur vous perdez une vie</b>&nbsp;!</p>
+					<p>Quand une grille est complétée, vous touchez un bonus de fin de partie égal à votre nombre de vies et vous gagnez une vie supplémentaire.</p>
+					<p>Le jeu se termine lorsque vous n'avez plus de vie.</p>
+					<h3>Astuces et informations sur MOKOLÉ</h3>					
+					<p>Vous pouvez utiliser la souris ou le clavier pendant le jeu (appuyez sur la touche "entrée" pour passer à la grille suivante).</p>
+					<p>Les grilles sont générées à partir de 393 402 mots qui sont tous présents dans le dictionnaire officiel du Scrabble (ODS7). Ils incluent donc également des verbes conjugués mais pas d'expressions ni de mots composés, de sigles ou abréviations, de symboles chimiques ou de noms propres.</p>
+				</div>		
+				<div id="game">
+					<div id="grid">
+					</div>
+					<div id="keyboard">
+						<div id="lettres">
+							<table>
+								<tr>
+									<td id="L_A" onclick="handle_click(this.id)">A</td>
+									<td id="L_B" onclick="handle_click(this.id)">B</td>
+									<td id="L_C" onclick="handle_click(this.id)">C</td>
+									<td id="L_D" onclick="handle_click(this.id)">D</td>
+									<td id="L_E" onclick="handle_click(this.id)">E</td>
+									<td id="L_F" onclick="handle_click(this.id)">F</td>
+									<td id="L_G" onclick="handle_click(this.id)">G</td>
+									<td id="L_H" onclick="handle_click(this.id)">H</td>
+									<td id="L_I" onclick="handle_click(this.id)">I</td>
+									<td id="L_J" onclick="handle_click(this.id)">J</td>
+									<td id="L_K" onclick="handle_click(this.id)">K</td>
+									<td id="L_L" onclick="handle_click(this.id)">L</td>
+									<td id="L_M" onclick="handle_click(this.id)">M</td>
+								</tr>
+								<tr>
+									<td id="L_N" onclick="handle_click(this.id)">N</td>
+									<td id="L_O" onclick="handle_click(this.id)">O</td>
+									<td id="L_P" onclick="handle_click(this.id)">P</td>
+									<td id="L_Q" onclick="handle_click(this.id)">Q</td>
+									<td id="L_R" onclick="handle_click(this.id)">R</td>
+									<td id="L_S" onclick="handle_click(this.id)">S</td>
+									<td id="L_T" onclick="handle_click(this.id)">T</td>
+									<td id="L_U" onclick="handle_click(this.id)">U</td>
+									<td id="L_V" onclick="handle_click(this.id)">V</td>
+									<td id="L_W" onclick="handle_click(this.id)">W</td>
+									<td id="L_X" onclick="handle_click(this.id)">X</td>
+									<td id="L_Y" onclick="handle_click(this.id)">Y</td>
+									<td id="L_Z" onclick="handle_click(this.id)">Z</td>
+								</tr>
+							</table>
+						</div>
+						<button id="success" onclick="after_success()">
+							<h2>Bravo, c'est gagné !</h2>
+							<small>Cliquez ici pour continuer la partie.</small>
+						</button>
+						<button id="failure" onclick="after_failure()">
+							<h2>Oops, c'est perdu !</h2>
+							<small>Cliquez ici pour rejouer ou partager votre score.</small>
+						</button>
+					</div>
+				</div>
+				<div id="after-game">
+				</div>
+			</div>
+			<div id="bottombar">
+				&copy;2017 <a href="http://cravatek.com/">CRAVATEK LTD</a>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var level = 1;
+			var douze = 12;
+			var score = 0;
+			var highscore = localStorage.getItem("highscore");
+			if (highscore == null) {
+				highscore = 0;
+			} else {
+				update_highscore(highscore);
+			}
+			var lifes = Number(document.getElementById('lifes').innerHTML);
+			for (i in document.styleSheets[0].rules) {
+				rule = document.styleSheets[0].rules[i];
+				if (rule.selectorText == '.grille td') {
+					var rule_grille = rule;	
+				} else if (rule.selectorText == '#lettres td') {
+					var rule_lettres = rule;
+				} else if (rule.selectorText == '#keyboard button') {
+					var rule_buttons = rule;
+				} else if (rule.selectorText == '.level button') {
+					var rule_level = rule;
+				}
+			}
+			loadJSON(function(response) {
+				datas = JSON.parse(response);
+				if (datas.length > 0) {
+					shuffle(datas);
+					rule_level.style.removeProperty('background');
+					[].slice.call(document.getElementsByClassName("level")[0].getElementsByTagName('button')).map(function(x) { x.removeAttribute('disabled'); });
+				}
+			});
+			window.addEventListener("orientationchange", function() {
+				fix_css();
+			}, false);
+			window.addEventListener('keypress', function (event) {
+				if (document.getElementById('game').style.display == 'block') {
+					c = String.fromCharCode(event.keyCode).toUpperCase();
+					if (event.keyCode == 13) {
+						if (document.getElementById('success').style.display == 'block') {
+							after_success();
+						} else if (document.getElementById('failure').style.display == 'block') {
+							after_failure();
+						}
+					} else if ((ABC.indexOf(c) != -1) && (document.getElementById('lettres').style.display != 'none')) {
+						handle_click('L_' + c);
+					}
+				}
+			}, true);
+		</script>
+		<audio id="newgame-sound">
+			<source src="/sound/newgame.ogg" type="audio/ogg">
+			<source src="/sound/newgame.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="good-sound">
+			<source src="/sound/good.ogg" type="audio/ogg">
+			<source src="/sound/good.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="wrong-sound">
+			<source src="/sound/wrong.ogg" type="audio/ogg">
+			<source src="/sound/wrong.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="win-sound">
+			<source src="/sound/win.ogg" type="audio/ogg">
+			<source src="/sound/win.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="loose-sound">
+			<source src="/sound/loose.ogg" type="audio/ogg">
+			<source src="/sound/loose.mp3" type="audio/mpeg">
+		</audio>
+	</body>
+</html>
