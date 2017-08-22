@@ -107,7 +107,7 @@
 			    z-index: 2;
 			    overflow: scroll;
 		    }
-		    #before-game, #after-game, #after-highscore {
+		    #before-game, #after-game {
 			    width: 95vmin;
 			    padding: 1ex 1em 15vmin 1em;
 			    margin: 0px auto;
@@ -115,7 +115,7 @@
 			    font-family: Arial, Helvetica, sans-serif;
 			    font-size: 3vmin;
 		    }
-		    #game, #after-game, #after-highscore {
+		    #game, #after-game {
 			    display: none;
 		    }
 		    #grid {
@@ -627,6 +627,9 @@
 					} else if ((ABC.indexOf(c) != -1) && (document.getElementById('lettres').style.display != 'none')) {
 						handle_click('L_' + c);
 					}
+				} else if ((document.getElementById('after-game').style.display == 'block') && (event.keyCode == 13)) {
+					document.getElementById('after-game').style.display = 'none';
+					fill_grid(level);
 				}
 			}, true);
 		</script>
