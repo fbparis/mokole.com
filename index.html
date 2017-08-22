@@ -434,20 +434,19 @@
 				document.getElementById('failure').style.display = 'none';
 				document.getElementById('lettres').style.display = 'block';
 				document.getElementById('game').style.display = 'none';
-				if (score == highscore) {
-					document.getElementById('after-highscore').style.display = 'block';					
-					if (!adsense_afterhighscore_loaded) {
-						adsense_afterhighscore_loaded = true;
-						document.getElementById('adsense-afterhighscore').innerHTML = adsense_code;
-					}
-				} else {
-					document.getElementById('after-game').style.display = 'block';
-					if (!adsense_aftergame_loaded) {
-						adsense_aftergame_loaded = true;
-						document.getElementById('adsense-aftergame').innerHTML = adsense_code;
-					}
-				}
+				document.getElementById('after-game').style.display = 'block';
 				document.getElementById('bottombar').style.display = 'block';
+				if (score == highscore) {
+					document.getElementById('not-highscore').style.display = 'none';					
+					document.getElementById('got-highscore').style.display = 'block';					
+				} else {
+					document.getElementById('not-highscore').style.display = 'block';					
+					document.getElementById('got-highscore').style.display = 'none';					
+				}
+				if (!adsense_aftergame_loaded) {
+					adsense_aftergame_loaded = true;
+					document.getElementById('adsense-aftergame').innerHTML = adsense_code;
+				}
 				score = 0;
 				lifes = 5;
 				update_lifes(0);
@@ -566,14 +565,14 @@
 					</div>
 				</div>
 				<div id="after-game">
-					AFTER GAME
 					<center id="adsense-aftergame">
 					</center>
-				</div>
-				<div id="after-highscore">
-					AFTER HIGH SCORE
-					<center id="adsense-highscore">
-					</center>
+					<div id="got-highscore">
+						NEW HIGHSCORE
+					</div>
+					<div id="not-highscore">
+						AFTER GAME
+					</div>
 				</div>
 			</div>
 			<div id="bottombar">
@@ -586,7 +585,6 @@
 			var score = 0;
 			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
 			var adsense_aftergame_loaded = false;
-			var adsense_afterhighscore_loaded = false;
 			var highscore = localStorage.getItem("highscore");
 			if (highscore == null) {
 				highscore = 0;
