@@ -115,7 +115,7 @@
 			    font-family: Arial, Helvetica, sans-serif;
 			    font-size: 3vmin;
 		    }
-		    #game, #after-game {
+		    #game, #after-game, #after-highscore {
 			    display: none;
 		    }
 		    #grid {
@@ -387,9 +387,6 @@
 				lifes += x;
 				document.getElementById('lifes').innerHTML = lifes;
 			}
-			function handle_keypress(x) {
-				alert(x);
-			}
 			function handle_click(id) {
 				if (document.getElementById(id).style.cursor == "pointer") {
 					c = document.getElementById(id).innerHTML;
@@ -437,7 +434,11 @@
 				document.getElementById('failure').style.display = 'none';
 				document.getElementById('lettres').style.display = 'block';
 				document.getElementById('game').style.display = 'none';
-				document.getElementById('before-game').style.display = 'block';
+				if (score == highscore) {
+					document.getElementById('after-highscore').style.display = 'block';					
+				} else {
+					document.getElementById('after-game').style.display = 'block';					
+				}
 				document.getElementById('bottombar').style.display = 'block';
 				score = 0;
 				lifes = 5;
@@ -557,6 +558,10 @@
 					</div>
 				</div>
 				<div id="after-game">
+					AFTER GAME
+				</div>
+				<div id="after-highscore">
+					AFTER HIGH SCORE
 				</div>
 			</div>
 			<div id="bottombar">
