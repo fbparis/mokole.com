@@ -436,8 +436,16 @@
 				document.getElementById('game').style.display = 'none';
 				if (score == highscore) {
 					document.getElementById('after-highscore').style.display = 'block';					
+					if (!adsense_afterhighscore_loaded) {
+						adsense_afterhighscore_loaded = true;
+						document.getElementById('adsense-afterhighscore').innerHTML = adsense_code;
+					}
 				} else {
-					document.getElementById('after-game').style.display = 'block';					
+					document.getElementById('after-game').style.display = 'block';
+					if (!adsense_aftergame_loaded) {
+						adsense_aftergame_loaded = true;
+						document.getElementById('adsense-aftergame').innerHTML = adsense_code;
+					}
 				}
 				document.getElementById('bottombar').style.display = 'block';
 				score = 0;
@@ -488,7 +496,7 @@
 							<small>Trouvez 12 lettres parmi 26, 5 points par lettre trouvée</small>
 						</button>
 					</div>
-					<center style="clear:both">
+					<center id="adsense-beforegame" style="clear:both">
 						<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 						<!-- MOKOLE -->
 						<ins class="adsbygoogle"
@@ -559,9 +567,13 @@
 				</div>
 				<div id="after-game">
 					AFTER GAME
+					<center id="adsense-aftergame">
+					</center>
 				</div>
 				<div id="after-highscore">
 					AFTER HIGH SCORE
+					<center id="adsense-highscore">
+					</center>
 				</div>
 			</div>
 			<div id="bottombar">
@@ -572,6 +584,9 @@
 			var level = 1;
 			var douze = 12;
 			var score = 0;
+			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
+			var adsense_aftergame_loaded = false;
+			var adsense_afterhighscore_loaded = false;
 			var highscore = localStorage.getItem("highscore");
 			if (highscore == null) {
 				highscore = 0;
