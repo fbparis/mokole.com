@@ -420,12 +420,18 @@
 				lifes += x;
 				document.getElementById('lifes').innerHTML = lifes;
 			}
+			function play_sound(id) {
+				if (playing == id) {
+					document.getElementById(id).stop();
+				}
+				document.getElementById(id).play();
+			}
 			function handle_click(id) {
 				if (document.getElementById(id).style.cursor == "pointer") {
 					c = document.getElementById(id).innerHTML;
 					document.getElementById(id).style.cursor = "default";
 					if (c in data.c) {
-						document.getElementById('good-sound').play();
+						play_sound('good-sound');
 						douze -= 1;
 						if (level == 4) {
 							update_score(5);
@@ -439,7 +445,7 @@
 							}
 						}											
 					} else {
-						document.getElementById('wrong-sound').play();
+						play_sound('wrong-sound');
 						update_lifes(-1);
 						document.getElementById(id).style.backgroundColor = "#ff6961";													
 					}
@@ -631,6 +637,7 @@
 			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
 			var adsense_aftergame_loaded = false;
 			var highscore = localStorage.getItem("highscore");
+			var playing = null;
 			if (highscore == null) {
 				highscore = 0;
 			} else {
@@ -678,23 +685,23 @@
 				}
 			}, true);
 		</script>
-		<audio id="newgame-sound">
+		<audio id="newgame-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/newgame.ogg" type="audio/ogg">
 			<source src="/sound/newgame.mp3" type="audio/mpeg">
 		</audio>
-		<audio id="good-sound">
+		<audio id="good-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/good.ogg" type="audio/ogg">
 			<source src="/sound/good.mp3" type="audio/mpeg">
 		</audio>
-		<audio id="wrong-sound">
+		<audio id="wrong-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/wrong.ogg" type="audio/ogg">
 			<source src="/sound/wrong.mp3" type="audio/mpeg">
 		</audio>
-		<audio id="win-sound">
+		<audio id="win-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/win.ogg" type="audio/ogg">
 			<source src="/sound/win.mp3" type="audio/mpeg">
 		</audio>
-		<audio id="loose-sound">
+		<audio id="loose-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/loose.ogg" type="audio/ogg">
 			<source src="/sound/loose.mp3" type="audio/mpeg">
 		</audio>
