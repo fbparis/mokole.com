@@ -421,8 +421,8 @@
 				document.getElementById('lifes').innerHTML = lifes;
 			}
 			function play_sound(id) {
-				if (playing == id) {
-					document.getElementById(id).stop();
+				if (playing != null) {
+					document.getElementById(id).pause();
 				}
 				document.getElementById(id).play();
 			}
