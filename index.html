@@ -335,6 +335,17 @@
 			}
 		</style>
 		<script type="text/javascript">
+			if (!String.prototype.format) {
+			  String.prototype.format = function() {
+			    var args = arguments;
+			    return this.replace(/{(\d+)}/g, function(match, number) { 
+			      return typeof args[number] != 'undefined'
+			        ? args[number]
+			        : match
+			      ;
+			    });
+			  };
+			}
 			var datas = localStorage.getItem('datas');
 			if (datas == null) {
 				datas = [];
@@ -562,11 +573,16 @@
 				document.getElementById('after-game').style.display = 'block';
 				document.getElementById('bottombar').style.display = 'block';
 				if (score == highscore) {
+					t = sharing_highscore.format(score);
 					document.getElementById('not-highscore').style.display = 'none';					
-					document.getElementById('got-highscore').style.display = 'block';					
+					document.getElementById('got-highscore').style.display = 'block';				
 				} else {
+					t = sharing_text;
 					document.getElementById('not-highscore').style.display = 'block';					
 					document.getElementById('got-highscore').style.display = 'none';					
+				}
+				for (id in sharing_masks) {
+					document.getElementById(id).href = sharing_masks[id].format(encodeURIComponent(t));
 				}
 				if (!adsense_aftergame_loaded) {
 					adsense_aftergame_loaded = true;
@@ -699,11 +715,11 @@
 						<p>Faites découvrir MOKOLÉ à vos amis sur les réseaux sociaux !</p>
 					</div>
 					<center>
-						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t=MOKOLÉ%20le%20jeu%20de%20lettres" title="Partager sur Facebook"></a>
-						<a id="share-twitter" class="button twitter" rel="nofollow" target="_blank" href="https://twitter.com/share?original_referer=http%3A%2F%2Fmokole.com%2F&source=tweetbutton&text=MOKOLÉ%20le%20jeu%20de%20lettres&url=http%3A%2F%2Fmokole.com%2F&hashtags=MOKOLE
+						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t={0}" title="Partager sur Facebook"></a>
+						<a id="share-twitter" class="button twitter" rel="nofollow" target="_blank" href="https://twitter.com/share?original_referer=http%3A%2F%2Fmokole.com%2F&source=tweetbutton&text={0}%20https%3A%2F%2Fpic.twitter.com%2Fk0ch4kQXY1&url=http%3A%2F%2Fmokole.com%2F&hashtags=MOKOLE
 " title="Partager sur Twitter"></a>
-						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t=MOKOLÉ%20le%20jeu%20de%20lettres" title="Partager sur Google Plus"></a>
-						<a id="share-email" class="button email" rel="nofollow" target="_blank" href="mailto:?subject=MOKOLÉ%20le%20jeu%20de%20lettres&body=http%3A%2F%2Fmokole.com%2F" title="Partager par email"></a>
+						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t={0}" title="Partager sur Google Plus"></a>
+						<a id="share-email" class="button email" rel="nofollow" target="_blank" href="mailto:?subject={0}&body=http%3A%2F%2Fmokole.com%2F" title="Partager par email"></a>
 					</center>
 					<center>
 						<button class="btn green" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);"><span style="font-family: 'myFont'; font-size: 3vmin;">JOUER UNE AUTRE PARTIE</span></button>
@@ -719,6 +735,14 @@
 			var level = 1;
 			var douze = 12;
 			var score = 0;
+			var sharing_text = "{0}% des joueurs de MOKOLÉ ont fait plus de 60 points, et vous ?".format(Math.floor(Math.random() * 10) + 85);
+			var sharing_highscore = "Je viens de faire {0} au MOKOLÉ ! Qui dit mieux ?";
+			var sharing_masks = {
+				"share-facebook": document.getElementById("share-facebook").href,
+				"share-twitter": document.getElementById("share-twitter").href,
+				"share-googleplus": document.getElementById("share-googleplus").href,
+				"share-email": document.getElementById("share-email").href
+			};			
 			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
 			var adsense_aftergame_loaded = false;
 			var highscore = localStorage.getItem("highscore");
