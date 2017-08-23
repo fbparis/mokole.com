@@ -256,7 +256,7 @@
 		    }
 		    .home {
 			    font-family: 'myFont';
-			    background: black url('/img/home.png') left center no-repeat;
+			    background: url('/img/home.png') left center no-repeat;
 			    background-size: contain;
 			    padding-left: 150px;
 			    color: white;
@@ -265,7 +265,7 @@
 		    }
 		    .replay {
 			    font-family: 'myFont';
-			    background: green url('/img/play.png') left center no-repeat;
+			    background: url('/img/play.png') left center no-repeat;
 			    background-size: contain;
 			    padding-left: 150px;			    
 			    color: white;
@@ -708,8 +708,8 @@
 						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t=MOKOLÉ%20le%20jeu%20de%20lettres"></a>
 					</center>
 					<center>
-						<button class="replay" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);">JOUER UNE AUTRE PARTIE</button>
-						<button class="home" onclick="document.getElementById('after-game').style.display = 'none'; document.getElementById('before-game').style.display = 'block';">REVENIR A L'ECRAN D'ACCUEIL</button>
+						<button class="btn green replay" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);">JOUER UNE AUTRE PARTIE</button>
+						<button class="btn orange home" onclick="document.getElementById('after-game').style.display = 'none'; document.getElementById('before-game').style.display = 'block';">REVENIR A L'ECRAN D'ACCUEIL</button>
 					</center>
 				</div>
 			</div>
