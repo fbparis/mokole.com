@@ -228,7 +228,7 @@
 		    }
 		    #after-game h1 {
 			    text-transform: uppercase;
-			    margin: 1em auto;
+			    margin: 0.5em auto;
 		    }
 		    a.button {
 			    display: inline-block;
@@ -333,6 +333,12 @@
 			*, *:before, *:after {
 			  box-sizing: border-box;
 			}
+			/* images resizing */
+			.fixed-ratio-resize { /* basic responsive img */
+				max-width: 100%;
+				height: auto;
+				width: auto\9; /* IE8 */
+			}			
 		</style>
 		<script type="text/javascript">
 			if (!String.prototype.format) {
@@ -653,6 +659,9 @@
 					<p>Vous commencez la partie avec <b>5 <span class="lifes">vies</span></b> et un <span class="score">score</span> de 0, à chaque lettre trouvée vous gagnez des points mais <b>à chaque erreur vous perdez une vie</b>&nbsp;!</p>
 					<p>Quand une grille est complétée, vous touchez un bonus de fin de partie égal à votre nombre de vies et vous gagnez une vie supplémentaire.</p>
 					<p>Le jeu se termine lorsque vous n'avez plus de vie.</p>
+					<center>
+						<a href="http://www.avenir-amoureux.com/?idw=1451" target="_blank" rel="nofollow"><img class="fixed-ratio-resize" src="/img/aveniramoureux.gif"></a> 
+					</center>
 					<h3>Astuces et informations sur MOKOLÉ</h3>					
 					<p>Vous pouvez utiliser la souris ou le clavier pendant le jeu (appuyez sur la touche "entrée" pour passer à la grille suivante ou refaire une partie).</p>
 					<p>Les grilles sont générées à partir de 393 402 mots qui sont tous présents dans le dictionnaire officiel du Scrabble (ODS7). Ils incluent donc également des verbes conjugués mais pas d'expressions ni de mots composés, de sigles ou abréviations, de symboles chimiques ou de noms propres.</p>
@@ -705,6 +714,7 @@
 				</div>
 				<div id="after-game">
 					<center id="adsense-aftergame">
+						<a href="http://www.seniorclub-rencontre.com/?siteid=1633651" rel="nofollow" target="_blank"><img src="/img/seniorclubrencontres.gif" class="fixed-ratio-resize"></a>
 					</center>
 					<div id="got-highscore">
 						<h1>Nouveau record&nbsp;!</h1>
@@ -744,7 +754,7 @@
 				"share-email": document.getElementById("share-email").href
 			};			
 			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
-			var adsense_aftergame_loaded = false;
+			var adsense_aftergame_loaded = true;
 			var highscore = localStorage.getItem("highscore");
 			if (highscore == null) {
 				highscore = 0;
