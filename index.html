@@ -38,6 +38,7 @@
 			    padding: 0px;
 			    margin: 0px;
 		    }
+		    button { cursor: pointer; }
 		    #topbar, #bottombar {
 			    background: black;
 			    color: white;
@@ -107,7 +108,7 @@
 			    z-index: 2;
 			    overflow: scroll;
 		    }
-		    #before-game, #after-game {
+		    #before-game {
 			    width: 95vmin;
 			    padding: 1ex 1em 15vmin 1em;
 			    margin: 0px auto;
@@ -117,6 +118,14 @@
 		    }
 		    #game, #after-game {
 			    display: none;
+		    }
+		    #after-game {
+			    width: 95vmin;
+			    padding: 1ex 1em 15vmin 1em;
+			    margin: 0px auto;
+			    font-size: 3vmin;
+			    font-family: 'myFont';
+			    text-align: center;
 		    }
 		    #grid {
 			    padding-top: 0.5vmin;
@@ -161,37 +170,15 @@
 			    line-height: 4vmin;
 		    }
 		    #keyboard button {
-			    padding-left: 128px;
-			    padding-right: 1em;
-			    margin: 0px auto;
-				font-family: Arial, Helvetica, sans-serif;	
-				font-size: 3.2vmin;
-				line-height: 1.6vmin;	
-				font-style: italic;
-/* 				background-color: #FAEBD7;  */
-				cursor: pointer;
-		    }
-		    #keyboard button h2 {
 			    font-family: "myFont";
+				font-size: 3.2vmin;
 			    text-transform: uppercase;
-			    font-style: normal;
 		    }
-/*
-		    #keyboard button:hover {
-			    background-color: #fdfd96;
-		    }
-*/
 		    #success {
 			    display: none;
-			    background: url('/img/success.png') left center no-repeat;
-			    background-size: contain;
-/* 			    color: #25ae88; */
 		    }
 		    #failure {
 			    display: none;
-			    background: url('/img/failure.png') left center no-repeat;
-			    background-size: contain;
-/* 			    color: #d75a4a; */
 		    }
 		    .level {
 			    padding-bottom: 2em;
@@ -239,11 +226,19 @@
 			    background: url('/img/flame.png') left center no-repeat;
 			    background-size: contain;
 		    }
+		    #after-game h1 {
+			    text-transform: uppercase;
+			    margin: 1em auto;
+		    }
 		    a.button {
-			    display: block;
+			    display: inline-block;
 			    width: 10vmin;
 			    height: 10vmin;
 			    background-size: cover;
+			    margin: 1em 1em;
+		    }
+		    a.button:hover {
+			    opacity: 0.7;
 		    }
 		    .facebook {
 			    background: url('/img/facebook.png') center center no-repeat;
@@ -254,23 +249,8 @@
 		    .googleplus {
 			    background: url('/img/googleplus.png') center center no-repeat;
 		    }
-		    .home {
-			    font-family: 'myFont';
-			    background: url('/img/home.png') left center no-repeat;
-			    background-size: contain;
-			    padding-left: 150px;
-			    color: white;
-			    font-size: 3vmin;
-			    display: block;
-		    }
-		    .replay {
-			    font-family: 'myFont';
-			    background: url('/img/play.png') left center no-repeat;
-			    background-size: contain;
-			    padding-left: 150px;			    
-			    color: white;
-			    font-size: 3vmin;
-			    display: block;
+		    .email {
+			    background: url('/img/email.png') center center no-repeat;
 		    }
 			.btn {
 			  position: relative;
@@ -395,8 +375,9 @@
 				rule_lettres.style.height = (g+1) + 'vmin';
 				rule_lettres.style.fontSize = g + 'vmin';
 				rule_lettres.style.lineHeight = g/2 + 'vmin';
-				rule_buttons.style.height = 2 * (g+1) + 'vmin';		
-				rule_buttons.style.paddingLeft = 2 * (g+1) + 'vmin';		
+				rule_buttons.style.height = 1.5 * (g+1) + 'vmin';		
+// 				rule_buttons.style.height = 2 * (g+1) + 'vmin';		
+// 				rule_buttons.style.paddingLeft = 2 * (g+1) + 'vmin';		
 			}
 			function show_grid() {
 				if (datas.length == 0) {
@@ -677,16 +658,10 @@
 							</table>
 						</div>
 						<button id="success" class="btn green" onclick="after_success()">
-							<span>
-								<h2>Bravo, c'est gagné !</h2>
-								<small>Cliquez ici pour continuer la partie.</small>
-							</span>
+							<span>Gagné ! Cliquez ici pour continuer.</span>
 						</button>
 						<button id="failure" class="btn red" onclick="after_failure()">
-							<span>
-								<h2>Oops, c'est perdu !</h2>
-								<small>Cliquez ici pour rejouer ou partager votre score.</small>
-							</span>
+							<span>Perdu ! Cliquez ici pour continuer.</span>
 						</button>
 					</div>
 				</div>
@@ -702,14 +677,15 @@
 						<p>Faites découvrir MOKOLÉ à vos amis sur les réseaux sociaux !</p>
 					</div>
 					<center>
-						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t=MOKOLÉ%20le%20jeu%20de%20lettres"></a>
+						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t=MOKOLÉ%20le%20jeu%20de%20lettres" title="Partager sur Facebook"></a>
 						<a id="share-twitter" class="button twitter" rel="nofollow" target="_blank" href="https://twitter.com/share?original_referer=http%3A%2F%2Fmokole.com%2F&source=tweetbutton&text=MOKOLÉ%20le%20jeu%20de%20lettres&url=http%3A%2F%2Fmokole.com%2F&hashtags=MOKOLE
-"></a>
-						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t=MOKOLÉ%20le%20jeu%20de%20lettres"></a>
+" title="Partager sur Twitter"></a>
+						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t=MOKOLÉ%20le%20jeu%20de%20lettres" title="Partager sur Google Plus"></a>
+						<a id="share-email" class="button email" rel="nofollow" target="_blank" href="mailto:?subject=MOKOLÉ%20le%20jeu%20de%20lettres&body=http%3A%2F%2Fmokole.com%2F" title="Partager par email"></a>
 					</center>
 					<center>
-						<button class="btn green replay" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);"><span>JOUER UNE AUTRE PARTIE</span></button>
-						<button class="btn orange home" onclick="document.getElementById('after-game').style.display = 'none'; document.getElementById('before-game').style.display = 'block';"><span>REVENIR A L'ECRAN D'ACCUEIL</span></button>
+						<button class="btn green" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);"><span style="font-family: 'myFont'; font-size: 3vmin;">JOUER UNE AUTRE PARTIE</span></button>
+						<button class="btn orange" onclick="document.getElementById('after-game').style.display = 'none'; document.getElementById('before-game').style.display = 'block';"><span style="font-family: 'myFont'; font-size: 3vmin;">REVENIR A L'ECRAN D'ACCUEIL</span></button>
 					</center>
 				</div>
 			</div>
