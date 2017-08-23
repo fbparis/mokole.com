@@ -81,6 +81,15 @@
 			    margin-left: 1em;
 			    margin-right: 1em;
 		    }
+		    .volume {
+			    background-color: transparent;
+			    background-image: url('/img/soundon.png');
+			    background-repeat: no-repeat;
+			    background-position: center center;
+			    background-size: 1em 1em;
+			    min-width: 1em;
+			    cursor: pointer;
+		    }
 		    .lifes {
 			    background: transparent url('/img/life.png') left center no-repeat;
 			    padding-left: 1.5em;
@@ -473,7 +482,7 @@
 					document.getElementById('bottombar').style.display = 'none';
 					document.getElementById('before-game').style.display = 'none';
 					document.getElementById('game').style.display = 'block';
-					document.getElementById('newgame-sound').play();
+					play_sound('newgame-sound');
 					level = y;
 					douze = 12 - 4 + level;
 					for (i=0; i < ABC.length; i++) {
@@ -524,10 +533,23 @@
 				document.getElementById('lifes').innerHTML = lifes;
 			}
 			function play_sound(id) {
-				if (playing == id) {
-					document.getElementById(id).currentTime = 0;
+				if (sounds == 'on') {
+					if (playing == id) {
+						document.getElementById(id).currentTime = 0;
+					}
+					document.getElementById(id).play();					
 				}
-				document.getElementById(id).play();
+			}
+			function toggle_sounds() {
+				if (sounds == 'on') {
+					sounds = 'off';
+					document.getElementById('sounds').style.backgroundImage = "url('/img/soundoff.png')";
+					localStorage.setItem('sounds', 'off');
+				} else {
+					sounds = 'on';
+					document.getElementById('sounds').style.backgroundImage = "url('/img/soundon.png')";
+					localStorage.removeItem('sounds');					
+				}
 			}
 			function handle_click(id) {
 				if (document.getElementById(id).style.cursor == "pointer") {
@@ -558,11 +580,11 @@
 							update_score(lifes);
 							update_lifes(1);
 							document.getElementById('success').style.display = 'block';
-							document.getElementById('win-sound').play();
+							play_sound('win-sound');
 						} else {
 							fill_grid(0);
 							document.getElementById('failure').style.display = 'block';
-							document.getElementById('loose-sound').play();
+							play_sound('loose-sound');
 						}
 					}
 				}
@@ -614,6 +636,7 @@
 		<div class="main">
 			<div id="topbar">
 			    <span class="left">MOKOLÉ</span>
+			    <span id="sounds" class="left volume" onclick="toggle_sounds()"></span>
 		        <span id="lifes" class="lifes right" title="Nombre de vies restantes">5</span>
 		        <span id="score" class="score right" title="Score actuel">0</span>
 		        <span id="highscore" class="right highscore" title="Meilleur score">0</span>
@@ -742,6 +765,12 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			var sounds = localStorage.getItem('sounds');
+			if (sounds == null) {
+				sounds = 'on';
+			} else {
+				document.getElementById('sounds').style.backgroundImage = "url('/img/soundoff.png')";
+			}
 			var level = 1;
 			var douze = 12;
 			var score = 0;
@@ -832,5 +861,4 @@
 			<source src="/sound/loose.mp3" type="audio/mpeg">
 		</audio>
 	</body>
-	<!-- hurry github ! 2 -->
 </html>
