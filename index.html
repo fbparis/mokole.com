@@ -485,8 +485,8 @@
 				document.getElementById('lifes').innerHTML = lifes;
 			}
 			function play_sound(id) {
-				if (playing != null) {
-					document.getElementById(id).pause();
+				if (playing == id) {
+					document.getElementById(id).currentTime = 0;
 				}
 				document.getElementById(id).play();
 			}
@@ -616,7 +616,7 @@
 					<p>Quand une grille est complétée, vous touchez un bonus de fin de partie égal à votre nombre de vies et vous gagnez une vie supplémentaire.</p>
 					<p>Le jeu se termine lorsque vous n'avez plus de vie.</p>
 					<h3>Astuces et informations sur MOKOLÉ</h3>					
-					<p>Vous pouvez utiliser la souris ou le clavier pendant le jeu (appuyez sur la touche "entrée" pour passer à la grille suivante).</p>
+					<p>Vous pouvez utiliser la souris ou le clavier pendant le jeu (appuyez sur la touche "entrée" pour passer à la grille suivante ou refaire une partie).</p>
 					<p>Les grilles sont générées à partir de 393 402 mots qui sont tous présents dans le dictionnaire officiel du Scrabble (ODS7). Ils incluent donc également des verbes conjugués mais pas d'expressions ni de mots composés, de sigles ou abréviations, de symboles chimiques ou de noms propres.</p>
 				</div>		
 				<div id="game">
