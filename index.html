@@ -544,10 +544,12 @@
 				if (sounds == 'on') {
 					sounds = 'off';
 					document.getElementById('sounds').style.backgroundImage = "url('/img/soundoff.png')";
+					document.getElementById('sounds').title = "Remettre le son";
 					localStorage.setItem('sounds', 'off');
 				} else {
 					sounds = 'on';
 					document.getElementById('sounds').style.backgroundImage = "url('/img/soundon.png')";
+					document.getElementById('sounds').title = "Couper le son";
 					localStorage.removeItem('sounds');					
 				}
 			}
@@ -636,7 +638,7 @@
 		<div class="main">
 			<div id="topbar">
 			    <span class="left">MOKOLÉ</span>
-			    <span id="sounds" class="left volume" onclick="toggle_sounds()"></span>
+			    <span id="sounds" class="left volume" onclick="toggle_sounds()" title="Couper le son"></span>
 		        <span id="lifes" class="lifes right" title="Nombre de vies restantes">5</span>
 		        <span id="score" class="score right" title="Score actuel">0</span>
 		        <span id="highscore" class="right highscore" title="Meilleur score">0</span>
@@ -769,6 +771,7 @@
 			if (sounds == null) {
 				sounds = 'on';
 			} else {
+				document.getElementById('sounds').title = "Remettre le son";
 				document.getElementById('sounds').style.backgroundImage = "url('/img/soundoff.png')";
 			}
 			var level = 1;
