@@ -335,10 +335,20 @@
 			}
 		</style>
 		<script type="text/javascript">
-			var datas = [];
+			var datas = localStorage.getItem('datas');
+			if (datas == null) {
+				datas = [];
+			} else {
+				datas = JSON.parse(datas);
+			}
 			var data = {};
 			var G = {};
-			var currentGrid = 0;
+			var currentGrid = localStorage.getItem('currentGrid');
+			if (currentGrid == null) {
+				currentGrid = 0;
+			} else {
+				currentGrid = Number(currentGrid);
+			}
 			var ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			function shuffle(a) {
 			    var j, x, i;
@@ -386,6 +396,18 @@
 				data = datas[currentGrid];
 				//data = {"hh": ["L", "H", "Y"], "w": 10, "hm": ["L", "U", "H"], "h": 7, "k": ["G_1_3", "G_2_1", "G_1_6", "G_9_4", "G_5_1", "G_8_5", "G_4_0", "G_1_2", "G_4_4", "G_3_6", "G_0_4", "G_4_1", "G_1_1", "G_6_4", "G_5_4", "G_2_6", "G_7_1", "G_4_5", "G_1_4", "G_4_2", "G_1_0", "G_0_1", "G_8_3", "G_4_6", "G_6_1", "G_3_1", "G_7_4", "G_4_3", "G_3_4", "G_2_4", "G_8_4"], "v": ["Z", "U", "M", "Z", "U", "U", "L", "U", "R", "T", "D", "E", "O", "S", "E", "O", "S", "E", "E", "T", "D", "C", "J", "S", "R", "L", "S", "T", "T", "S", "E"], "c": {"C": "#0696BB", "E": "#FAC70C", "D": "#C5037D", "J": "#2A71AF", "M": "#6D398B", "L": "#454E99", "O": "#F28E1C", "S": "#F3E500", "R": "#8DBB25", "U": "#008F5A", "T": "#E96220", "Z": "#E32322"}, "he": ["L", "U", "W"]};
 				currentGrid = (currentGrid + 1) % datas.length;
+				if (currentGrid == 0) {
+					loadJSON(function(response) {
+						var new_datas = JSON.parse(response);
+						if (new_datas.length > 0) {
+							datas = new_datas;
+							currentGrid = 0;
+							shuffle(datas);
+							localStorage.setItem('datas', JSON.stringify(datas));
+						}						
+					});
+				}
+				localStorage.setItem('currentGrid', currentGrid);
 				G = {};
 				for (i in data.k) {
 					G[data.k[i]] = data.v[i];
@@ -700,12 +722,13 @@
 			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
 			var adsense_aftergame_loaded = false;
 			var highscore = localStorage.getItem("highscore");
-			var playing = null;
 			if (highscore == null) {
 				highscore = 0;
 			} else {
+				highscore = Number(highscore);
 				update_highscore(highscore);
 			}
+			var playing = null;
 			var lifes = Number(document.getElementById('lifes').innerHTML);
 			for (i in document.styleSheets[0].rules) {
 				rule = document.styleSheets[0].rules[i];
@@ -719,14 +742,20 @@
 					var rule_level = rule;
 				}
 			}
-			loadJSON(function(response) {
-				datas = JSON.parse(response);
-				if (datas.length > 0) {
-					shuffle(datas);
-					rule_level.style.removeProperty('background');
-					[].slice.call(document.getElementsByClassName("level")[0].getElementsByTagName('button')).map(function(x) { x.removeAttribute('disabled'); });
-				}
-			});
+			if (datas.length == 0) {
+				loadJSON(function(response) {
+					datas = JSON.parse(response);
+					if (datas.length > 0) {
+						shuffle(datas);
+						localStorage.setItem('datas', JSON.stringify(datas));
+						rule_level.style.removeProperty('background');
+						[].slice.call(document.getElementsByClassName("level")[0].getElementsByTagName('button')).map(function(x) { x.removeAttribute('disabled'); });
+					}
+				});
+			} else {
+				rule_level.style.removeProperty('background');
+				[].slice.call(document.getElementsByClassName("level")[0].getElementsByTagName('button')).map(function(x) { x.removeAttribute('disabled'); });
+			}
 			window.addEventListener("orientationchange", function() {
 				fix_css();
 			}, false);
