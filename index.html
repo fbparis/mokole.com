@@ -168,7 +168,7 @@
 				font-size: 3.2vmin;
 				line-height: 1.6vmin;	
 				font-style: italic;
-				background-color: #FAEBD7; 
+/* 				background-color: #FAEBD7;  */
 				cursor: pointer;
 		    }
 		    #keyboard button h2 {
@@ -176,20 +176,22 @@
 			    text-transform: uppercase;
 			    font-style: normal;
 		    }
+/*
 		    #keyboard button:hover {
 			    background-color: #fdfd96;
 		    }
+*/
 		    #success {
 			    display: none;
 			    background: url('/img/success.png') left center no-repeat;
 			    background-size: contain;
-			    color: #25ae88;
+/* 			    color: #25ae88; */
 		    }
 		    #failure {
 			    display: none;
 			    background: url('/img/failure.png') left center no-repeat;
 			    background-size: contain;
-			    color: #d75a4a;
+/* 			    color: #d75a4a; */
 		    }
 		    .level {
 			    padding-bottom: 2em;
@@ -270,6 +272,87 @@
 			    font-size: 3vmin;
 			    display: block;
 		    }
+			.btn {
+			  position: relative;
+			
+			  display: block;
+			  margin: 30px auto;
+			  padding: 0;
+			
+			  overflow: hidden;
+			
+			  border-width: 0;
+			  outline: none;
+			  border-radius: 2px;
+			  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+			  
+			  color: #ecf0f1;
+			  
+			  transition: background-color .3s;
+			}
+			
+			.btn > * {
+			  position: relative;
+			}
+			
+			.btn span {
+			  display: block;
+			  padding: 12px 24px;
+			}
+			
+			.btn:before {
+			  content: "";
+			  
+			  position: absolute;
+			  top: 50%;
+			  left: 50%;
+			  
+			  display: block;
+			  width: 0;
+			  padding-top: 0;
+			    
+			  border-radius: 100%;
+			  
+			  background-color: rgba(236, 240, 241, .3);
+			  
+			  -webkit-transform: translate(-50%, -50%);
+			  -moz-transform: translate(-50%, -50%);
+			  -ms-transform: translate(-50%, -50%);
+			  -o-transform: translate(-50%, -50%);
+			  transform: translate(-50%, -50%);
+			}
+			
+			.btn:active:before {
+			  width: 120%;
+			  padding-top: 120%;
+			  
+			  transition: width .2s ease-out, padding-top .2s ease-out;
+			}
+			.btn.green {
+			  background-color: #2ecc71;				
+			}
+			.btn.green:hover {
+			  background-color: #27ae60;				
+			}
+			.btn.orange {
+			  background-color: #e67e22;
+			}
+			
+			.btn.orange:hover {
+			  background-color: #d35400;
+			}
+			
+			.btn.red {
+			  background-color: #e74c3c;
+			}
+			
+			.btn.red:hover {
+			  background-color: #c0392b;
+			}			
+			/* Styles, not important */
+			*, *:before, *:after {
+			  box-sizing: border-box;
+			}
 		</style>
 		<script type="text/javascript">
 			var datas = [];
@@ -593,11 +676,11 @@
 								</tr>
 							</table>
 						</div>
-						<button id="success" onclick="after_success()">
+						<button id="success" class="btn green" onclick="after_success()">
 							<h2>Bravo, c'est gagné !</h2>
 							<small>Cliquez ici pour continuer la partie.</small>
 						</button>
-						<button id="failure" onclick="after_failure()">
+						<button id="failure" class="btn red" onclick="after_failure()">
 							<h2>Oops, c'est perdu !</h2>
 							<small>Cliquez ici pour rejouer ou partager votre score.</small>
 						</button>
