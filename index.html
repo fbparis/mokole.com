@@ -364,6 +364,7 @@
 			  };
 			}
 			var datas = localStorage.getItem('datas');
+			var new_highscore = false;
 			if (datas == null) {
 				datas = [];
 			} else {
@@ -468,6 +469,8 @@
 				if (y == 0) {
 					x = null;
 				} else if (show_grid()) {
+					ga('set', 'page', '/grid-level-' + y);
+					ga('send', 'pageview');
 					if (y == 1) {
 						x = data.he;
 					} else if (y == 2) {
@@ -478,6 +481,7 @@
 						x = [];
 					}
 				} else {
+					ga('send', 'event', 'Error', 'show_grid', 'Failed showing grid', y);
 					return false;
 				}
 				if (x != null) {
@@ -548,11 +552,13 @@
 					document.getElementById('sounds').style.backgroundImage = "url('/img/soundoff.png')";
 					document.getElementById('sounds').title = "Remettre le son";
 					localStorage.setItem('sounds', 'off');
+					ga('send', 'event', 'Toggle sounds', 'Mute');
 				} else {
 					sounds = 'on';
 					document.getElementById('sounds').style.backgroundImage = "url('/img/soundon.png')";
 					document.getElementById('sounds').title = "Couper le son";
 					localStorage.removeItem('sounds');					
+					ga('send', 'event', 'Toggle sounds', 'Unmute');
 				}
 			}
 			function handle_click(id) {
@@ -585,10 +591,12 @@
 							update_lifes(1);
 							document.getElementById('success').style.display = 'block';
 							play_sound('win-sound');
+							ga('send', 'event', 'Game', 'Win', level, {nonInteraction: true});
 						} else {
 							fill_grid(0);
 							document.getElementById('failure').style.display = 'block';
 							play_sound('loose-sound');
+							ga('send', 'event', 'Game', 'Loose', level, {nonInteraction: true});
 						}
 					}
 				}
@@ -604,11 +612,15 @@
 				document.getElementById('game').style.display = 'none';
 				document.getElementById('after-game').style.display = 'block';
 				document.getElementById('bottombar').style.display = 'block';
+				ga('set', 'page', '/after-game-' + level);
+				ga('send', 'pageview');
 				if (score == highscore) {
+					new_highscore : true;
 					t = sharing_highscore.format(score);
 					document.getElementById('not-highscore').style.display = 'none';					
 					document.getElementById('got-highscore').style.display = 'block';				
 				} else {
+					new_highscore : false;
 					t = sharing_text;
 					document.getElementById('not-highscore').style.display = 'block';					
 					document.getElementById('got-highscore').style.display = 'none';					
@@ -624,6 +636,12 @@
 				lifes = 5;
 				update_lifes(0);
 				update_score(0);
+			}
+			function handle_social_click(network, action, target='sharing') {
+				if (new_highscore) {
+					target += ' highscore';
+				}
+				ga('send', 'social', network, action, target);
 			}
 		</script>
 		<script>
@@ -687,7 +705,7 @@
 					<p>Quand une grille est complétée, vous touchez un bonus de fin de partie égal à votre nombre de vies et vous gagnez une vie supplémentaire.</p>
 					<p>Le jeu se termine lorsque vous n'avez plus de vie.</p>
 					<center>
-						<a href="http://www.tarot-amoureux.com/?idw=1451" target="_blank" rel="nofollow"><img class="fixed-ratio-resize" src="/img/tarotamoureux.gif"></a> 
+						<a href="http://www.tarot-amoureux.com/?idw=1451" target="_blank" rel="nofollow" onclick="ga('send', 'event', 'Outbound Link', 'click', this.href);"><img class="fixed-ratio-resize" src="/img/tarotamoureux.gif"></a> 
 					</center>
 					<h3>Astuces et informations sur MOKOLÉ</h3>					
 					<p>Vous pouvez utiliser la souris ou le clavier pendant le jeu (appuyez sur la touche "entrée" pour passer à la grille suivante ou refaire une partie).</p>
@@ -741,7 +759,7 @@
 				</div>
 				<div id="after-game">
 					<center id="adsense-aftergame">
-						<a href="http://www.seniorclub-rencontre.com/?siteid=1633651" rel="nofollow" target="_blank"><img src="/img/seniorclubrencontres.gif" class="fixed-ratio-resize"></a>
+						<a href="http://www.seniorclub-rencontre.com/?siteid=1633651" rel="nofollow" target="_blank" onclick="ga('send', 'event', 'Outbound Link', 'click', this.href);"><img src="/img/seniorclubrencontres.gif" class="fixed-ratio-resize"></a>
 					</center>
 					<div id="got-highscore">
 						<h1>Nouveau record&nbsp;!</h1>
@@ -752,20 +770,20 @@
 						<p>Faites découvrir MOKOLÉ à vos amis sur les réseaux sociaux&nbsp;!</p>
 					</div>
 					<center>
-						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t={0}" title="Partager sur Facebook"></a>
+						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t={0}" title="Partager sur Facebook" onclick="handle_social_click('Facebook', 'Share')"></a>
 						<a id="share-twitter" class="button twitter" rel="nofollow" target="_blank" href="https://twitter.com/share?original_referer=http%3A%2F%2Fmokole.com%2F&source=tweetbutton&text={0}%20https%3A%2F%2Fpic.twitter.com%2Fk0ch4kQXY1&url=http%3A%2F%2Fmokole.com%2F&hashtags=MOKOLE
-" title="Partager sur Twitter"></a>
-						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t={0}" title="Partager sur Google Plus"></a>
-						<a id="share-email" class="button email" rel="nofollow" target="_blank" href="mailto:?subject={0}&body=http%3A%2F%2Fmokole.com%2F" title="Partager par email"></a>
+" title="Partager sur Twitter" onclick="handle_social_click('Twitter', 'Share')"></a>
+						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t={0}" title="Partager sur Google Plus"onclick="handle_social_click('Google+', 'Share')"></a>
+						<a id="share-email" class="button email" rel="nofollow" target="_blank" href="mailto:?subject={0}&body=http%3A%2F%2Fmokole.com%2F" title="Partager par email" onclick="handle_social_click('Email', 'Share')"></a>
 					</center>
 					<center>
 						<button class="btn green" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);"><span style="font-family: 'myFont'; font-size: 3vmin;">JOUER UNE AUTRE PARTIE</span></button>
-						<button class="btn orange" onclick="document.getElementById('after-game').style.display = 'none'; document.getElementById('before-game').style.display = 'block';"><span style="font-family: 'myFont'; font-size: 3vmin;">REVENIR A L'ECRAN D'ACCUEIL</span></button>
+						<button class="btn orange" onclick="document.getElementById('after-game').style.display = 'none'; document.getElementById('before-game').style.display = 'block'; ga('set', 'page', '/backToHome'); ga('send', 'pageview');"><span style="font-family: 'myFont'; font-size: 3vmin;">REVENIR A L'ECRAN D'ACCUEIL</span></button>
 					</center>
 				</div>
 			</div>
 			<div id="bottombar">
-				&copy;2017 <a href="http://cravatek.com/">CRAVATEK LTD</a>
+				&copy;2017 <a href="http://cravatek.com/" onclick="ga('send', 'event', 'Outbound Link', 'click', this.href, {transport: 'beacon'});">CRAVATEK LTD</a>
 			</div>
 		</div>
 		<script type="text/javascript">
