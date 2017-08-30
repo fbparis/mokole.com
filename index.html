@@ -245,6 +245,7 @@
 			    margin: 0.5em auto;
 		    }
 		    a.button {
+			    font-family: Arial, Helvetica, sans-serif;
 			    display: inline-block;
 			    width: 10vmin;
 			    height: 10vmin;
@@ -879,10 +880,10 @@
 							</table>
 						</div>
 						<button id="success" class="btn green" onclick="after_success()">
-							<span>Gagné ! Cliquez ici pour continuer.</span>
+							<span>Gagné ! Cliquez ici pour continuer</span>
 						</button>
 						<button id="failure" class="btn red" onclick="after_failure()">
-							<span>Perdu ! Cliquez ici pour continuer.</span>
+							<span>Perdu ! Cliquez ici pour continuer</span>
 						</button>
 					</div>
 				</div>
@@ -899,11 +900,11 @@
 						<p>Faites découvrir MOKOLÉ à vos amis sur les réseaux sociaux&nbsp;!</p>
 					</div>
 					<center>
-						<a id="share-facebook" class="button facebook" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t={0}" title="Partager sur Facebook" onclick="handle_social_click('Facebook', 'Share')"></a>
-						<a id="share-twitter" class="button twitter" rel="nofollow" target="_blank" href="https://twitter.com/share?original_referer=http%3A%2F%2Fmokole.com%2F&source=tweetbutton&text={0}%20https%3A%2F%2Fpic.twitter.com%2Fk0ch4kQXY1&url=http%3A%2F%2Fmokole.com%2F&hashtags=MOKOLE
-" title="Partager sur Twitter" onclick="handle_social_click('Twitter', 'Share')"></a>
-						<a id="share-googleplus" class="button googleplus" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t={0}" title="Partager sur Google Plus"onclick="handle_social_click('Google+', 'Share')"></a>
-						<a id="share-email" class="button email" rel="nofollow" target="_blank" href="mailto:?subject={0}&body=http%3A%2F%2Fmokole.com%2F" title="Partager par email" onclick="handle_social_click('Email', 'Share')"></a>
+						<a id="share-facebook" class="button facebook tooltip-bottom" rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?display=popup&u=http%3A%2F%2Fmokole.com%2F&t={0}" data-tooltip="Partager sur Facebook" onclick="handle_social_click('Facebook', 'Share')"></a>
+						<a id="share-twitter" class="button twitter tooltip-bottom" rel="nofollow" target="_blank" href="https://twitter.com/share?original_referer=http%3A%2F%2Fmokole.com%2F&source=tweetbutton&text={0}%20https%3A%2F%2Fpic.twitter.com%2Fk0ch4kQXY1&url=http%3A%2F%2Fmokole.com%2F&hashtags=MOKOLE
+" data-tooltip="Partager sur Twitter" onclick="handle_social_click('Twitter', 'Share')"></a>
+						<a id="share-googleplus" class="button googleplus tooltip-bottom" rel="nofollow" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Fmokole.com&t={0}" data-tooltip="Partager sur Google Plus"onclick="handle_social_click('Google+', 'Share')"></a>
+						<a id="share-email" class="button email tooltip-bottom" rel="nofollow" target="_blank" href="mailto:?subject={0}&body=http%3A%2F%2Fmokole.com%2F" data-tooltip="Partager par email" onclick="handle_social_click('Email', 'Share')"></a>
 					</center>
 					<center>
 						<button class="btn green" onclick="document.getElementById('after-game').style.display = 'none'; fill_grid(level);"><span style="font-family: 'myFont'; font-size: 3vmin;">JOUER UNE AUTRE PARTIE</span></button>
@@ -920,7 +921,7 @@
 			if (sounds == null) {
 				sounds = 'on';
 			} else {
-				document.getElementById('sounds').title = "Remettre le son";
+				document.getElementById('sounds').dataset.tooltip = "Remettre le son";
 				document.getElementById('sounds').style.backgroundImage = "url('/img/soundoff.png')";
 			}
 			var level = 1;
