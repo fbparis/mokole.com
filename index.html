@@ -934,8 +934,9 @@
 			}
 			var playing = null;
 			var lifes = Number(document.getElementById('lifes').innerHTML);
-			for (i in document.styleSheets[0].rules) {
-				rule = document.styleSheets[0].rules[i];
+			var rules = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+			for (i in rules) {
+				rule = rules[i];
 				if (rule.selectorText == '.grille td') {
 					var rule_grille = rule;	
 				} else if (rule.selectorText == '#lettres td') {
