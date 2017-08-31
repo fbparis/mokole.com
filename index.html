@@ -725,6 +725,11 @@
 				fill_grid(level);
 			}
 			function after_failure() {
+				if (ads.length && adsense_aftergame_loaded) {
+					document.getElementById('adsense-aftergame').firstChild.href = ads[currentAd].url;
+					document.getElementById('adsense-aftergame').firstChild.firstChild.src = ads[currentAd].banner;
+					currentAd = (currentAd + 1) % ads.length;
+				}
 				document.getElementById('failure').style.display = 'none';
 				document.getElementById('lettres').style.display = 'block';
 				document.getElementById('game').style.display = 'none';
@@ -876,9 +881,7 @@
 					</div>
 				</div>
 				<div id="after-game">
-					<center id="adsense-aftergame">
-						<a href="http://www.seniorclub-rencontre.com/?siteid=1633651" rel="nofollow" target="_blank" onclick="ga('send', 'event', 'Outbound Link', 'click', this.href);"><img src="/img/seniorclubrencontres.gif" class="fixed-ratio-resize"></a>
-					</center>
+					<center id="adsense-aftergame"><a href="" rel="nofollow" target="_blank" onclick="ga('send', 'event', 'Outbound Link', 'click', this.href);"><img src="" class="fixed-ratio-resize"></a></center>
 					<div id="got-highscore">
 						<h1>Nouveau record&nbsp;!</h1>
 						<p>Défiez vos amis et faîtes connaître MOKOLÉ en partageant votre score&nbsp;!</p>
@@ -925,6 +928,16 @@
 			};			
 			var adsense_code = document.getElementById('adsense-beforegame').innerHTML;
 			var adsense_aftergame_loaded = true;
+			var ads = [
+				{'url': 'http://www.rencontreslocales.com/?siteid=1757724', 'banner': '/img/rencontreslocales.gif'},
+				{'url': 'http://www.seniorclub-rencontre.com/?siteid=1633651', 'banner': '/img/seniorclubrencontres.gif'},
+				{'url': 'https://www.predimobile.com/?idw=1451', 'banner': '/img/voyancegratuite.gif'},
+				{'url': 'https://www.bonne-note.com/?idw=1451', 'banner': '/img/soutienscolaire.gif'},
+				{'url': 'http://www.couplomancie.com/?idw=1451', 'banner': '/img/lovescore.gif'},
+				{'url': 'https://www.vos-devis.com/?idw=1451', 'banner': '/img/vosdevisgratuits.gif'}
+			];
+			shuffle(ads);
+			var currentAd = 0;
 			var highscore = localStorage.getItem("highscore");
 			if (highscore == null) {
 				highscore = 0;
