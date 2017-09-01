@@ -128,7 +128,7 @@
 			    font-family: Arial, Helvetica, sans-serif;
 			    font-size: 3vmin;
 		    }
-		    #game, #after-game {
+		    #game, #after-game, #ads-aftergame {
 			    display: none;
 		    }
 		    #after-game {
@@ -726,9 +726,11 @@
 			}
 			function after_failure() {
 				if (ads.length && adsense_aftergame_loaded) {
-					document.getElementById('adsense-aftergame').firstChild.href = ads[currentAd].url;
-					document.getElementById('adsense-aftergame').firstChild.firstChild.src = ads[currentAd].banner;
+					document.getElementById('adsense-aftergame').style.display = 'none';
+					document.getElementById('ads-aftergame').style.display = 'block';
+					document.getElementById('custom-ad-'+currentAd).style.display = 'none';
 					currentAd = (currentAd + 1) % ads.length;
+					document.getElementById('custom-ad-'+currentAd).style.display = 'block';
 				}
 				document.getElementById('failure').style.display = 'none';
 				document.getElementById('lettres').style.display = 'block';
@@ -881,7 +883,8 @@
 					</div>
 				</div>
 				<div id="after-game">
-					<center id="adsense-aftergame"><a href="" rel="nofollow" target="_blank" onclick="ga('send', 'event', 'Outbound Link', 'click', this.href);"><img src="" class="fixed-ratio-resize"></a></center>
+					<center id="adsense-aftergame"></center>
+					<center id="ads-aftergame"></center>
 					<div id="got-highscore">
 						<h1>Nouveau record&nbsp;!</h1>
 						<p>Défiez vos amis et faîtes connaître MOKOLÉ en partageant votre score&nbsp;!</p>
@@ -994,6 +997,24 @@
 					fill_grid(level);
 				}
 			}, true);
+			if (ads.length) {
+				for (i in ads) {
+					ad = document.createElement('a');
+					ad.id = 'custom-ad-'+i;
+					ad.target = '_blank';
+					ad.rel = 'nofollow';
+					ad.href = ads[i].url;
+					ad.style.display = 'none';
+					ad.onclick = function() {
+						ga('send', 'event', 'Outbound Link', 'click', this.href);						
+					}
+					banner = document.createElement('img');
+					banner.src = ads[i].banner;
+					banner.className = 'fixed-ratio-resize';
+					ad.appendChild(banner);
+					document.getElementById('ads-aftergame').appendChild(ad);
+				}
+			}
 		</script>
 		<audio id="newgame-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/newgame.ogg" type="audio/ogg">
