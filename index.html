@@ -510,7 +510,8 @@
 			
 			    var xobj = new XMLHttpRequest();
 			        xobj.overrideMimeType("application/json");
-			    xobj.open('GET', '/data/ods7.json', true); 
+// 			    xobj.open('GET', '/data/ods7.json', true); 
+			    xobj.open('GET', '/data/mokole-facile.json', true); 
 			    xobj.onreadystatechange = function () {
 			          if (xobj.readyState == 4 && xobj.status == "200") {
 			            callback(xobj.responseText);
