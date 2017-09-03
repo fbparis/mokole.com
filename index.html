@@ -990,8 +990,8 @@
 				fix_css();
 			}, false);
 			window.addEventListener('keypress', function (event) {
+				var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
 				if (document.getElementById('game').style.display == 'block') {
-					var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
 					c = String.fromCharCode(charCode).toUpperCase();
 					if (charCode == 13) {
 						if (document.getElementById('success').style.display == 'block') {
