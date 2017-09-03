@@ -991,8 +991,9 @@
 			}, false);
 			window.addEventListener('keypress', function (event) {
 				if (document.getElementById('game').style.display == 'block') {
-					c = String.fromCharCode(event.keyCode).toUpperCase();
-					if (event.keyCode == 13) {
+					var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
+					c = String.fromCharCode(charCode).toUpperCase();
+					if (charCode == 13) {
 						if (document.getElementById('success').style.display == 'block') {
 							after_success();
 						} else if (document.getElementById('failure').style.display == 'block') {
@@ -1001,7 +1002,7 @@
 					} else if ((ABC.indexOf(c) != -1) && (document.getElementById('lettres').style.display != 'none')) {
 						handle_click('L_' + c);
 					}
-				} else if ((document.getElementById('after-game').style.display == 'block') && (event.keyCode == 13)) {
+				} else if ((document.getElementById('after-game').style.display == 'block') && (charCode == 13)) {
 					document.getElementById('after-game').style.display = 'none';
 					fill_grid(level);
 				}
