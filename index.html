@@ -484,8 +484,7 @@
 			var reloadJson = localStorage.getItem('reloadJson');
 			if (reloadJson == null) {
 				reloadJson = true;
-				localStorage.removeItem('datas');
-				localStorage.removeItem('currentGrid');
+				localStorage.clear();
 				var lastBuild = 0;
 				var currentEasyGrid = 0;
 				var currentHardGrid = 0;
@@ -631,7 +630,11 @@
 					document.getElementById('game').style.display = 'block';
 					play_sound('newgame-sound');
 					level = y;
-					douze = 12 - 4 + level;
+					if (level % 2 == 0) {
+						douze = 12;
+					} else {
+						douze = 9;
+					}
 					for (i=0; i < ABC.length; i++) {
 						document.getElementById("L_" + ABC.charAt(i)).style.backgroundColor = "#cfcfc4";
 						document.getElementById("L_" + ABC.charAt(i)).style.cursor = "pointer";
