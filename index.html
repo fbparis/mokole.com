@@ -35,6 +35,11 @@
 			    font-family: "myFont";
 			    src: url("/fonts/font1.ttf");
 		    }
+		    @media screen and (max-width: 960px) {
+			    .hidden-mobile {
+				    display: none !important;
+			    }
+		    }
 		    body {
 			    background-color: white;
 			    padding: 0px;
@@ -628,6 +633,9 @@
 					document.getElementById('bottombar').style.display = 'none';
 					document.getElementById('before-game').style.display = 'none';
 					document.getElementById('game').style.display = 'block';
+					document.getElementById('lifes').classList.toggle('hidden-mobile');
+					document.getElementById('score').classList.toggle('hidden-mobile');
+					document.getElementById('highscore').classList.toggle('hidden-mobile');
 					play_sound('newgame-sound');
 					level = y;
 					if (level % 2 == 0) {
@@ -806,8 +814,8 @@
 			<div id="topbar">
 			    <span class="left">MOKOLÉ</span>
 			    <span id="sounds" class="left volume tooltip-bottom" onclick="toggle_sounds()" data-tooltip="Couper le son"></span>
-		        <span id="lifes" class="lifes right tooltip-bottom" data-tooltip="Nombre de vies restantes">5</span>
-		        <span id="score" class="score right tooltip-bottom" data-tooltip="Votre score actuel">0</span>
+		        <span id="lifes" class="lifes right tooltip-bottom hidden-mobile" data-tooltip="Nombre de vies restantes">5</span>
+		        <span id="score" class="score right tooltip-bottom hidden-mobile" data-tooltip="Votre score actuel">0</span>
 		        <span id="highscore" class="right highscore tooltip-bottom" data-tooltip="Votre meilleur score">0</span>
 			</div>
 			<div class="board">
