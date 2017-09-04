@@ -35,7 +35,7 @@
 			    font-family: "myFont";
 			    src: url("/fonts/font1.ttf");
 		    }
-		    @media screen and (max-width: 960px) {
+		    @media screen and (max-width: 990px) {
 			    .hidden-mobile {
 				    display: none !important;
 			    }
@@ -633,9 +633,9 @@
 					document.getElementById('bottombar').style.display = 'none';
 					document.getElementById('before-game').style.display = 'none';
 					document.getElementById('game').style.display = 'block';
-					document.getElementById('lifes').classList.toggle('hidden-mobile');
-					document.getElementById('score').classList.toggle('hidden-mobile');
-					document.getElementById('highscore').classList.toggle('hidden-mobile');
+					document.getElementById('lifes').classList.remove('hidden-mobile');
+					document.getElementById('score').classList.remove('hidden-mobile');
+					document.getElementById('highscore').classList.add('hidden-mobile');
 					play_sound('newgame-sound');
 					level = y;
 					if (level % 2 == 0) {
@@ -767,6 +767,9 @@
 				document.getElementById('game').style.display = 'none';
 				document.getElementById('after-game').style.display = 'block';
 				document.getElementById('bottombar').style.display = 'block';
+				document.getElementById('lifes').classList.add('hidden-mobile');
+				document.getElementById('score').classList.add('hidden-mobile');
+				document.getElementById('highscore').classList.remove('hidden-mobile');
 				ga('set', 'page', '/after-game-' + level);
 				ga('send', 'pageview');
 				if (score == highscore) {
