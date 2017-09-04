@@ -481,21 +481,27 @@
 			    });
 			  };
 			}
-			var datas = localStorage.getItem('datas');
-			var new_highscore = false;
-			if (datas == null) {
-				datas = [];
+			var reloadJson = localStorage.getItem('reloadJson');
+			if (reloadJson == null) {
+				reloadJson = true;
+				localStorage.removeItem('datas');
+				localStorage.removeItem('currentGrid');
+				var lastBuild = 0;
+				var currentEasyGrid = 0;
+				var currentHardGrid = 0;
+				var datas_easy = [];
+				var datas_hard = [];
 			} else {
-				datas = JSON.parse(datas);
+				reloadJson = JSON.parse(reloadJson);
+				var lastBuild = localStorage.getItem('lastBuild');
+				var currentEasyGrid = Number(localStorage.getItem('currentEasyGrid'));
+				var currentHardGrid = Number(localStorage.getItem('currentHardGrid'));
+				var datas_easy = JSON.parse(localStorage.getItem('datas_easy'));
+				var datas_hard = JSON.parse(localStorage.getItem('datas_hard'));
 			}
+			var new_highscore = false;
 			var data = {};
 			var G = {};
-			var currentGrid = localStorage.getItem('currentGrid');
-			if (currentGrid == null) {
-				currentGrid = 0;
-			} else {
-				currentGrid = Number(currentGrid);
-			}
 			var ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			function shuffle(a) {
 			    var j, x, i;
@@ -510,8 +516,7 @@
 			
 			    var xobj = new XMLHttpRequest();
 			        xobj.overrideMimeType("application/json");
-// 			    xobj.open('GET', '/data/ods7.json', true); 
-			    xobj.open('GET', '/data/mokole-facile.json', true); 
+			    xobj.open('GET', '/data/mokole-fr.json', true); 
 			    xobj.onreadystatechange = function () {
 			          if (xobj.readyState == 4 && xobj.status == "200") {
 			            callback(xobj.responseText);
@@ -537,25 +542,46 @@
 // 				rule_buttons.style.height = 2 * (g+1) + 'vmin';		
 // 				rule_buttons.style.paddingLeft = 2 * (g+1) + 'vmin';		
 			}
-			function show_grid() {
-				if (datas.length == 0) {
-					return false;
+			function show_grid(y) {
+				reloadJson = false;
+				if ((y == 1) || (y == 2)) {
+					if (datas_easy.length == 0) {
+						return false;
+					}
+					data = datas_easy[currentEasyGrid];
+					currentEasyGrid = (1 + currentEasyGrid) % datas_easy.length;
+					reloadJson = (currentEasyGrid == 0);
+					localStorage.setItem('currentEasyGrid', currentEasyGrid);
+				} else if ((y == 3) || (y == 4)) {
+					if (datas_hard.length == 0) {
+						return false;
+					}
+					data = datas_hard[currentHardGrid]
+					currentHardGrid = (1 + currentHardGrid) % datas_hard.length;
+					reloadJson = (currentHardGrid == 0);
+					localStorage.setItem('currentHardGrid', currentHardGrid);
 				}
-				data = datas[currentGrid];
 				//data = {"hh": ["L", "H", "Y"], "w": 10, "hm": ["L", "U", "H"], "h": 7, "k": ["G_1_3", "G_2_1", "G_1_6", "G_9_4", "G_5_1", "G_8_5", "G_4_0", "G_1_2", "G_4_4", "G_3_6", "G_0_4", "G_4_1", "G_1_1", "G_6_4", "G_5_4", "G_2_6", "G_7_1", "G_4_5", "G_1_4", "G_4_2", "G_1_0", "G_0_1", "G_8_3", "G_4_6", "G_6_1", "G_3_1", "G_7_4", "G_4_3", "G_3_4", "G_2_4", "G_8_4"], "v": ["Z", "U", "M", "Z", "U", "U", "L", "U", "R", "T", "D", "E", "O", "S", "E", "O", "S", "E", "E", "T", "D", "C", "J", "S", "R", "L", "S", "T", "T", "S", "E"], "c": {"C": "#0696BB", "E": "#FAC70C", "D": "#C5037D", "J": "#2A71AF", "M": "#6D398B", "L": "#454E99", "O": "#F28E1C", "S": "#F3E500", "R": "#8DBB25", "U": "#008F5A", "T": "#E96220", "Z": "#E32322"}, "he": ["L", "U", "W"]};
-				currentGrid = (currentGrid + 1) % datas.length;
-				if (currentGrid == 0) {
+				if (reloadJson) {
 					loadJSON(function(response) {
-						var new_datas = JSON.parse(response);
-						if (new_datas.length > 0) {
-							datas = new_datas;
-							currentGrid = 0;
-							shuffle(datas);
-							localStorage.setItem('datas', JSON.stringify(datas));
-						}						
+						var new_json = JSON.parse(response);
+						if (new_json.buildOn != lastBuild) {
+							lastBuild = new_json.lastBuild;
+							datas_easy = new_json.d12;
+							datas_hard = new_json.d34;
+							currentEasyGrid = 0;
+							currentHardGrid = 0;
+							shuffle(datas_easy);
+							shuffle(datas_hard);
+							localStorage.setItem('datas_easy', JSON.stringify(datas_easy));
+							localStorage.setItem('datas_hard', JSON.stringify(datas_hard));
+							localStorage.setItem('lastBuild', lastBuild);
+							localStorage.setItem('reloadJson', JSON.stringify(false));
+						} else {
+							localStorage.setItem('reloadJson', JSON.stringify(true));
+						}					
 					});
 				}
-				localStorage.setItem('currentGrid', currentGrid);
 				G = {};
 				for (i in data.k) {
 					G[data.k[i]] = data.v[i];
@@ -587,16 +613,12 @@
 			function fill_grid(y) {
 				if (y == 0) {
 					x = null;
-				} else if (show_grid()) {
+				} else if (show_grid(y)) {
 					ga('set', 'page', '/grid-level-' + y);
 					ga('send', 'pageview');
-					if (y == 1) {
-						x = data.he;
-					} else if (y == 2) {
-						x = data.hm;
-					} else if (y == 3) {
-						x = data.hh;
-					} else if (y == 4) {
+					if ((y == 1) || (y == 3)){
+						x = data.g;
+					} else {
 						x = [];
 					}
 				} else {
@@ -687,11 +709,7 @@
 					if (c in data.c) {
 						play_sound('good-sound');
 						douze -= 1;
-						if (level == 4) {
-							update_score(5);
-						} else {
-							update_score(level);							
-						}
+						update_score(level)
 						document.getElementById(id).style.backgroundColor = "#77dd77";
 						for (i in G) {
 							if (G[i] == c) {
@@ -795,22 +813,22 @@
 						<button onclick="fill_grid(1)" class="level1" disabled>
 							<h2>FORCE 1</h2>
 							<hr>
-							<small>Trouvez 9 lettres parmi 23, 1 point par lettre trouvée</small>
+							<small>Mots simples, 9 lettres à trouver, 1 point par lettre</small>
 						</button>
 						<button onclick="fill_grid(2)" class="level2" disabled>
 							<h2>FORCE 2</h2>
 							<hr>
-							<small>Trouvez 10 lettres parmi 23, 2 points par lettre trouvée</small>
+							<small>Mots simples, 12 lettres à trouver, 2 points par lettre</small>
 						</button>
 						<button onclick="fill_grid(3)" class="level3" disabled>
 							<h2>FORCE 3</h2>
 							<hr>
-							<small>Trouvez 11 lettres parmi 23, 3 points par lettre trouvée</small>
+							<small>Mots difficiles, 9 lettres à trouver, 3 points par lettre</small>
 						</button>
 						<button onclick="fill_grid(4)" class="level4" disabled>
 							<h2>FORCE 4</h2>
 							<hr>
-							<small>Trouvez 12 lettres parmi 26, 5 points par lettre trouvée</small>
+							<small>Mots difficiles, 12 lettres à trouver, 4 points par lettre</small>
 						</button>
 					</div>
 					<center id="adsense-beforegame" style="clear:both">
@@ -825,8 +843,8 @@
 						(adsbygoogle = window.adsbygoogle || []).push({});
 						</script>
 					</center>
-					<p><b>MOKOLÉ</b> est un jeu de lettres de type Pendu qui consiste à trouver les <b>12 lettres</b> utilisées pour former une grille de <b>6 mots</b>.</p>
-					<p>Pour faciliter la tâche, <b>chacune des lettres à deviner est associée à une couleur</b> dans la grille.</p>
+					<p><b>MOKOLÉ</b> est un jeu de lettres à mi-chemin entre le Pendu et les mots codés dans lequel vous devez trouver les <b>12 lettres</b> utilisées pour former une grille de <b>6 mots</b>.</p>
+					<p>En guise d'indices, <b>chacune des lettres à deviner est associée à une couleur</b> dans la grille.</p>
 					<p>Vous commencez la partie avec <b>5 <span class="lifes">vies</span></b> et un <span class="score">score</span> de 0, à chaque lettre trouvée vous gagnez des points mais <b>à chaque erreur vous perdez une vie</b>&nbsp;!</p>
 					<p>Quand une grille est complétée, vous touchez un bonus de fin de partie égal à votre nombre de vies et vous gagnez une vie supplémentaire.</p>
 					<p>Le jeu se termine lorsque vous n'avez plus de vie.</p>
@@ -844,7 +862,10 @@
 					</center>
 					<h3>Astuces et informations sur MOKOLÉ</h3>					
 					<p>Vous pouvez utiliser la souris ou le clavier pendant le jeu (appuyez sur la touche "entrée" pour passer à la grille suivante ou refaire une partie).</p>
-					<p>Les grilles sont générées à partir de 393 402 mots qui sont tous présents dans le dictionnaire officiel du Scrabble (ODS7). Ils incluent donc également des verbes conjugués mais pas d'expressions ni de mots composés, de sigles ou abréviations, de symboles chimiques ou de noms propres.</p>
+					<p>Il existe deux niveaux de grilles : les faciles (FORCE 1 et 2) et les difficiles (FORCE 3 et 4).</p>
+					<p>Quelque soit le type de grille, tous les mots utilisés sont présents dans le dictionnaire officiel du Scrabble (ODS7). Ils peuvent être des verbes conjugués mais pas des expressions ou des mots composés, des sigles ou des abréviations, des symboles chimiques ou des noms propres.</p>
+					<p>Les grilles faciles sont générées à partir de 73 638 mots relativement fréquents de la langue française et ressemblent probablement plus aux grilles de jeux qu'on a coutume de trouver dans les magazines.</p>
+					<p>Les grilles difficiles sont réservées aux purisites et aux joueurs de Scrabble invétérés, elles sont générées à partir de 393 402 mots dont certains sont très rares !</p>
 				</div>		
 				<div id="game">
 					<div id="grid">
@@ -972,12 +993,23 @@
 					var rule_level = rule;
 				}
 			}
-			if (datas.length == 0) {
+			if (reloadJson) {
 				loadJSON(function(response) {
-					datas = JSON.parse(response);
-					if (datas.length > 0) {
-						shuffle(datas);
-						localStorage.setItem('datas', JSON.stringify(datas));
+					json = JSON.parse(response);
+					if (json.buildOn != lastBuild) {
+						lastBuild = json.buildOn;
+						currentEasyGrid = 0;
+						currentHardGrid = 0;
+						datas_easy = json.d12;
+						datas_hard = json.d34;
+						shuffle(datas_easy);
+						shuffle(datas_hard);
+						localStorage.setItem('datas_easy', JSON.stringify(datas_easy));
+						localStorage.setItem('datas_hard', JSON.stringify(datas_hard));
+						localStorage.setItem('lastBuild', lastBuild);
+						localStorage.setItem('reloadJson', JSON.stringify(false));
+					}
+					if ((datas_easy.length > 0) && (datas_hard.length > 0)) {					
 						rule_level.style.removeProperty('background');
 						[].slice.call(document.getElementsByClassName("level")[0].getElementsByTagName('button')).map(function(x) { x.removeAttribute('disabled'); });
 					}
