@@ -398,7 +398,7 @@
 			  pointer-events: none;
 			}
 			
-			/* Show the entire tooltip on hover and focus */
+			/* Show the entire tooltip on hover */
 			[data-tooltip]:hover:before,
 			[data-tooltip]:hover:after,
 			.tooltip:hover:before,
@@ -452,6 +452,13 @@
 			}
 			
 			/* Bottom */
+			.tooltip-bottom-right:before,
+			.tooltip-bottom-right:after {
+			  top: 100%;
+			  bottom: auto;
+			  right: 0%;
+			}
+			
 			.tooltip-bottom:before,
 			.tooltip-bottom:after {
 			  top: 100%;
@@ -459,7 +466,8 @@
 			  left: 50%;
 			}
 			
-			.tooltip-bottom:before {
+			.tooltip-bottom:before,
+			.tooltip-bottom-right:before {
 			  margin-top: -12px;
 			  margin-bottom: 0;
 			  border-top-color: transparent;
@@ -468,7 +476,9 @@
 			}
 			
 			.tooltip-bottom:hover:before,
-			.tooltip-bottom:hover:after {
+			.tooltip-bottom:hover:after,
+			.tooltip-bottom-right:hover:before,
+			.tooltip-bottom-right:hover:after {
 			  -webkit-transform: translateY(12px);
 			  -moz-transform:    translateY(12px);
 			  transform:         translateY(12px); 
@@ -817,9 +827,9 @@
 			<div id="topbar">
 			    <span class="left">MOKOLÉ</span>
 			    <span id="sounds" class="left volume tooltip-bottom" onclick="toggle_sounds()" data-tooltip="Couper le son"></span>
-		        <span id="lifes" class="lifes right tooltip-bottom hidden-mobile" data-tooltip="Nombre de vies restantes">5</span>
-		        <span id="score" class="score right tooltip-bottom hidden-mobile" data-tooltip="Votre score actuel">0</span>
-		        <span id="highscore" class="right highscore tooltip-bottom" data-tooltip="Votre meilleur score">0</span>
+		        <span id="lifes" class="lifes right tooltip-bottom-right hidden-mobile" data-tooltip="Nombre de vies restantes">5</span>
+		        <span id="score" class="score right tooltip-bottom-right hidden-mobile" data-tooltip="Votre score actuel">0</span>
+		        <span id="highscore" class="right highscore tooltip-bottom-right" data-tooltip="Votre meilleur score">0</span>
 			</div>
 			<div class="board">
 				<div id="before-game">
