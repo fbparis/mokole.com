@@ -496,10 +496,13 @@
 			    });
 			  };
 			}
+			var currentVersion = '1.0';
 			var reloadJson = localStorage.getItem('reloadJson');
-			if (reloadJson == null) {
+			var version = localStorage.getItem('version');
+			if ((reloadJson == null) || (version == null) || (version != currentVersion)) {
 				reloadJson = true;
 				localStorage.clear();
+				localStorage.setItem('version', currentVersion);
 				var lastBuild = 0;
 				var currentEasyGrid = 0;
 				var currentHardGrid = 0;
@@ -650,8 +653,10 @@
 					level = y;
 					if (level % 2 == 0) {
 						douze = 12;
-					} else {
+					} else if (level == 1) {
 						douze = 9;
+					} else if (level == 3) {
+						douze = 10;	
 					}
 					for (i=0; i < ABC.length; i++) {
 						document.getElementById("L_" + ABC.charAt(i)).style.backgroundColor = "#cfcfc4";
@@ -847,7 +852,7 @@
 						<button onclick="fill_grid(3)" class="level3" disabled>
 							<h2>FORCE 3</h2>
 							<hr>
-							<small>Mots difficiles, 9 lettres à trouver, 3 points par lettre</small>
+							<small>Mots difficiles, 10 lettres à trouver, 3 points par lettre</small>
 						</button>
 						<button onclick="fill_grid(4)" class="level4" disabled>
 							<h2>FORCE 4</h2>
@@ -964,6 +969,7 @@
 				&copy;2017 <a href="http://mokole.com/">MOKOLE.COM</a>
 			</div>
 		</div>
+		<div id="fix-vmin" style="position: absolute; top: 100vmin; left: 100vmin;"></div>
 		<script type="text/javascript">
 			var sounds = localStorage.getItem('sounds');
 			if (sounds == null) {
