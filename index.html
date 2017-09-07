@@ -543,7 +543,14 @@
 			 }			
 
 			function fix_css() {
-				g = 77 / (2 + data.h);
+				var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+				var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+// 				var vmin_w = document.getElementById('fix-vmin').getBoundingClientRect().left;
+				var vmin_h = document.getElementById('fix-vmin').getBoundingClientRect().top;		
+// 				var vmax_w = Math.floor(100 * w / vmin_w);
+				var vmax_h = Math.floor(100 * h / vmin_h) - 12;
+				g = vmax_h / (2 + data.h);
+// 				g = 77 / (2 + data.h);
 				if (g * data.w > 98) {
 					g = 98 / data.w;
 				}
