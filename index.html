@@ -545,12 +545,13 @@
 			function fix_css() {
 				var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 				var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+				w -= (Math.min(13, data.w) + 1);
+				h -= (data.h + 4);
 				var vmin_w = document.getElementById('fix-vmin').getBoundingClientRect().left;
 				var vmin_h = document.getElementById('fix-vmin').getBoundingClientRect().top;		
-				var vmax_w = 100 * w / vmin_w - 2;
-				var vmax_h = 100 * h / vmin_h - 12;
-				g = vmax_h / (2 + data.h);
-// 				g = 77 / (2 + data.h);
+				var vmax_w = (100 * w / vmin_w) - 2;
+				var vmax_h = (100 * h / vmin_h) - 12;
+				g = (vmax_h - 2) / (2 + data.h);
 				if (g * data.w > vmax_w) {
 					g = vmax_w / data.w;
 				}
