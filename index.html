@@ -545,14 +545,14 @@
 			function fix_css() {
 				var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 				var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-// 				var vmin_w = document.getElementById('fix-vmin').getBoundingClientRect().left;
+				var vmin_w = document.getElementById('fix-vmin').getBoundingClientRect().left;
 				var vmin_h = document.getElementById('fix-vmin').getBoundingClientRect().top;		
-// 				var vmax_w = Math.floor(100 * w / vmin_w);
-				var vmax_h = Math.floor(100 * h / vmin_h) - 12;
+				var vmax_w = 100 * w / vmin_w - 2;
+				var vmax_h = 100 * h / vmin_h - 12;
 				g = vmax_h / (2 + data.h);
 // 				g = 77 / (2 + data.h);
-				if (g * data.w > 98) {
-					g = 98 / data.w;
+				if (g * data.w > vmax_w) {
+					g = vmax_w / data.w;
 				}
 				rule_grille.style.width = g + 'vmin';
 				rule_grille.style.height = g + 'vmin';
@@ -976,7 +976,7 @@
 				&copy;2017 <a href="http://mokole.com/">MOKOLE.COM</a>
 			</div>
 		</div>
-		<div id="fix-vmin" style="position: absolute; top: 100vmin; left: 100vmin;"></div>
+		<div id="fix-vmin" style="position: absolute; top: 100vh; left: 100vw;"></div>
 		<script type="text/javascript">
 			var sounds = localStorage.getItem('sounds');
 			if (sounds == null) {
