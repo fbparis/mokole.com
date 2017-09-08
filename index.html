@@ -1063,8 +1063,10 @@
 				rule_level.style.removeProperty('background');
 				[].slice.call(document.getElementsByClassName("level")[0].getElementsByTagName('button')).map(function(x) { x.removeAttribute('disabled'); });
 			}
-			window.addEventListener("orientationchange", function() {
-				fix_css();
+			window.addEventListener("resize", function() {
+				if (document.getElementById('game').style.display == 'block') {
+					fix_css();
+				}
 			}, false);
 			window.addEventListener('keypress', function (event) {
 				var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
