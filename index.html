@@ -143,6 +143,9 @@
 		    #game, #after-game, #ads-aftergame {
 			    display: none;
 		    }
+		    #game {
+			    height: 100%;
+		    }
 		    #after-game {
 			    width: 95vmin;
 			    padding: 1ex 1em 15vmin 1em;
@@ -550,8 +553,12 @@
 			 }			
 
 			function fix_css() {
+/*
 				var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 				var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+*/
+				var w = document.getElementById('fix-pc').getBoundingClientRect().left;
+				var h = document.getElementById('fix-pc').getBoundingClientRect().top;		
 				w -= (Math.min(13, data.w) + 1);
 				h -= (data.h + 4);
 				var vmin_w = document.getElementById('fix-vmin').getBoundingClientRect().left;
@@ -985,6 +992,7 @@
 			</div>
 		</div>
 		<div id="fix-vmin" style="position: absolute; top: 100vh; left: 100vw;"></div>
+		<div id="fix-pc" style="position: absolute; top: 100%; left: 100%;"></div>
 		<script type="text/javascript">
 			var sounds = localStorage.getItem('sounds');
 			if (sounds == null) {
@@ -996,7 +1004,7 @@
 			var level = 1;
 			var douze = 12;
 			var score = 0;
-			var sharing_text = "{0}% des joueurs de MOKOLÉ ont fait plus de 60 points, et vous ?".format(Math.floor(Math.random() * 10) + 85);
+			var sharing_text = "{0}% des joueurs de MOKOLÉ ont fait plus de {1} points, et vous ?".format(Math.floor(Math.random() * 10) + 85, Math.floor(Math.random() * 40) + 50);
 			var sharing_highscore = "Je viens de faire {0} au MOKOLÉ ! Qui dit mieux ?";
 			var sharing_masks = {
 				"share-facebook": document.getElementById("share-facebook").href,
