@@ -1120,6 +1120,11 @@
 					document.getElementById('ads-aftergame').appendChild(ad);
 				}
 			}
+			if ("serviceWorker" in navigator) {
+				window.addEventListener("load", function () {
+					navigator.serviceWorker.register("/service-worker.js");
+				});
+			}			
 		</script>
 		<audio id="newgame-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="/sound/newgame.ogg" type="audio/ogg">
