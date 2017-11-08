@@ -1,5 +1,10 @@
 {
- "name": "MOKOLÉ",
+ "name": "MOKOLÉ - Jeu de lettres",
+ "short_name": "MOKOLÉ",
+ "background_color": "#FFFFFF",
+ "theme_color": "#000000",
+ "display": "standalone",
+ "start_url": "/?utm_source=homescreen",
  "icons": [
   {
    "src": "img\/android-icon-36x36.png",
