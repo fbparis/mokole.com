@@ -3,7 +3,43 @@
 	<head>
 		<meta charset="utf-8">
 		<title>MOKOLÉ Kids</title>
+	    <meta name="description" content="MOKOLÉ Kids est une version simplifiée du jeu de lettres MOKOLÉ qui consiste à deviner les douze lettres formant une grille colorée de six mots.">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="application-name" content="MOKOLÉ Kids">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="MOKOLÉ Kids">
+		<link rel="manifest" href="/kids/manifest.json">
+	    <link rel="canonical" href="//mokole.com/kids/">
 	</head>
 	<body>
+		<img src="/img/kids/touch-click.png" onclick="this.play()">
+		<script type="text/javascript">
+			if ("serviceWorker" in navigator) {
+				window.addEventListener("load", function () {
+					navigator.serviceWorker.register("/service-worker.js");
+				});
+			}						
+		</script>
+		<audio id="newgame-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="/sound/newgame.ogg" type="audio/ogg">
+			<source src="/sound/newgame.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="good-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="/sound/good.ogg" type="audio/ogg">
+			<source src="/sound/good.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="wrong-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="/sound/wrong.ogg" type="audio/ogg">
+			<source src="/sound/wrong.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="win-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="/sound/win.ogg" type="audio/ogg">
+			<source src="/sound/win.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="loose-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="/sound/loose.ogg" type="audio/ogg">
+			<source src="/sound/loose.mp3" type="audio/mpeg">
+		</audio>		
 	</body>
 </html>
