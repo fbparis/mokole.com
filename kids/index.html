@@ -12,7 +12,7 @@
 		<link rel="manifest" href="/kids/manifest.json">
 	    <link rel="canonical" href="//mokole.com/kids/">
 	    <style>
-		    body {
+		    .main {
 			    cursor: url("/img/kids/hand1-64.png"), auto;
 				user-drag: none; 
 				-webkit-user-drag: none;
@@ -23,12 +23,12 @@
 				-webkit-user-select: none;
 				-ms-user-select: none;
 		    }
-		    body:active {
+		    .main:active {
 			    cursor: url("/img/kids/hand2-64.png"), auto;
 		    }
 		</style>
 	</head>
-	<body>
+	<body class="main">
 		<script type="text/javascript">
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
