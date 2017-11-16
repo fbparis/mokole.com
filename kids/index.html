@@ -11,9 +11,17 @@
 		<meta name="apple-mobile-web-app-title" content="MOKOLÉ Kids">
 		<link rel="manifest" href="/kids/manifest.json">
 	    <link rel="canonical" href="//mokole.com/kids/">
+	    <style>
+		    img {
+			    cursor: url("/img/kids/hand1-64.png");
+		    }
+		    img:active {
+			    cursor: url("/img/kids/hand2-64.png");
+		    }
+		</style>
 	</head>
 	<body>
-		<img src="/img/kids/touch-click.png" onclick="this.play()">
+		<img src="/img/kids/touch-click.png">
 		<script type="text/javascript">
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
