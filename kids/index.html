@@ -61,7 +61,6 @@
 		    .green-d { color: rgb(23, 159, 59); }
 		    .pink-s { color: rgb(235, 20, 125); }
 		    .volume {
-			    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAA2CAMAAAC7m5rvAAAAw1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////BhC2fAAAAQHRSTlMAAQIDBAUGBwgNDg8bHCg/QEJDgoaJjI+UmJqbnZ6goqOlpqiqq62wsrW3ubq8vsDBw8XHyMrOz9HT1dfc6Pf5fnLlWQAAAVZJREFUSMft1llTwjAUhuEvoVD3BRU3QEEEBRVEUBGX9///Ki/aUnQE0ox6xbk8k2em05wl0jL+NszGqodae4UTk1m9AWx5Kba9FDteKhubqEwsVVnYlMrAppU7+6ImzATTZwoLVMJMeTDlwvHBfBUzU4b+xIUj2J+rImbKAL3YFZ4B9iQV7z74OSJ2BkA3J0n5RwBOjXaZGfFH1gG4zUn5IQAVI3UXMZlLADo2GABwbiS9L2SyVwC0+wDUjSSxmMm202Qjal4XptxNkmtauTPl4l/QipUjs50odWGyMHud5GrGndlWmqxGzuUCmgD0npISkdN1NyIVRAXJsZEciqsGwH2QFDJHklTszi/lKpC0TjgC4NC1cR7ixglfAEqObTrIp839Xc0eCsN8emZlXPqlEeQ78HzHq+8w910dvovKdy36LmHflR89MCqZHxiS3VzXMv4hPgEvltJO8qMzAwAAAABJRU5ErkJggg==);
 			    background-color: transparent;
 			    background-repeat: no-repeat;
 			    background-position: center center;
@@ -95,10 +94,20 @@
 		<div class="main">
 			<div class="topbar">
 				<h1 class="logo">MOKOLÉ <span class="red-k">K</span><span class="orange-i">i</span><span class="green-d">d</span><span class="pink-s">s</span></h1>
-				<div class="volume mute clickable"></div>
+				<div class="volume mute clickable" onclick="toggle_sound(this);"></div>
 			</div>
 		</div>
 		<script type="text/javascript">
+			function toggle_sound(e) {
+				console.log(e.classList);
+				if (e.classList.contains("unmute")) {
+					e.classList.remove("unmute");
+					e.classList.add("mute");
+				} else {
+					e.classList.remove("mute");
+					e.classList.add("unmute");
+				}
+			}
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
 					navigator.serviceWorker.register("/service-worker.js");
