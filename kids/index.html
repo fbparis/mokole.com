@@ -13,8 +13,12 @@
 	    <link rel="canonical" href="//mokole.com/kids/">
 	    <style>
 		    @font-face {
-			    font-family: "mokole-kids";
-			    src: url("mokole-kids.ttf");
+			    font-family: mokole-kids;
+			    src: url(mokole-kids.ttf);
+		    }
+		    @media screen and (max-width: 350px) {
+			    .topbar { padding-left: 0px !important; }
+			    .volume { margin-right: 0px !important; }
 		    }
 		    body {
 			    font-family: Arial, Helvetica, sans-serif;
@@ -66,6 +70,7 @@
 			    width: 54px;
 			    height: 54px;	
 			    float: right;
+			    margin-left: -1em;
 			    margin-right: 2em;
 		    }
 		    .unmute {
