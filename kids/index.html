@@ -159,24 +159,6 @@
 			    background-repeat: repeat;
 			    background-size: cover;			
 			}		
-			.keyboard-button-error:after {
-				position: absolute;
-				content: "";
-				top: 0px;
-				left: 0px;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(218, 11, 44, 0.4);
-			}
-			.keyboard-button-success:after {
-				position: absolute;
-				content: "";
-				top: 0px;
-				left: 0px;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(23, 159, 59, 0.4);				
-			}
 		    .modal {}
 		    .modal-overlay {}
 		    .closed { display: none; }
@@ -229,8 +211,13 @@
 					e = event.target || event.srcElement;
 					if (e.classList.contains("pulse")) {
 						e.classList.remove("pulse");
-						if (Math.random() < 0.5) e.classList.add("keyboard-button-error");
-						else e.classList.add("keyboard-button-success");						
+						e.style.opacity = "0.95";
+						e.style.transform = "scale(0.9)";
+						if (Math.random() < 0.5) {
+							e.style.color = "rgb(218, 11, 44)";
+						} else {
+							e.style.color = "rgb(23, 159, 59)";
+						}
 					}
 				};
 				b.innerHTML = ABC.charAt(i);
@@ -253,12 +240,14 @@
 			function resize_keyboard() {
 				h = document.getElementById("game-screen").getBoundingClientRect().height;
 				w = document.getElementById("game-screen").getBoundingClientRect().width;
+				h -= 10; // keep some space for margins
+				w = Math.min(w, 2 * h);
 				if (h > w) {
 					// Portait mode, keyboard's height will be 5/12 
 					h = h * 5/12;
 				} else {
-					// Landscape mode, keyboard's height will be 1/3
-					h = h / 3;
+					// Landscape mode, it's complicated
+					h = h * Math.min(5/12, h/(2*w));
 				}
 				// Find the optimal size for keyboard buttons
 				d = 4; // marginBottom or marginRight to add to button size
