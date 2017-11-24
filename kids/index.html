@@ -138,7 +138,6 @@
 			}
 			.keyboard-row {
 				margin: 0px auto;
-				width: 100%;
 				clear: both;
 			}
 			.keyboard-button {
@@ -276,10 +275,11 @@
 				} else {
 					sy = h / py;
 				}
-				button_size = Math.floor(Math.max(sx, sy) - d);
+				button_size = Math.floor(Math.max(sx, sy));
 				buttons_per_row = Math.floor(w / button_size);
 				buttons_per_row = Math.ceil(n / buttons_per_row);
 				buttons_per_row = Math.ceil(n / buttons_per_row);
+				button_size -= d;
 				c = document.createElement("div")
 				c.id = "keyboard";
 				r = null;
