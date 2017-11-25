@@ -18,6 +18,19 @@
 		    .screen { z-index: 300; }
 		    .screen-container, .topbar { z-index: 200; }
 		    .main { z-index: 100; }
+		    /* puzzle's cases styles */
+		    .c0 { background: radial-gradient(circle, rgba(227,35,34,1), rgba(227,35,34,0.6)); }
+		    .c1 { background: radial-gradient(circle, rgba(233,98,32,1), rgba(233,98,32,0.6)); }
+		    .c2 { background: radial-gradient(circle, rgba(242,142,28,1), rgba(242,142,28,0.6)); }
+		    .c3 { background: radial-gradient(circle, rgba(250,199,12,1), rgba(250,199,12,0.6)); }
+		    .c4 { background: radial-gradient(circle, rgba(243,229,0,1), rgba(243,229,0,0.6)); }
+		    .c5 { background: radial-gradient(circle, rgba(141,187,37,1), rgba(141,187,37,0.6)); }
+		    .c6 { background: radial-gradient(circle, rgba(0,143,90,1), rgba(0,143,90,0.6)); }
+		    .c7 { background: radial-gradient(circle, rgba(6,150,187,1), rgba(6,150,187,0.6)); }
+		    .c8 { background: radial-gradient(circle, rgba(42,113,175,1), rgba(42,113,175,0.6)); }
+		    .c9 { background: radial-gradient(circle, rgba(69,78,153,1), rgba(69,78,153,0.6)); }
+		    .c10 { background: radial-gradient(circle, rgba(109,57,139,1), rgba(109,57,139,0.6)); }
+		    .c11 { background: radial-gradient(circle, rgba(197,3,125,1), rgba(197,3,125,0.6)); }
 		    /* @declarations */
 		    @font-face {
 			    font-family: mokole-kids;
@@ -129,6 +142,19 @@
 			    background-image: url(img/tinified/wood-bg-02.png);
 			    background-repeat: repeat;
 		    }
+		    #puzzle {
+			    position: relative;
+		    }
+		    #puzzle > div {
+			    position: absolute;
+			    margin: 0px 1px 1px 0px;
+			    box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.5);
+			    color: rgba(255, 255, 255, 0.8);
+			    text-align: center;
+			    vertical-align: middle;
+			    font-weight: bold;
+			    opacity: 1;
+		    }
 			#keyboard {
 				position: absolute;
 				width: 100%;
@@ -145,20 +171,14 @@
 				opacity: 1;
 			    margin: 0px 4px 4px 0px;
 			    color: rgba(255, 255, 255, 0.8);
-			    background-color: transparent;
-			    width: 128px;
-			    height: 128px;
 			    float: left;
-			    font-size: 118px;
-			    line-height: 128px;
 			    text-align: center;
 			    vertical-align: middle;
 			    font-weight: bold;
 			    box-shadow: 2px 2px 1px 1px rgba(0,0,0,0.5);
 			    background-image: url(img/tinified/wood-bg-01.png);
-			    background-repeat: repeat;
 			    background-size: cover;			
-			}		
+			}	
 		    .modal {}
 		    .modal-overlay {}
 		    .closed { display: none; }
@@ -205,7 +225,7 @@
 			r.className  = "keyboard-row";
 			for (i = 0; i < ABC.length; i++) {
 				b = document.createElement("div");
-				b.id = "L_" + i;
+				b.id = "L_" + ABC.charAt(i);
 				b.className = "keyboard-button pulse";
 				b.onclick = function(event) {
 					e = event.target || event.srcElement;
@@ -281,7 +301,7 @@
 						r = document.createElement("div");
 						r.className = "keyboard-row";
 					}
-					b = document.getElementById("L_" + i);
+					b = document.getElementById("L_" + ABC.charAt(i));
 					b.style.width = button_size + "px";
 					b.style.height = button_size + "px";
 					b.style.fontSize = button_size - 10 + "px";
@@ -294,10 +314,60 @@
 				}
 				document.getElementById("game-screen").replaceChild(c, document.getElementById("keyboard"));
 			}
+			function resize_puzzle(G) {
+				d = 1; // case margin
+				h = document.getElementById("game-screen").getBoundingClientRect().height - document.getElementById("keyboard").getBoundingClientRect().height - 10; // margins
+				w = document.getElementById("game-screen").getBoundingClientRect().width - 2; // margins
+				coords = [];
+				if (((w < h) && (G.h < G.w)) || ((h < w) && (G.w < G.h))) {
+					gw = G.h;
+					gh = G.w;
+					for (i in G.k) {
+						c = G.k[i].split("_");
+						coords.push({x: c[1], y: c[0], v: G.v[i], c: "c" + G.c[G.v[i]]});
+					}
+				} else {
+					gw = G.w;
+					gh = G.h;
+					for (i in G.k) {
+						c = G.k[i].split("_");
+						coords.push({x: c[0], y: c[1], v: G.v[i], c: "c" + G.c[G.v[i]]});
+					}
+				}
+				pw = w/gw;
+				ph = h/gh;
+				puzzle_case_size = Math.floor(Math.min(pw, ph));
+				pw = puzzle_case_size * gw;
+				ph = puzzle_case_size * gh;
+				puzzle = document.createElement("div");
+				puzzle.id = "puzzle";
+				puzzle.style.top = 5 + Math.ceil((h-ph)/2) + "px";
+				puzzle.style.left = Math.ceil((w-pw)/2) + "px";
+				puzzle.style.width = pw + "px";
+				puzzle.style.height = ph + "px";
+				for (i in coords) {
+					e = document.createElement("div");
+					e.className = coords[i].c;
+					if (document.getElementById("L_" + coords[i].v).classList.contains("pulse")) {
+						e.innerHTML = coords[i].v;
+					}
+					e.style.width = (puzzle_case_size - d) + "px";
+					e.style.height = (puzzle_case_size - d) + "px";
+					e.style.fontSize = (puzzle_case_size - d - 10) + "px";
+					e.style.lineHeight = (puzzle_case_size - d) + "px";
+					e.style.left = (coords[i].x * puzzle_case_size) + "px";
+					e.style.top = (coords[i].y * puzzle_case_size) + "px";
+					puzzle.appendChild(e);
+				}
+				document.getElementById("game-screen").replaceChild(puzzle, document.getElementById("puzzle"));
+			}
+			var G = {'c': {'A': '7', 'B': '3', 'E': '11', 'L': '5', 'O': '2', 'N': '6', 'S': '1', 'R': '8', 'U': '10', 'T': '4', 'V': '9', 'Y': '0'}, 'g': ['Y', 'A', 'R', 'S'], 'h': 6, 'k': ['6_4', '7_5', '3_2', '8_2', '5_2', '6_1', '0_4', '6_0', '1_4', '6_3', '4_2', '8_5', '6_2', '2_3', '6_5', '9_4', '2_2', '9_5', '3_4', '2_4', '7_2'], 'w': 10, 'v': ['R', 'O', 'O', 'S', 'B', 'A', 'V', 'Y', 'E', 'U', 'N', 'U', 'O', 'O', 'T', 'E', 'B', 'T', 'O', 'L', 'N']};
 			window.addEventListener("resize", function() {
 				resize_keyboard();
+				resize_puzzle(G);
 			}, false);
-			resize_keyboard()
+			resize_keyboard();
+			resize_puzzle(G);
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
 					navigator.serviceWorker.register("/service-worker.js");
