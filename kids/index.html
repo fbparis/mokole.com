@@ -271,7 +271,10 @@
 				b.id = "L_" + ABC.charAt(i);
 				b.className = "keyboard-button pulse";
 				b.onclick = function(event) {
-					handle_play(event.target || event.srcElement);
+					e = event.target || event.srcElement;
+					if (e.classList.contains("pulse")) {
+						handle_play(e);
+					}
 				};
 				b.innerHTML = ABC.charAt(i);
 				r.appendChild(b);
@@ -294,21 +297,19 @@
 			}
 			
 			function handle_play(e) {
-				if (e.classList.contains("pulse")) {
-					e.classList.remove("pulse");
-					e.style.opacity = "0.95";
-					e.style.transform = "scale(0.9)";
-					if (e.innerHTML in G.c) {
-						play_sound("good-sound");
-						e.style.color = "rgb(23, 159, 59)";
-						for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
-							x.innerHTML = e.innerHTML;
-							x.style.animation = "blink 1s ease-in-out 3";
-						}
-					} else {
-						play_sound("wrong-sound");
-						e.style.color = "rgb(218, 11, 44)";
+				e.classList.remove("pulse");
+				e.style.opacity = "0.95";
+				e.style.transform = "scale(0.9)";
+				if (e.innerHTML in G.c) {
+					play_sound("good-sound");
+					e.style.color = "rgb(23, 159, 59)";
+					for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
+						x.innerHTML = e.innerHTML;
+						x.style.animation = "blink 1s ease-in-out 3";
 					}
+				} else {
+					play_sound("wrong-sound");
+					e.style.color = "rgb(218, 11, 44)";
 				}
 			}
 			
@@ -321,7 +322,7 @@
 				}
 			}
 
-			function resize_keyboard() {
+			function draw_keyboard() {
 				h = document.getElementById("game-screen").getBoundingClientRect().height;
 				w = document.getElementById("game-screen").getBoundingClientRect().width;
 				h -= 10; // keep some space for margins
@@ -379,7 +380,7 @@
 				document.getElementById("game-screen").replaceChild(c, document.getElementById("keyboard"));
 			}
 			
-			function resize_puzzle() {
+			function draw_puzzle() {
 				d = 1; // case margin
 				h = document.getElementById("game-screen").getBoundingClientRect().height - document.getElementById("keyboard").getBoundingClientRect().height - 10; // margins
 				w = document.getElementById("game-screen").getBoundingClientRect().width - 2; // margins
@@ -413,7 +414,7 @@
 				for (i in coords) {
 					e = document.createElement("div");
 					e.className = coords[i].c;
-					if (!document.getElementById("L_" + coords[i].v).classList.contains("pulse")) {
+					if (document.getElementById("L_" + coords[i].v).style.transform) {
 						e.innerHTML = coords[i].v;
 					}
 					e.style.width = (puzzle_case_size - d) + "px";
@@ -425,6 +426,25 @@
 					puzzle.appendChild(e);
 				}
 				document.getElementById("game-screen").replaceChild(puzzle, document.getElementById("puzzle"));
+			}
+			
+			function start_game() {
+				//  reset keyboard
+				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+					x.style.color = "";
+					x.style.transform = "";
+					x.style.opacity = "";
+				}
+				// TODO: get new puzzle
+				draw_puzzle();
+				// TODO: place free letters
+				// 1) get cursor location, 2) remove cursor, 3) activate fake cursor, 4) loop on G.g to fake click hints, 5) get cursor location, 6) move and remove fake cursor
+				// activate keyboard
+				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+					if (!x.style.transform) {
+						x.classList.add("pulse");						
+					}
+				}
 			}
 			
 			var G = {'c': {'A': '9', 'C': '0', 'B': '7', 'E': '2', 'G': '11', 'I': '1', 'H': '5', 'L': '4', 'O': '6', 'R': '10', 'V': '3', 'Z': '8'}, 'g': ['Z', 'B'], 'h': 7, 'k': ['10_6', '6_2', '2_5', '8_5', '7_2', '5_5', '8_1', '7_6', '4_4', '2_2', '8_6', '5_4', '8_0', '8_2', '0_4', '1_4', '2_3', '4_2', '9_6', '5_3', '8_3', '9_2', '3_4', '5_2', '2_4', '8_4'], 'w': 11, 'v': ['L', 'H', 'O', 'L', 'I', 'C', 'B', 'O', 'G', 'Z', 'E', 'E', 'A', 'E', 'G', 'A', 'E', 'C', 'I', 'V', 'I', 'R', 'A', 'A', 'R', 'L']}; //{'h': 7, 'k': ['1_2', '5_4', '1_3', '3_3', '1_5', '5_6', '5_5', '3_2', '1_4', '2_0', '0_5', '2_5', '2_2', '4_5', '4_2', '1_0', '4_0', '3_0', '1_1', '6_5', '3_5'], 'c': {'E': '10', 'D': '9', 'I': '7', 'K': '4', 'J': '3', 'M': '6', 'L': '8', 'O': '2', 'S': '0', 'R': '1', 'U': '5', 'T': '11'}, 'w': 7, 'v': ['K', 'J', 'O', 'E', 'E', 'U', 'E', 'D', 'L', 'O', 'L', 'T', 'I', 'R', 'S', 'M', 'S', 'T', 'O', 'S', 'T']};
@@ -440,12 +460,12 @@
 			}, true);
 
 			window.addEventListener("resize", function() {
-				resize_keyboard();
-				resize_puzzle();
+				draw_keyboard();
+				draw_puzzle();
 			}, false);
 			
-			resize_keyboard();
-			resize_puzzle();
+			draw_keyboard();
+			draw_puzzle();
 			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
