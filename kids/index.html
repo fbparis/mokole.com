@@ -301,10 +301,9 @@
 					if (e.innerHTML in G.c) {
 						play_sound("good-sound");
 						e.style.color = "rgb(23, 159, 59)";
-						elts = document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML]);
-						for (x in elts) {
-							elts[x].innerHTML = e.innerHTML;
-							elts[x].style.animation = "blink 1s ease-in-out 3";
+						for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
+							x.innerHTML = e.innerHTML;
+							x.style.animation = "blink 1s ease-in-out 3";
 						}
 					} else {
 						play_sound("wrong-sound");
@@ -450,7 +449,7 @@
 			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
-					navigator.serviceWorker.register("/service-worker.js");
+					navigator.serviceWorker.register("service-worker.js");
 				});
 			}						
 		</script>
