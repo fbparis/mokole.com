@@ -367,6 +367,14 @@
 			
 			var G = {'c': {'A': '7', 'B': '3', 'E': '11', 'L': '5', 'O': '2', 'N': '6', 'S': '1', 'R': '8', 'U': '10', 'T': '4', 'V': '9', 'Y': '0'}, 'g': ['Y', 'A', 'R', 'S'], 'h': 6, 'k': ['6_4', '7_5', '3_2', '8_2', '5_2', '6_1', '0_4', '6_0', '1_4', '6_3', '4_2', '8_5', '6_2', '2_3', '6_5', '9_4', '2_2', '9_5', '3_4', '2_4', '7_2'], 'w': 10, 'v': ['R', 'O', 'O', 'S', 'B', 'A', 'V', 'Y', 'E', 'U', 'N', 'U', 'O', 'O', 'T', 'E', 'B', 'T', 'O', 'L', 'N']};
 			
+			window.addEventListener("keypress", function (event) {
+				var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
+				c = String.fromCharCode(charCode).toUpperCase();
+				if ((ABC.indexOf(c) != -1) && (document.getElementById("L_" + c).classList.contains("pulse"))) {
+					handle_play(document.getElementById("L_" + c));				
+				}
+			}, true);
+
 			window.addEventListener("resize", function() {
 				resize_keyboard();
 				resize_puzzle();
