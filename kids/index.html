@@ -222,17 +222,7 @@
 				b.id = "L_" + ABC.charAt(i);
 				b.className = "keyboard-button pulse";
 				b.onclick = function(event) {
-					e = event.target || event.srcElement;
-					if (e.classList.contains("pulse")) {
-						e.classList.remove("pulse");
-						e.style.opacity = "0.95";
-						e.style.transform = "scale(0.9)";
-						if (Math.random() < 0.5) {
-							e.style.color = "rgb(218, 11, 44)";
-						} else {
-							e.style.color = "rgb(23, 159, 59)";
-						}
-					}
+					handle_play(event.target || event.srcElement);
 				};
 				b.innerHTML = ABC.charAt(i);
 				r.appendChild(b);
@@ -251,6 +241,24 @@
 					e.classList.add("unmute");
 				}
 			}
+			
+			function handle_play(e) {
+				if (e.classList.contains("pulse")) {
+					e.classList.remove("pulse");
+					e.style.opacity = "0.95";
+					e.style.transform = "scale(0.9)";
+					if (e.innerHTML in G.c) {
+						e.style.color = "rgb(23, 159, 59)";
+						elts = document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML]);
+						for (x in elts) {
+							elts[x].innerHTML = e.innerHTML;
+						}
+					} else {
+						e.style.color = "rgb(218, 11, 44)";
+					}
+				}
+			}
+			
 			function resize_keyboard() {
 				h = document.getElementById("game-screen").getBoundingClientRect().height;
 				w = document.getElementById("game-screen").getBoundingClientRect().width;
@@ -308,7 +316,8 @@
 				}
 				document.getElementById("game-screen").replaceChild(c, document.getElementById("keyboard"));
 			}
-			function resize_puzzle(G) {
+			
+			function resize_puzzle() {
 				d = 1; // case margin
 				h = document.getElementById("game-screen").getBoundingClientRect().height - document.getElementById("keyboard").getBoundingClientRect().height - 10; // margins
 				w = document.getElementById("game-screen").getBoundingClientRect().width - 2; // margins
@@ -342,7 +351,7 @@
 				for (i in coords) {
 					e = document.createElement("div");
 					e.className = coords[i].c;
-					if (document.getElementById("L_" + coords[i].v).classList.contains("pulse")) {
+					if (!document.getElementById("L_" + coords[i].v).classList.contains("pulse")) {
 						e.innerHTML = coords[i].v;
 					}
 					e.style.width = (puzzle_case_size - d) + "px";
@@ -355,13 +364,17 @@
 				}
 				document.getElementById("game-screen").replaceChild(puzzle, document.getElementById("puzzle"));
 			}
+			
 			var G = {'c': {'A': '7', 'B': '3', 'E': '11', 'L': '5', 'O': '2', 'N': '6', 'S': '1', 'R': '8', 'U': '10', 'T': '4', 'V': '9', 'Y': '0'}, 'g': ['Y', 'A', 'R', 'S'], 'h': 6, 'k': ['6_4', '7_5', '3_2', '8_2', '5_2', '6_1', '0_4', '6_0', '1_4', '6_3', '4_2', '8_5', '6_2', '2_3', '6_5', '9_4', '2_2', '9_5', '3_4', '2_4', '7_2'], 'w': 10, 'v': ['R', 'O', 'O', 'S', 'B', 'A', 'V', 'Y', 'E', 'U', 'N', 'U', 'O', 'O', 'T', 'E', 'B', 'T', 'O', 'L', 'N']};
+			
 			window.addEventListener("resize", function() {
 				resize_keyboard();
-				resize_puzzle(G);
+				resize_puzzle();
 			}, false);
+			
 			resize_keyboard();
-			resize_puzzle(G);
+			resize_puzzle();
+			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
 					navigator.serviceWorker.register("/service-worker.js");
