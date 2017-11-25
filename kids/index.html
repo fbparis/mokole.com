@@ -32,19 +32,16 @@
 		    .c10 { background: radial-gradient(circle, rgba(109,57,139,1), rgba(109,57,139,0.6)); }
 		    .c11 { background: radial-gradient(circle, rgba(197,3,125,1), rgba(197,3,125,0.6)); }
 		    /* @declarations */
-		    @font-face {
-			    font-family: mokole-kids;
-			    src: url(mokole-kids.ttf);
-		    }
-		    @media screen and (max-width: 350px) {
-			    .topbar { padding-left: 0px !important; }
-			    .volume { margin-right: 0px !important; }
-		    }
 			@keyframes pulse {
 				50% { transform: scale(.9); }
 			}
-		    /* */
+		    /* basic reset */
 		    div { margin: 0px; padding: 0px; }
+		    img {
+				max-width: 100%;
+				height: auto;	
+		    }
+		    /* Mokolé's style */
 		    body {
 			    font-family: Arial, Helvetica, sans-serif;
 			    background-color: white;
@@ -73,40 +70,36 @@
 				-ms-user-drag: none;			    
 		    }
 		    .topbar {
-			    position: fixed;
+			    position: absolute;
 			    top: 0px;
 			    left: 0px;
-			    width: 100%;
+			    right: 0px;
 			    height: 54px;
 			    background-color: #3CC;
 			    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
-			    box-shadow: 0px 6px 3px 3px rgba(0,0,0,0.5);
 			    color: white;
-			    padding: 0em 1em;
+			    padding: 0em 1vmin;
 		    }
 		    h1.logo {
-			    font-family: mokole-kids;
-			    font-size: 44px;
-			    display: inline;
+			    position: absolute;
+			    top: 2px;
+			    left: 1vmin;
+			    height: 52px;
+			    width: 261px;
+			    margin: 0px;
+			    color: transparent;
+			    background-image: url(img/tinified/mokole-kids.png);
+			    background-size: contain;
 		    }
-		    .logo span {
-			    font-size: 32px;
-			    vertical-align: super;
-		    }
-		    .red-k { color: rgb(218, 11, 44); }
-		    .orange-i { color: rgb(238, 172, 41); }
-		    .green-d { color: rgb(23, 159, 59); }
-		    .pink-s { color: rgb(235, 20, 125); }
 		    .volume {
 			    background-color: transparent;
-			    background-repeat: no-repeat;
 			    background-position: center center;
-			    background-size: 54px 54px;
+			    background-size: cover;
+			    height: 54px;
 			    width: 54px;
-			    height: 54px;	
 			    float: right;
 			    margin-left: -1em;
-			    margin-right: 2em;
+			    margin-right: 1vmin;
 		    }
 		    .pulse:hover {
 			    animation-name: pulse;
@@ -123,6 +116,7 @@
 			    width: 100%;
 			    top: 54px;
 			    bottom: 0px;
+			    box-shadow: 0px 6px 3px 3px rgba(0,0,0,0.5) inset;
 		    }
 		    .screen {
 			    width: 100%;
@@ -200,7 +194,7 @@
 	<body>
 		<div class="main clickable">
 			<div class="topbar">
-				<h1 class="logo">MOKOLÉ <span class="red-k">K</span><span class="orange-i">i</span><span class="green-d">d</span><span class="pink-s">s</span></h1>
+				<h1 class="logo">MOKOLÉ Kids</h1>
 				<div id="toggle-sound" class="volume mute pulse" onclick="toggle_sound(this);"></div>
 			</div>
 			<div id="screen-container" class="screen-container">
