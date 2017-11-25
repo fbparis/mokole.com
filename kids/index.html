@@ -236,9 +236,11 @@
 				if (e.classList.contains("unmute")) {
 					e.classList.remove("unmute");
 					e.classList.add("mute");
+					sounds = true;
 				} else {
 					e.classList.remove("mute");
 					e.classList.add("unmute");
+					sounds = false;
 				}
 			}
 			
@@ -248,17 +250,28 @@
 					e.style.opacity = "0.95";
 					e.style.transform = "scale(0.9)";
 					if (e.innerHTML in G.c) {
+						play_sound("good-sound");
 						e.style.color = "rgb(23, 159, 59)";
 						elts = document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML]);
 						for (x in elts) {
 							elts[x].innerHTML = e.innerHTML;
 						}
 					} else {
+						play_sound("wrong-sound");
 						e.style.color = "rgb(218, 11, 44)";
 					}
 				}
 			}
 			
+			function play_sound(id) {
+				if (sounds) {
+					if (playing == id) {
+						document.getElementById(id).currentTime = 0;
+					}
+					document.getElementById(id).play();					
+				}
+			}
+
 			function resize_keyboard() {
 				h = document.getElementById("game-screen").getBoundingClientRect().height;
 				w = document.getElementById("game-screen").getBoundingClientRect().width;
@@ -366,6 +379,8 @@
 			}
 			
 			var G = {'c': {'A': '7', 'B': '3', 'E': '11', 'L': '5', 'O': '2', 'N': '6', 'S': '1', 'R': '8', 'U': '10', 'T': '4', 'V': '9', 'Y': '0'}, 'g': ['Y', 'A', 'R', 'S'], 'h': 6, 'k': ['6_4', '7_5', '3_2', '8_2', '5_2', '6_1', '0_4', '6_0', '1_4', '6_3', '4_2', '8_5', '6_2', '2_3', '6_5', '9_4', '2_2', '9_5', '3_4', '2_4', '7_2'], 'w': 10, 'v': ['R', 'O', 'O', 'S', 'B', 'A', 'V', 'Y', 'E', 'U', 'N', 'U', 'O', 'O', 'T', 'E', 'B', 'T', 'O', 'L', 'N']};
+			var sounds = true;
+			var playing = null;
 			
 			window.addEventListener("keypress", function (event) {
 				var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
@@ -390,24 +405,16 @@
 			}						
 		</script>
 		<audio id="newgame-sound" onplaying="playing=this.id" onended="playing=null">
-			<source src="/sound/newgame.ogg" type="audio/ogg">
-			<source src="/sound/newgame.mp3" type="audio/mpeg">
+			<source src="sound/newgame.ogg" type="audio/ogg">
+			<source src="sound/newgame.mp3" type="audio/mpeg">
 		</audio>
 		<audio id="good-sound" onplaying="playing=this.id" onended="playing=null">
-			<source src="/sound/good.ogg" type="audio/ogg">
-			<source src="/sound/good.mp3" type="audio/mpeg">
+			<source src="sound/good.ogg" type="audio/ogg">
+			<source src="sound/good.mp3" type="audio/mpeg">
 		</audio>
 		<audio id="wrong-sound" onplaying="playing=this.id" onended="playing=null">
-			<source src="/sound/wrong.ogg" type="audio/ogg">
-			<source src="/sound/wrong.mp3" type="audio/mpeg">
+			<source src="sound/wrong.ogg" type="audio/ogg">
+			<source src="sound/wrong.mp3" type="audio/mpeg">
 		</audio>
-		<audio id="win-sound" onplaying="playing=this.id" onended="playing=null">
-			<source src="/sound/win.ogg" type="audio/ogg">
-			<source src="/sound/win.mp3" type="audio/mpeg">
-		</audio>
-		<audio id="loose-sound" onplaying="playing=this.id" onended="playing=null">
-			<source src="/sound/loose.ogg" type="audio/ogg">
-			<source src="/sound/loose.mp3" type="audio/mpeg">
-		</audio>		
 	</body>
 </html>
