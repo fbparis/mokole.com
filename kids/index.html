@@ -244,6 +244,7 @@
 			    text-align: center;
 			    opacity: 0.95;
 			    min-width: 80vmin;
+			    transition: opacity 2s ease-in;
 		    }
 		    .red { color: rgb(218, 11, 44); }
 		    .yellow { color: rgb(238, 172, 41); }
@@ -297,10 +298,26 @@
 				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour commencer.</p>
 				<p>Bonne chance !</p>
 			</div>
-			<div id="ace-score" class="modal closed"></div>
-			<div id="champion-score" class="modal closed"></div>
-			<div id="average-score" class="modal closed"></div>
-			<div id="bad-score" class="modal closed"></div>
+			<div id="ace-score" class="modal closed">
+				<h2><span class="red">E</span><span class="yellow">x</span><span class="green">c</span><span class="pink">e</span><span class="blue">l</span><span class="red">l</span><span class="yellow">e</span><span class="green">n</span><span class="pink">t</span> <span class="blue">!</span></h2>
+				<p>Tu as compléter la grille sans faire aucune erreur !</p>
+				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour faire une autre partie.</p>
+			</div>
+			<div id="champion-score" class="modal closed">
+				<h2><span class="red">B</span><span class="yellow">r</span><span class="green">a</span><span class="pink">v</span><span class="blue">o</span> <span class="red">!</h2>
+				<p>Tu as fait moins de 5 erreurs, c'est très bien !</p>
+				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour faire une autre partie.</p>				
+			</div>
+			<div id="average-score" class="modal closed">
+				<h2><span class="red">P</span><span class="yellow">a</span><span class="green">r</span><span class="pink">t</span><span class="blue">i</span><span class="red">e</span> <span class="yellow">t</span><span class="green">e</span><span class="pink">r</span><span class="blue">m</span><span class="red">i</span><span class="yellow">n</span><span class="green">é</span><span class="pink">e</span> <span class="blue">!</span></h2>
+				<p>Tu as trouvé tous les mots en faisant quelques erreurs, continue tes efforts.</p>
+				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour faire une autre partie.</p>				
+			</div>
+			<div id="bad-score" class="modal closed">
+				<h2><span class="red">P</span><span class="yellow">a</span><span class="green">r</span><span class="pink">t</span><span class="blue">i</span><span class="red">e</span> <span class="yellow">t</span><span class="green">e</span><span class="pink">r</span><span class="blue">m</span><span class="red">i</span><span class="yellow">n</span><span class="green">é</span><span class="pink">e</span> <span class="blue">!</span></h2>
+				<p>Oups, tu as fait beaucoup d'erreurs, essayes encore une fois.</p>
+				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour faire une autre partie.</p>
+			</div>
 			<div id="modal-overlay" class="overlay"></div>
 			<div id="overlay" class="overlay closed"><div id="cursor"></div></div>
 		</div>
@@ -345,13 +362,18 @@
 				e.style.transform = "scale(0.9)";
 				if (e.innerHTML in G.c) {
 					play_sound("good-sound");
+					good_count += 1;
 					e.style.color = "rgb(23, 159, 59)";
 					for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
 						x.innerHTML = e.innerHTML;
 						x.style.animation = "blink 1s ease-in-out 2";
 					}
+					if (good_count == 12) {
+						end_game();
+					}
 				} else {
 					play_sound("wrong-sound");
+					wrong_count += 1;
 					e.style.color = "rgb(218, 11, 44)";
 				}
 			}
@@ -474,15 +496,17 @@
 			}
 			
 			function start_game() {
-				// close modal windows
+				// Close modal windows
 				for (x of document.getElementsByClassName("modal")) {
 					if (!x.classList.contains("closed")) x.classList.add("closed");
 				}
 				document.getElementById("modal-overlay").classList.add("closed");
 				// Prevent user interaction
 				document.getElementById("overlay").classList.remove("closed");
+				// Play starting sound
+				play_sound("newgame-sound");
 				//document.getElementById("overlay").style.cursor = "none";
-				// reset keyboard
+				// Reset keyboard
 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.style.color = "";
 					x.style.transform = "";
@@ -492,6 +516,8 @@
 				document.getElementById("puzzle").classList.remove("closed");
 				draw_puzzle();
 				hints = G.g.slice(0);
+				good_count = 0;
+				wrong_count = 0;
 				// Place free letters, if some
 				start_game_animation();
 			}
@@ -506,7 +532,7 @@
 					cursor.classList.add("cursor-active");
 					setTimeout(start_game_animation_click, 800, document.getElementById("L_" + hint));
 				} else {
-					// activate keyboard
+					// Activate keyboard
 					for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 						if (!x.style.transform) {
 							x.classList.add("pulse");						
@@ -525,11 +551,32 @@
 				handle_play(e);
 				setTimeout(start_game_animation, 1500);
 			}
+			
+			function end_game() {
+				// Freeze keyboard
+				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+					x.classList.remove("pulse");
+				}
+				// Play victory sound
+				play_sound("win-sound");
+				if (wrong_count == 0) id = "ace-score";
+				else if (wrong_count <= 4) id = "champion-score";
+				else if (wrong_count <= 8) id = "average-score";
+				else id = "bad-score";
+				setTimeout(show_modal, 2500, id);
+			}
+			
+			function show_modal(id) {
+				document.getElementById(id).classList.remove("closed");
+				document.getElementById("modal-overlay").classList.remove("closed");
+			}
 						
 			var G = {'c': {'A': '9', 'C': '0', 'B': '7', 'E': '2', 'G': '11', 'I': '1', 'H': '5', 'L': '4', 'O': '6', 'R': '10', 'V': '3', 'Z': '8'}, 'g': ['Z', 'B'], 'h': 7, 'k': ['10_6', '6_2', '2_5', '8_5', '7_2', '5_5', '8_1', '7_6', '4_4', '2_2', '8_6', '5_4', '8_0', '8_2', '0_4', '1_4', '2_3', '4_2', '9_6', '5_3', '8_3', '9_2', '3_4', '5_2', '2_4', '8_4'], 'w': 11, 'v': ['L', 'H', 'O', 'L', 'I', 'C', 'B', 'O', 'G', 'Z', 'E', 'E', 'A', 'E', 'G', 'A', 'E', 'C', 'I', 'V', 'I', 'R', 'A', 'A', 'R', 'L']}; //{'h': 7, 'k': ['1_2', '5_4', '1_3', '3_3', '1_5', '5_6', '5_5', '3_2', '1_4', '2_0', '0_5', '2_5', '2_2', '4_5', '4_2', '1_0', '4_0', '3_0', '1_1', '6_5', '3_5'], 'c': {'E': '10', 'D': '9', 'I': '7', 'K': '4', 'J': '3', 'M': '6', 'L': '8', 'O': '2', 'S': '0', 'R': '1', 'U': '5', 'T': '11'}, 'w': 7, 'v': ['K', 'J', 'O', 'E', 'E', 'U', 'E', 'D', 'L', 'O', 'L', 'T', 'I', 'R', 'S', 'M', 'S', 'T', 'O', 'S', 'T']};
 			var sounds = true;
 			var playing = null;
 			var hints = [];
+			var good_count = 0;
+			var wrong_count = 0;
 			
 			window.addEventListener("keypress", function (event) {
 				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
@@ -573,6 +620,10 @@
 		<audio id="wrong-sound" onplaying="playing=this.id" onended="playing=null">
 			<source src="sound/wrong.ogg" type="audio/ogg">
 			<source src="sound/wrong.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="win-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="sound/win.ogg" type="audio/ogg">
+			<source src="sound/win.mp3" type="audio/mpeg">
 		</audio>
 	</body>
 </html>
