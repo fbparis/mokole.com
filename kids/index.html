@@ -468,7 +468,6 @@
 				if (hints.length) {
 					hint = hints.pop();
 					dest = document.getElementById("L_" + hint).getBoundingClientRect();
-					console.log(dest);
 					cursor.style.left = dest.left + dest.width / 2 + "px";
 					cursor.style.top = dest.top + dest.height / 2 + "px";
 					cursor.classList.add("cursor-active");
