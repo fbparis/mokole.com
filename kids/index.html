@@ -612,7 +612,8 @@
 					}
 					document.getElementById("loading").classList.add("closed");
 					if (datas.length > 0) {	
-						document.getElementById("overlay").classList.remove("closed");		
+						document.getElementById("overlay").classList.remove("closed");
+						reloadJSON = false;		
 						f();
 					} else {
 						document.getElementById("panic").classList.remove("closed");
