@@ -101,7 +101,7 @@
 			    left: 0px;
 			    right: 0px;
 			    height: 54px;
-			    background-color: #3CC;
+			    background-color: #0fb8ad;
 			    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
 			    color: white;
 			    padding: 0em 1vmin;
@@ -227,8 +227,29 @@
 			    background-image: url(img/tinified/wood-bg-01.png);
 			    background-size: cover;			
 			}
-		    .modal {}
-		    .modal-overlay {}
+		    .modal {
+			    position: absolute;
+			    background-image: url(img/tinified/wood-bg-03.png);
+			    background-repeat: repeat;
+			    top: 64px;
+			    left: 50%;
+			    transform: translateX(-50%);
+			    font-family: "Comic Sans MS", cursive, sans-serif;
+			    color: rgba(255, 255, 255, 0.8);
+			    padding: 1vmin 2vmin;
+			    box-shadow: 0px 6px 3px 3px rgba(0,0,0,0.5);
+			    border-radius: 16px;
+			    font-size: 4vmin;
+			    font-weight: bold;
+			    text-align: center;
+			    opacity: 0.95;
+			    min-width: 80vmin;
+		    }
+		    .red { color: rgb(218, 11, 44); }
+		    .yellow { color: rgb(238, 172, 41); }
+		    .green { color: rgb(23, 159, 59); }
+		    .pink { color: rgb(235, 20, 125); }
+		    .blue { color: rgb(19, 99, 171); }
 		    .overlay {
 			    position: fixed;
 			    top: 54px;
@@ -238,7 +259,7 @@
 			    background-color: transparent;
 		    }
 		    #cursor {
-			    position: relative;
+			    position: absolute;
 			    width: 64px;
 			    height: 64px;
 			    background-image: url(img/tinified/hand1-64.png);
@@ -264,20 +285,23 @@
 					<div id="toggle-sound" class="volume mute pulse" onclick="toggle_sound(this);"></div>
 				</div>
 				<div id="screen-container" class="screen-container">
-					<div id="welcome-screen" class="screen closed"></div>
 					<div id="game-screen" class="screen playground">
-						<div id="puzzle"></div>
+						<div id="puzzle" class="closed"></div>
 						<div id="keyboard"></div>
 					</div>
-					<div id="share-screen" class="screen closed"></div>
 				</div>
 			</div>
-			<div id="help-window" class="modal closed"></div>
+			<div id="welcome" class="modal">
+				<h2><span class="red">B</span><span class="yellow">i</span><span class="green">e</span><span class="pink">n</span><span class="blue">v</span><span class="red">e</span><span class="yellow">n</span><span class="green">u</span><span class="pink">e</span> <span class="blue">à</span> <span class="red">M</span><span class="yellow">o</span><span class="green">k</span><span class="pink">o</span><span class="blue">l</span><span class="red">é</span> <span class="yellow">!</span></h2>
+				<p>Tu dois deviner tous les mots de la grille en associant une lettre à chaque couleur.</p>
+				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour commencer.</p>
+				<p>Bonne chance !</p>
+			</div>
 			<div id="ace-score" class="modal closed"></div>
 			<div id="champion-score" class="modal closed"></div>
 			<div id="average-score" class="modal closed"></div>
 			<div id="bad-score" class="modal closed"></div>
-			<div id="modal-overlay" class="overlay modal-overlay closed"></div>
+			<div id="modal-overlay" class="overlay"></div>
 			<div id="overlay" class="overlay closed"><div id="cursor"></div></div>
 		</div>
 		<script type="text/javascript">
@@ -288,7 +312,7 @@
 			for (i = 0; i < ABC.length; i++) {
 				b = document.createElement("div");
 				b.id = "L_" + ABC.charAt(i);
-				b.className = "keyboard-button pulse";
+				b.className = "keyboard-button";
 				b.onclick = function(event) {
 					e = event.target || event.srcElement;
 					if (e.classList.contains("pulse")) {
@@ -400,54 +424,61 @@
 			}
 			
 			function draw_puzzle() {
-				d = 1; // case margin
-				h = document.getElementById("game-screen").getBoundingClientRect().height - document.getElementById("keyboard").getBoundingClientRect().height - 10; // margins
-				w = document.getElementById("game-screen").getBoundingClientRect().width - 2; // margins
-				coords = [];
-				if (((w < h) && (G.h < G.w)) || ((h < w) && (G.w < G.h))) {
-					gw = G.h;
-					gh = G.w;
-					for (i in G.k) {
-						c = G.k[i].split("_");
-						coords.push({x: c[1], y: c[0], v: G.v[i], c: "c" + G.c[G.v[i]]});
+				if (!document.getElementById("puzzle").classList.contains("closed")) {
+					d = 1; // case margin
+					h = document.getElementById("game-screen").getBoundingClientRect().height - document.getElementById("keyboard").getBoundingClientRect().height - 10; // margins
+					w = document.getElementById("game-screen").getBoundingClientRect().width - 2; // margins
+					coords = [];
+					if (((w < h) && (G.h < G.w)) || ((h < w) && (G.w < G.h))) {
+						gw = G.h;
+						gh = G.w;
+						for (i in G.k) {
+							c = G.k[i].split("_");
+							coords.push({x: c[1], y: c[0], v: G.v[i], c: "c" + G.c[G.v[i]]});
+						}
+					} else {
+						gw = G.w;
+						gh = G.h;
+						for (i in G.k) {
+							c = G.k[i].split("_");
+							coords.push({x: c[0], y: c[1], v: G.v[i], c: "c" + G.c[G.v[i]]});
+						}
 					}
-				} else {
-					gw = G.w;
-					gh = G.h;
-					for (i in G.k) {
-						c = G.k[i].split("_");
-						coords.push({x: c[0], y: c[1], v: G.v[i], c: "c" + G.c[G.v[i]]});
+					pw = w/gw;
+					ph = h/gh;
+					puzzle_case_size = Math.floor(Math.min(pw, ph));
+					pw = puzzle_case_size * gw;
+					ph = puzzle_case_size * gh;
+					puzzle = document.createElement("div");
+					puzzle.id = "puzzle";
+					puzzle.style.top = 5 + Math.ceil((h-ph)/2) + "px";
+					puzzle.style.left = Math.ceil((w-pw)/2) + "px";
+					puzzle.style.width = pw + "px";
+					puzzle.style.height = ph + "px";
+					for (i in coords) {
+						e = document.createElement("div");
+						e.className = coords[i].c;
+						if (document.getElementById("L_" + coords[i].v).style.transform) {
+							e.innerHTML = coords[i].v;
+						}
+						e.style.width = (puzzle_case_size - d) + "px";
+						e.style.height = (puzzle_case_size - d) + "px";
+						e.style.fontSize = (puzzle_case_size - d - 10) + "px";
+						e.style.lineHeight = (puzzle_case_size - d) + "px";
+						e.style.left = (coords[i].x * puzzle_case_size) + "px";
+						e.style.top = (coords[i].y * puzzle_case_size) + "px";
+						puzzle.appendChild(e);
 					}
+					document.getElementById("game-screen").replaceChild(puzzle, document.getElementById("puzzle"));
 				}
-				pw = w/gw;
-				ph = h/gh;
-				puzzle_case_size = Math.floor(Math.min(pw, ph));
-				pw = puzzle_case_size * gw;
-				ph = puzzle_case_size * gh;
-				puzzle = document.createElement("div");
-				puzzle.id = "puzzle";
-				puzzle.style.top = 5 + Math.ceil((h-ph)/2) + "px";
-				puzzle.style.left = Math.ceil((w-pw)/2) + "px";
-				puzzle.style.width = pw + "px";
-				puzzle.style.height = ph + "px";
-				for (i in coords) {
-					e = document.createElement("div");
-					e.className = coords[i].c;
-					if (document.getElementById("L_" + coords[i].v).style.transform) {
-						e.innerHTML = coords[i].v;
-					}
-					e.style.width = (puzzle_case_size - d) + "px";
-					e.style.height = (puzzle_case_size - d) + "px";
-					e.style.fontSize = (puzzle_case_size - d - 10) + "px";
-					e.style.lineHeight = (puzzle_case_size - d) + "px";
-					e.style.left = (coords[i].x * puzzle_case_size) + "px";
-					e.style.top = (coords[i].y * puzzle_case_size) + "px";
-					puzzle.appendChild(e);
-				}
-				document.getElementById("game-screen").replaceChild(puzzle, document.getElementById("puzzle"));
 			}
 			
 			function start_game() {
+				// close modal windows
+				for (x of document.getElementsByClassName("modal")) {
+					if (!x.classList.contains("closed")) x.classList.add("closed");
+				}
+				document.getElementById("modal-overlay").classList.add("closed");
 				// Prevent user interaction
 				document.getElementById("overlay").classList.remove("closed");
 				//document.getElementById("overlay").style.cursor = "none";
@@ -458,6 +489,7 @@
 					x.style.opacity = "";
 				}
 				// TODO: get new puzzle
+				document.getElementById("puzzle").classList.remove("closed");
 				draw_puzzle();
 				hints = G.g.slice(0);
 				// Place free letters, if some
@@ -500,10 +532,14 @@
 			var hints = [];
 			
 			window.addEventListener("keypress", function (event) {
-				var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
-				c = String.fromCharCode(charCode).toUpperCase();
-				if ((ABC.indexOf(c) != -1) && (document.getElementById("L_" + c).classList.contains("pulse"))) {
-					handle_play(document.getElementById("L_" + c));				
+				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
+					start_game();
+				} else {
+					var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
+					c = String.fromCharCode(charCode).toUpperCase();
+					if ((ABC.indexOf(c) != -1) && (document.getElementById("L_" + c).classList.contains("pulse"))) {
+						handle_play(document.getElementById("L_" + c));				
+					}					
 				}
 			}, true);
 
@@ -512,8 +548,13 @@
 				draw_puzzle();
 			}, false);
 			
+			window.addEventListener("click", function() {
+				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
+					start_game();
+				} 
+			}, false);
+			
 			draw_keyboard();
-			start_game();
 			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
