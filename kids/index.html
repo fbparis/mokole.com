@@ -63,7 +63,8 @@
 		    /* Mokolé's style */
 		    body {
 			    font-family: Arial, Helvetica, sans-serif;
-			    background-color: white;
+			    /* preload cursor:active image */
+			    background: white url(img/tinified/hand2-64.png) no-repeat -9999px -9999px;
 			    color: black;
 			    margin: 0px;
 			    padding: 0px;
@@ -75,6 +76,12 @@
 			    -moz-user-select: none;
 			    -ms-user-select: none;
 			    user-select: none;
+		    }
+		    .clickable {
+			    cursor: url(img/tinified/hand1-64.png), pointer;
+		    }
+		    .clickable:active {
+			    cursor: url(img/tinified/hand2-64.png), pointer;
 		    }
 		    .main {
 			    position: absolute;
@@ -111,15 +118,16 @@
 			    background-size: contain;
 		    }
 		    .volume {
-			    background-color: transparent;
-			    background-position: center center;
-			    background-size: cover;
+				background-size: 100%;
+				background-image: url('img/tinified/sprite-volume.png');			    
 			    height: 54px;
 			    width: 54px;
 			    float: right;
 			    margin-left: -1em;
 			    margin-right: 1vmin;
 		    }
+		    .mute { background-position: 0% 100%; }
+		    .unmute { background-position: 0% 0%; }		    
 		    .mute:after, .unmute:after {
 			    opacity: 0;
 			    content: "";
@@ -218,49 +226,60 @@
 			    box-shadow: 2px 2px 1px 1px rgba(0,0,0,0.5);
 			    background-image: url(img/tinified/wood-bg-01.png);
 			    background-size: cover;			
-			}	
+			}
 		    .modal {}
 		    .modal-overlay {}
+		    #overlay { cursor: none; }
+		    .overlay {
+			    position: fixed;
+			    top: 0px;
+			    left: 0px;
+			    width: 100%;
+			    height: 100%;
+			    background-color: transparent;
+		    }
+		    #cursor {
+			    position: relative;
+			    width: 64px;
+			    height: 64px;
+			    background-image: url(img/tinified/hand1-64.png);
+			    background-size: 100%;
+			    top: 50%;
+			    left: 50%;
+			    transition: top 0.5s ease-in-out, left 0.5s ease-in-out, background-image 0.25s linear 0.5s;
+		    }
+		    .cursor-active { background-image: url(img/tinified/hand2-64.png) !important; }
 		    .closed { display: none; }
 		    /* data:// images */
-		    .unmute {
-			    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAA2CAMAAAC7m5rvAAAAw1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////BhC2fAAAAQHRSTlMAAQIDBAUGBwgNDg8bHCg/QEJDgoaJjI+UmJqbnZ6goqOlpqiqq62wsrW3ubq8vsDBw8XHyMrOz9HT1dfc6Pf5fnLlWQAAAVZJREFUSMft1llTwjAUhuEvoVD3BRU3QEEEBRVEUBGX9///Ki/aUnQE0ox6xbk8k2em05wl0jL+NszGqodae4UTk1m9AWx5Kba9FDteKhubqEwsVVnYlMrAppU7+6ImzATTZwoLVMJMeTDlwvHBfBUzU4b+xIUj2J+rImbKAL3YFZ4B9iQV7z74OSJ2BkA3J0n5RwBOjXaZGfFH1gG4zUn5IQAVI3UXMZlLADo2GABwbiS9L2SyVwC0+wDUjSSxmMm202Qjal4XptxNkmtauTPl4l/QipUjs50odWGyMHud5GrGndlWmqxGzuUCmgD0npISkdN1NyIVRAXJsZEciqsGwH2QFDJHklTszi/lKpC0TjgC4NC1cR7ixglfAEqObTrIp839Xc0eCsN8emZlXPqlEeQ78HzHq+8w910dvovKdy36LmHflR89MCqZHxiS3VzXMv4hPgEvltJO8qMzAwAAAABJRU5ErkJggg==);  
-		    }
-		    .mute {
-			    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAA2CAMAAAC7m5rvAAABd1BMVEUAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8nBBy9AAAAfHRSTlMAAQIDBAUGBwgJCwwNDg8QERIUFRYXGRobHB4fICEjJikqKy4wMTM0Nz9ARUZJS0xNTk9VVldYWVxdXl9hZmdpa3V4eXt+gIOFhomLjo+RkpWXnqKjpaaoq62vsrS1t7m+wMHDxcfOz9PV19nc3uDi5Obo6+3v8fX3+fv9lGHyFQAAAi9JREFUSMft1dlTE0EQgPFvJQER4xHxRuOFR1S8T1QUVBAUBDGKt4AXGkXBg+T7433YFElWZFJl+UY/9s6vaqdnugdW4j9Hn853JJPZkBpQ/ZRI5so9DSiN6pI7y3qiAZVgLbPq1rBKMLIl/ZIKqiTjuDoQVDUsPXEWoKBuC6kqyxb1INBW1smQqrKb6s824Lq6K6BqfvKB+hRIl/RJQFXYGiD1We0EetU1y6uY5cqHgJz6DtionlpeGQG7yy5kgDF1NzCj0wCte4/k8/l8Pj/sUmxLWZ8Bm9U7wCU1BUfL/jUigC41B0zprwg61F00lwyw6LM+Bo6pmyClnqTDEKNLbYb1ah6Y1V4OhNkGdQ9Q0h7gkU7QGWYs6BlgWkfjk3vbEJvRPuC+TgDXdLYh9kyHgH59BZzXhYbYtPYDt/U5cE7nG2JzcS1GdBy4qh8bYalK5V/rbeCGTrIvzHJqtlrQcR0mG2Z39RuwTt0LFPUKTIbYevUKcFRdDU3qYUj3fViWRS/1VzPwRt8DO9RMbbtlfyzFTqunK8svABf1e32b/uEiICo4AfBCXRtfmeSoTLq4cW6lKjsbA7LGTb6cq06u9pLaHg+O78lhnXSL3zNfje9lq3r+zzlZ7xbZiDqXBoZ0YcnHo9YtsqgQH/V2tRsCrrqJqHAZaJrR4ipCrmbvEcC9yv0KuETJutVeCLp6tl+digi6cn0yKlhsgaAbTCSj0QyBWDv4sCsKLVqJf47f8Z/mmwn61vcAAAAASUVORK5CYII=);
-		    }
-		    .clickable {
-			    cursor: url(data:image/png;base64,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), pointer;
-		    }
-		    .clickable:active {
-			    cursor: url(data:image/png;base64,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), pointer;
-		    }
 		    .yellow-star {
 			    content: url(data:image/png;base64,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);
 		    }
 		</style>
 	</head>
 	<body>
-		<div class="main clickable">
-			<div class="topbar">
-				<h1 class="logo">MOKOLÉ Kids</h1>
-				<div id="toggle-sound" class="volume mute pulse" onclick="toggle_sound(this);"></div>
-			</div>
-			<div id="screen-container" class="screen-container">
-				<div id="welcome-screen" class="screen closed"></div>
-				<div id="game-screen" class="screen playground">
-					<div id="puzzle"></div>
-					<div id="keyboard"></div>
+		<div class="clickable">
+			<div class="main">
+				<div class="topbar">
+					<h1 class="logo">MOKOLÉ Kids</h1>
+					<div id="toggle-sound" class="volume mute pulse" onclick="toggle_sound(this);"></div>
 				</div>
-				<div id="share-screen" class="screen closed"></div>
+				<div id="screen-container" class="screen-container">
+					<div id="welcome-screen" class="screen closed"></div>
+					<div id="game-screen" class="screen playground">
+						<div id="puzzle"></div>
+						<div id="keyboard"></div>
+					</div>
+					<div id="share-screen" class="screen closed"></div>
+				</div>
 			</div>
+			<div id="help-window" class="modal closed"></div>
+			<div id="ace-score" class="modal closed"></div>
+			<div id="champion-score" class="modal closed"></div>
+			<div id="average-score" class="modal closed"></div>
+			<div id="bad-score" class="modal closed"></div>
+			<div id="modal-overlay" class="overlay modal-overlay closed"></div>
+			<div id="overlay" class="overlay closed"><div id="cursor"></div></div>
 		</div>
-		<div id="help-window" class="modal closed"></div>
-		<div id="ace-score" class="modal closed"></div>
-		<div id="champion-score" class="modal closed"></div>
-		<div id="average-score" class="modal closed"></div>
-		<div id="bad-score" class="modal closed"></div>
-		<div id="modal-overlay" class="modal-overlay closed"></div>
 		<script type="text/javascript">
 			// Generate initial keyboard in playground screen			
 			var ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -429,7 +448,9 @@
 			}
 			
 			function start_game() {
-				//  reset keyboard
+				// Prevent user interaction
+				document.getElementById("overlay").classList.remove("closed");
+				// reset keyboard
 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.style.color = "";
 					x.style.transform = "";
@@ -437,19 +458,45 @@
 				}
 				// TODO: get new puzzle
 				draw_puzzle();
-				// TODO: place free letters
-				// 1) get cursor location, 2) remove cursor, 3) activate fake cursor, 4) loop on G.g to fake click hints, 5) get cursor location, 6) move and remove fake cursor
-				// activate keyboard
-				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
-					if (!x.style.transform) {
-						x.classList.add("pulse");						
+				hints = G.g.slice(0);
+				// Place free letters, if some
+				start_game_animation();
+			}
+			
+			function start_game_animation() {
+				cursor = document.getElementById("cursor");
+				if (hints.length) {
+					hint = hints.pop();
+					dest = document.getElementById("L_" + hint).getBoundingClientRect();
+					console.log(dest);
+					cursor.style.left = dest.left + dest.width / 2 + "px";
+					cursor.style.top = dest.top + dest.height / 2 + "px";
+					cursor.classList.add("cursor-active");
+					setTimeout(start_game_animation_click, 800, document.getElementById("L_" + hint));
+				} else {
+					// activate keyboard
+					for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+						if (!x.style.transform) {
+							x.classList.add("pulse");						
+						}
 					}
+					// Remove overlay
+					cursor.style.top = "";
+					cursor.style.left = "";	
+					document.getElementById("overlay").classList.add("closed");
 				}
 			}
 			
+			function start_game_animation_click(e) {
+				document.getElementById("cursor").classList.remove("cursor-active");
+				handle_play(e);
+				setTimeout(start_game_animation, 1500);
+			}
+						
 			var G = {'c': {'A': '9', 'C': '0', 'B': '7', 'E': '2', 'G': '11', 'I': '1', 'H': '5', 'L': '4', 'O': '6', 'R': '10', 'V': '3', 'Z': '8'}, 'g': ['Z', 'B'], 'h': 7, 'k': ['10_6', '6_2', '2_5', '8_5', '7_2', '5_5', '8_1', '7_6', '4_4', '2_2', '8_6', '5_4', '8_0', '8_2', '0_4', '1_4', '2_3', '4_2', '9_6', '5_3', '8_3', '9_2', '3_4', '5_2', '2_4', '8_4'], 'w': 11, 'v': ['L', 'H', 'O', 'L', 'I', 'C', 'B', 'O', 'G', 'Z', 'E', 'E', 'A', 'E', 'G', 'A', 'E', 'C', 'I', 'V', 'I', 'R', 'A', 'A', 'R', 'L']}; //{'h': 7, 'k': ['1_2', '5_4', '1_3', '3_3', '1_5', '5_6', '5_5', '3_2', '1_4', '2_0', '0_5', '2_5', '2_2', '4_5', '4_2', '1_0', '4_0', '3_0', '1_1', '6_5', '3_5'], 'c': {'E': '10', 'D': '9', 'I': '7', 'K': '4', 'J': '3', 'M': '6', 'L': '8', 'O': '2', 'S': '0', 'R': '1', 'U': '5', 'T': '11'}, 'w': 7, 'v': ['K', 'J', 'O', 'E', 'E', 'U', 'E', 'D', 'L', 'O', 'L', 'T', 'I', 'R', 'S', 'M', 'S', 'T', 'O', 'S', 'T']};
 			var sounds = true;
 			var playing = null;
+			var hints = [];
 			
 			window.addEventListener("keypress", function (event) {
 				var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
@@ -465,7 +512,7 @@
 			}, false);
 			
 			draw_keyboard();
-			draw_puzzle();
+			start_game();
 			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
