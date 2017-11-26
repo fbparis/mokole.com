@@ -246,6 +246,10 @@
 			    min-width: 80vmin;
 			    transition: opacity 2s ease-in;
 		    }
+		    #loading, #panic {
+			    font-family: Arial, Helvetica, sans-serif;
+			    font-weight: normal;
+		    }
 		    .red { color: rgb(218, 11, 44); }
 		    .yellow { color: rgb(238, 172, 41); }
 		    .green { color: rgb(23, 159, 59); }
@@ -292,7 +296,16 @@
 					</div>
 				</div>
 			</div>
-			<div id="welcome" class="modal">
+			<div id="loading" class="modal">
+				<h2>Chargement en cours...</h2>
+				<p><img src="img/tinified/loading.apng"></p>
+				<p>Merci de patienter pendant le chargement des grilles !</p>
+			</div>
+			<div id="panic" class="modal closed">
+				<h2>Une erreur est survenue !</h2>
+				<p>Impossible de charger les grilles, veuillez réessayer plus tard.</p>
+			</div>
+			<div id="welcome" class="modal closed">
 				<h2><span class="red">B</span><span class="yellow">i</span><span class="green">e</span><span class="pink">n</span><span class="blue">v</span><span class="red">e</span><span class="yellow">n</span><span class="green">u</span><span class="pink">e</span> <span class="blue">à</span> <span class="red">M</span><span class="yellow">o</span><span class="green">k</span><span class="pink">o</span><span class="blue">l</span><span class="red">é</span> <span class="yellow">!</span></h2>
 				<p>Tu dois deviner tous les mots de la grille en associant une lettre à chaque couleur.</p>
 				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour commencer.</p>
@@ -318,8 +331,8 @@
 				<p>Oups, tu as fait beaucoup d'erreurs, essayes encore une fois.</p>
 				<p>Clique n'importe où, touche l'écran ou appuie sur une touche pour faire une autre partie.</p>
 			</div>
-			<div id="modal-overlay" class="overlay"></div>
-			<div id="overlay" class="overlay closed"><div id="cursor"></div></div>
+			<div id="modal-overlay" class="overlay closed"></div>
+			<div id="overlay" class="overlay"><div id="cursor" class="closed"></div></div>
 		</div>
 		<script type="text/javascript">
 			// Generate initial keyboard in playground screen			
@@ -512,7 +525,10 @@
 					x.style.transform = "";
 					x.style.opacity = "";
 				}
-				// TODO: get new puzzle
+				// Get new puzzle
+				G = datas[currentGrid];
+				currentGrid = (currentGrid + 1) % datas.length;
+				reloadJSON = currentGrid == 0;
 				document.getElementById("puzzle").classList.remove("closed");
 				draw_puzzle();
 				hints = G.g.slice(0);
@@ -570,6 +586,52 @@
 				document.getElementById(id).classList.remove("closed");
 				document.getElementById("modal-overlay").classList.remove("closed");
 			}
+			
+			function welcome() {
+				show_modal("welcome");				
+			}
+			
+			function load_puzzles(f) {
+				document.getElementById("overlay").classList.remove("closed");
+				document.getElementById("loading").classList.remove("closed");
+				loadJSON(function(response) {
+					json = JSON.parse(response);
+					if (json.buildOn != lastBuild) {
+						lastBuild = json.buildOn;
+						currentGrid = 0;
+						datas = json.d;
+						shuffle(datas);
+					}
+					document.getElementById("loading").classList.add("closed");
+					if (datas.length > 0) {	
+						f();
+					} else {
+						document.getElementById("panic").classList.remove("closed");
+					}
+				});
+			}
+			
+			function shuffle(a) {
+				var j, x, i;
+				for (i = a.length; i; i--) {
+					j = Math.floor(Math.random() * i);
+					x = a[i - 1];
+					a[i - 1] = a[j];
+					a[j] = x;
+				}
+			}
+			
+			function loadJSON(callback) {   
+				var xobj = new XMLHttpRequest();
+				xobj.overrideMimeType("application/json");
+				xobj.open('GET', 'mokole-kids.json', true); 
+				xobj.onreadystatechange = function () {
+					if (xobj.readyState == 4 && xobj.status == "200") {
+						callback(xobj.responseText);
+					}
+				};
+				xobj.send(null);  
+			}			
 						
 			var G = {'c': {'A': '9', 'C': '0', 'B': '7', 'E': '2', 'G': '11', 'I': '1', 'H': '5', 'L': '4', 'O': '6', 'R': '10', 'V': '3', 'Z': '8'}, 'g': ['Z', 'B'], 'h': 7, 'k': ['10_6', '6_2', '2_5', '8_5', '7_2', '5_5', '8_1', '7_6', '4_4', '2_2', '8_6', '5_4', '8_0', '8_2', '0_4', '1_4', '2_3', '4_2', '9_6', '5_3', '8_3', '9_2', '3_4', '5_2', '2_4', '8_4'], 'w': 11, 'v': ['L', 'H', 'O', 'L', 'I', 'C', 'B', 'O', 'G', 'Z', 'E', 'E', 'A', 'E', 'G', 'A', 'E', 'C', 'I', 'V', 'I', 'R', 'A', 'A', 'R', 'L']}; //{'h': 7, 'k': ['1_2', '5_4', '1_3', '3_3', '1_5', '5_6', '5_5', '3_2', '1_4', '2_0', '0_5', '2_5', '2_2', '4_5', '4_2', '1_0', '4_0', '3_0', '1_1', '6_5', '3_5'], 'c': {'E': '10', 'D': '9', 'I': '7', 'K': '4', 'J': '3', 'M': '6', 'L': '8', 'O': '2', 'S': '0', 'R': '1', 'U': '5', 'T': '11'}, 'w': 7, 'v': ['K', 'J', 'O', 'E', 'E', 'U', 'E', 'D', 'L', 'O', 'L', 'T', 'I', 'R', 'S', 'M', 'S', 'T', 'O', 'S', 'T']};
 			var sounds = true;
@@ -577,10 +639,18 @@
 			var hints = [];
 			var good_count = 0;
 			var wrong_count = 0;
+			var reloadJSON = true;
+			var currentGrid = 0;
+			var datas = null;
+			var lastBuild = null;
 			
 			window.addEventListener("keypress", function (event) {
 				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
-					start_game();
+					if (reloadJSON) {
+						load_puzzles(start_game)
+					} else {
+						start_game();						
+					}
 				} else {
 					var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
 					c = String.fromCharCode(charCode).toUpperCase();
@@ -597,11 +667,21 @@
 			
 			window.addEventListener("click", function() {
 				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
-					start_game();
+					if (reloadJSON) {
+						load_puzzles(start_game)
+					} else {
+						start_game();						
+					}
 				} 
 			}, false);
 			
 			draw_keyboard();
+			
+			if (reloadJSON) {
+				load_puzzles(welcome);
+			} else {
+				welcome();
+			} 
 			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
