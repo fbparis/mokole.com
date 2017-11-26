@@ -542,6 +542,8 @@
 				hints = G.g.slice(0);
 				good_count = 0;
 				wrong_count = 0;
+				// Unhide cursor
+				document.getElementById("cursor").classList.remove("closed");
 				// Place free letters, if some
 				start_game_animation();
 			}
@@ -562,9 +564,10 @@
 							x.classList.add("pulse");						
 						}
 					}
-					// Remove overlay
+					// Remove overlay and hide cursor
 					cursor.style.top = "";
-					cursor.style.left = "";	
+					cursor.style.left = "";
+					cursor.classList.add("closed");
 					//document.getElementById("overlay").style.cursor = "";
 					document.getElementById("overlay").classList.add("closed");
 				}
@@ -612,7 +615,7 @@
 					}
 					document.getElementById("loading").classList.add("closed");
 					if (datas.length > 0) {	
-						document.getElementById("overlay").classList.remove("closed");
+						document.getElementById("overlay").classList.add("closed");
 						reloadJSON = false;		
 						f();
 					} else {
