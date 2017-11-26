@@ -229,7 +229,6 @@
 			}
 		    .modal {}
 		    .modal-overlay {}
-		    #overlay { cursor: none; }
 		    .overlay {
 			    position: fixed;
 			    top: 0px;
@@ -450,6 +449,7 @@
 			function start_game() {
 				// Prevent user interaction
 				document.getElementById("overlay").classList.remove("closed");
+				//document.getElementById("overlay").style.cursor = "none";
 				// reset keyboard
 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.style.color = "";
@@ -482,6 +482,7 @@
 					// Remove overlay
 					cursor.style.top = "";
 					cursor.style.left = "";	
+					//document.getElementById("overlay").style.cursor = "";
 					document.getElementById("overlay").classList.add("closed");
 				}
 			}
