@@ -507,13 +507,21 @@
 					document.getElementById("game-screen").replaceChild(puzzle, document.getElementById("puzzle"));
 				}
 			}
-			
-			function start_game() {
+
+			function new_game() {
 				// Close modal windows
 				for (x of document.getElementsByClassName("modal")) {
 					if (!x.classList.contains("closed")) x.classList.add("closed");
 				}
 				document.getElementById("modal-overlay").classList.add("closed");
+				if (reloadJSON) {
+					load_puzzles(start_game);
+				} else {
+					start_game();
+				}							
+			}
+			
+			function start_game() {
 				// Prevent user interaction
 				document.getElementById("overlay").classList.remove("closed");
 				// Play starting sound
@@ -604,6 +612,7 @@
 					}
 					document.getElementById("loading").classList.add("closed");
 					if (datas.length > 0) {	
+						document.getElementById("overlay").classList.remove("closed");		
 						f();
 					} else {
 						document.getElementById("panic").classList.remove("closed");
@@ -646,11 +655,7 @@
 			
 			window.addEventListener("keypress", function (event) {
 				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
-					if (reloadJSON) {
-						load_puzzles(start_game)
-					} else {
-						start_game();						
-					}
+					new_game();
 				} else {
 					var charCode = (typeof event.which == "number") ? event.which : event.keyCode;
 					c = String.fromCharCode(charCode).toUpperCase();
@@ -667,11 +672,7 @@
 			
 			window.addEventListener("click", function() {
 				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
-					if (reloadJSON) {
-						load_puzzles(start_game)
-					} else {
-						start_game();						
-					}
+					new_game();
 				} 
 			}, false);
 			
