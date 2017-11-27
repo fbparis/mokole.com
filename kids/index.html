@@ -383,7 +383,10 @@
 					play_sound("good-sound");
 					good_count += 1;
 					e.style.color = "rgb(23, 159, 59)";
-					for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
+					elts = document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML]);
+					for (i = 0; i < elts.length; i++) {
+						x = elts[i];
+// 					for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
 						x.innerHTML = e.innerHTML;
 						x.style.animation = "blink 1s ease-in-out 2";
 					}
@@ -516,7 +519,10 @@
 
 			function new_game() {
 				// Close modal windows
-				for (x of document.getElementsByClassName("modal")) {
+				elts = document.getElementsByClassName("modal");
+				for (i = 0; i < elts.length; i++) {
+					x = elts[i];
+// 				for (x of document.getElementsByClassName("modal")) {
 					if (!x.classList.contains("closed")) x.classList.add("closed");
 				}
 				document.getElementById("modal-overlay").classList.add("closed");
@@ -534,7 +540,10 @@
 				play_sound("newgame-sound");
 				//document.getElementById("overlay").style.cursor = "none";
 				// Reset keyboard
-				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+				elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
+				for (i = 0; i < elts.length; i++) {
+					x = elts[i];
+// 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.style.color = "";
 					x.style.transform = "";
 					x.style.opacity = "";
@@ -565,7 +574,10 @@
 					setTimeout(start_game_animation_click, 800, document.getElementById("L_" + hint));
 				} else {
 					// Activate keyboard
-					for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+					elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
+					for (i = 0; i < elts.length; i++) {
+						x = elts[i];
+// 					for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 						if (!x.style.transform) {
 							x.classList.add("pulse");						
 						}
@@ -587,7 +599,10 @@
 			
 			function end_game() {
 				// Freeze keyboard
-				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
+				elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
+				for (i = 0; i < elts.length; i++) {
+					x = elts[i];
+// 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.classList.remove("pulse");
 				}
 				// Play victory sound
