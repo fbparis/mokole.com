@@ -386,7 +386,6 @@
 					elts = document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML]);
 					for (i = 0; i < elts.length; i++) {
 						x = elts[i];
-// 					for (x of document.getElementById("puzzle").getElementsByClassName("c" + G.c[e.innerHTML])) {
 						x.innerHTML = e.innerHTML;
 						x.style.animation = "blink 1s ease-in-out 2";
 					}
@@ -522,7 +521,6 @@
 				elts = document.getElementsByClassName("modal");
 				for (i = 0; i < elts.length; i++) {
 					x = elts[i];
-// 				for (x of document.getElementsByClassName("modal")) {
 					if (!x.classList.contains("closed")) x.classList.add("closed");
 				}
 				document.getElementById("modal-overlay").classList.add("closed");
@@ -543,7 +541,6 @@
 				elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
 				for (i = 0; i < elts.length; i++) {
 					x = elts[i];
-// 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.style.color = "";
 					x.style.transform = "";
 					x.style.opacity = "";
@@ -577,7 +574,6 @@
 					elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
 					for (i = 0; i < elts.length; i++) {
 						x = elts[i];
-// 					for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 						if (!x.style.transform) {
 							x.classList.add("pulse");						
 						}
@@ -602,7 +598,6 @@
 				elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
 				for (i = 0; i < elts.length; i++) {
 					x = elts[i];
-// 				for (x of document.getElementById("keyboard").getElementsByClassName("keyboard-button")) {
 					x.classList.remove("pulse");
 				}
 				// Play victory sound
