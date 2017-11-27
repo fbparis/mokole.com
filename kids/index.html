@@ -132,36 +132,6 @@
 		    }
 		    .mute { background-position: 0% 100%; }
 		    .unmute { background-position: 0% 0%; }		    
-		    .mute:after, .unmute:after {
-			    opacity: 0;
-			    content: "";
-		    }
-		    .mute:active:after, .unmute:active:after, .mute:focus:after, .unmute:focus:after {
-			    content: "";
-			    opacity: 0;
-			    display: none;
-		    }
-		    .mute:hover:after, .unmute:hover:after {
-			    transition: opacity .3s linear 1s;
-			    -webkit-transition: opacity .3s linear 1s;
-			    color: rgb(255, 255, 255);
-			    color: rgba(255, 255, 255, 1);
-			    background-color: rgb(0, 0, 0);
-			    background-color: rgba(0, 0, 0, 1);
-			    position: absolute;
-			    white-space: nowrap;
-			    padding: 1ex 1em;
-			    opacity: 1;
-			    text-align: center;
-			    top: 64px;
-			    right: 20px;
-		    }
-		    .mute:hover:after {
-			    content: "Couper le son";
-		    }
-		    .unmute:hover:after {
-			    content: "Remettre le son";
-		    }
 		    .pulse:hover {
 			    animation: pulse .4s linear 2;
 			   -webkit-animation: pulse .4s linear 2;
