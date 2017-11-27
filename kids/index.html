@@ -771,9 +771,8 @@
 			// Improving audio
 			elts = document.getElementsByTagName("audio");
 			for (i = 0; i < elts.length; i++) {
-				elts[i].addEventListener("ended", function (e) {e.play(); e.pause();});
-				elts[i].play();
-				elts[i].pause();
+				elts[i].addEventListener("ended", function (e) {e.load();});
+				elts[i].load();
 			}
 			
 			if (reloadJSON) {
