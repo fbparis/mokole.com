@@ -35,18 +35,18 @@
 		    .screen-container, .topbar { z-index: 200; }
 		    .main { z-index: 100; }
 		    /* puzzle's cases styles */
-		    .c0 { background: radial-gradient(circle, rgba(227,35,34,1), rgba(227,35,34,0.6)); }
-		    .c1 { background: radial-gradient(circle, rgba(233,98,32,1), rgba(233,98,32,0.6)); }
-		    .c2 { background: radial-gradient(circle, rgba(242,142,28,1), rgba(242,142,28,0.6)); }
-		    .c3 { background: radial-gradient(circle, rgba(250,199,12,1), rgba(250,199,12,0.6)); }
-		    .c4 { background: radial-gradient(circle, rgba(243,229,0,1), rgba(243,229,0,0.6)); }
-		    .c5 { background: radial-gradient(circle, rgba(141,187,37,1), rgba(141,187,37,0.6)); }
-		    .c6 { background: radial-gradient(circle, rgba(0,143,90,1), rgba(0,143,90,0.6)); }
-		    .c7 { background: radial-gradient(circle, rgba(6,150,187,1), rgba(6,150,187,0.6)); }
-		    .c8 { background: radial-gradient(circle, rgba(42,113,175,1), rgba(42,113,175,0.6)); }
-		    .c9 { background: radial-gradient(circle, rgba(69,78,153,1), rgba(69,78,153,0.6)); }
-		    .c10 { background: radial-gradient(circle, rgba(109,57,139,1), rgba(109,57,139,0.6)); }
-		    .c11 { background: radial-gradient(circle, rgba(197,3,125,1), rgba(197,3,125,0.6)); }
+		    .c0 { background-color: rgb(227,35,34); background: radial-gradient(circle, rgba(227,35,34,1), rgba(227,35,34,0.6)); }
+		    .c1 { background-color: rgb(233,98,32); background: radial-gradient(circle, rgba(233,98,32,1), rgba(233,98,32,0.6)); }
+		    .c2 { background-color: rgb(242,142,28); background: radial-gradient(circle, rgba(242,142,28,1), rgba(242,142,28,0.6)); }
+		    .c3 { background-color: rgb(250,199,12); background: radial-gradient(circle, rgba(250,199,12,1), rgba(250,199,12,0.6)); }
+		    .c4 { background-color: rgb(243,229,0); background: radial-gradient(circle, rgba(243,229,0,1), rgba(243,229,0,0.6)); }
+		    .c5 { background-color: rgb(141,187,37); background: radial-gradient(circle, rgba(141,187,37,1), rgba(141,187,37,0.6)); }
+		    .c6 { background-color: rgb(0,143,90); background: radial-gradient(circle, rgba(0,143,90,1), rgba(0,143,90,0.6)); }
+		    .c7 { background-color: rgb(6,150,187); background: radial-gradient(circle, rgba(6,150,187,1), rgba(6,150,187,0.6)); }
+		    .c8 { background-color: rgb(42,113,175); background: radial-gradient(circle, rgba(42,113,175,1), rgba(42,113,175,0.6)); }
+		    .c9 { background-color: rgb(69,78,153); background: radial-gradient(circle, rgba(69,78,153,1), rgba(69,78,153,0.6)); }
+		    .c10 { background-color: rgb(109,57,139); background: radial-gradient(circle, rgba(109,57,139,1), rgba(109,57,139,0.6)); }
+		    .c11 { background-color: rgb(197,3,125); background: radial-gradient(circle, rgba(197,3,125,1), rgba(197,3,125,0.6)); }
 		    /* @declarations */
 			@keyframes pulse {
 				50% {
@@ -71,6 +71,7 @@
 			    color: black;
 			    margin: 0px;
 			    padding: 0px;
+				-webkit-tap-highlight-color: transparent;
 				-webkit-tap-highlight-color: rgba(0,0,0,0);
 			    /* unselectable text */
 			    -webkit-touch-callout: none;
@@ -143,7 +144,9 @@
 		    .mute:hover:after, .unmute:hover:after {
 			    transition: opacity .3s linear 1s;
 			    -webkit-transition: opacity .3s linear 1s;
+			    color: rgb(255, 255, 255);
 			    color: rgba(255, 255, 255, 1);
+			    background-color: rgb(0, 0, 0);
 			    background-color: rgba(0, 0, 0, 1);
 			    position: absolute;
 			    white-space: nowrap;
@@ -174,6 +177,7 @@
 			    width: 100%;
 			    top: 54px;
 			    bottom: 0px;
+			    box-shadow: 0px 6px 3px 3px rgb(0,0,0) inset;
 			    box-shadow: 0px 6px 3px 3px rgba(0,0,0,0.5) inset;
 		    }
 		    .screen {
@@ -201,7 +205,9 @@
 		    #puzzle > div {
 			    position: absolute;
 			    margin: 0px 1px 1px 0px;
+			    box-shadow: 1px 1px 1px 1px rgb(0,0,0);
 			    box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.5);
+			    color: rgb(255, 255, 255);
 			    color: rgba(255, 255, 255, 0.8);
 			    text-align: center;
 			    vertical-align: middle;
@@ -223,11 +229,13 @@
 				position: relative;
 				opacity: 1;
 			    margin: 0px 4px 4px 0px;
+			    color: rgb(255, 255, 255);
 			    color: rgba(255, 255, 255, 0.8);
 			    float: left;
 			    text-align: center;
 			    vertical-align: middle;
 			    font-weight: bold;
+			    box-shadow: 2px 2px 1px 1px rgb(0,0,0);
 			    box-shadow: 2px 2px 1px 1px rgba(0,0,0,0.5);
 			    background-image: url(img/tinified/wood-bg-01.png);
 			    background-size: cover;			
@@ -242,8 +250,10 @@
 			    transform: translateX(-50%);
 			    -webkit-transform: translateX(-50%);
 			    font-family: "Comic Sans MS", cursive, sans-serif;
+			    color: rgb(255, 255, 255);
 			    color: rgba(255, 255, 255, 0.8);
 			    padding: 1vmin 2vmin;
+			    box-shadow: 0px 6px 3px 3px rgb(0,0,0);
 			    box-shadow: 0px 6px 3px 3px rgba(0,0,0,0.5);
 			    border-radius: 16px;
 			    font-size: 4vmin;
