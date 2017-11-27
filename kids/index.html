@@ -680,41 +680,33 @@
 			            function update(fn) {
 			                return function(value) {
 			                    var classes = self.className.split(/\s+/),
-			                        index = classes.indexOf(value);
-			
+			                        index = classes.indexOf(value);			
 			                    fn(classes, index, value);
 			                    self.className = classes.join(" ");
 			                }
-			            }
-			
+			            }			
 			            var ret = {                    
 			                add: update(function(classes, index, value) {
 			                    ~index || classes.push(value);
-			                }),
-			
+			                }),			
 			                remove: update(function(classes, index) {
 			                    ~index && classes.splice(index, 1);
-			                }),
-			
+			                }),			
 			                toggle: update(function(classes, index, value) {
 			                    ~index ? classes.splice(index, 1) : classes.push(value);
-			                }),
-			
+			                }),			
 			                contains: function(value) {
 			                    return !!~self.className.split(/\s+/).indexOf(value);
-			                },
-			
+			                },			
 			                item: function(i) {
 			                    return self.className.split(/\s+/)[i] || null;
 			                }
-			            };
-			            
+			            };			            
 			            Object.defineProperty(ret, 'length', {
 			                get: function() {
 			                    return self.className.split(/\s+/).length;
 			                }
-			            });
-			
+			            });			
 			            return ret;
 			        }
 			    });
@@ -773,6 +765,7 @@
 			<source src="sound/newgame.mp3" type="audio/mpeg">
 		</audio>
 		<audio id="good-sound" onplaying="playing=this.id" onended="playing=null">
+			<source src="sound/good.aac" type="audio/aac">
 			<source src="sound/good.ogg" type="audio/ogg">
 			<source src="sound/good.mp3" type="audio/mpeg">
 		</audio>
