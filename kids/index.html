@@ -303,7 +303,7 @@
 			<div class="main">
 				<div class="topbar">
 					<h1 class="logo">MOKOLÉ Kids</h1>
-					<div id="toggle-sound" class="volume mute pulse" onclick="toggle_sound(this);"></div>
+					<div id="toggle-sound" class="volume unmute pulse" onclick="toggle_sound(this);"></div>
 				</div>
 				<div id="screen-container" class="screen-container">
 					<div id="game-screen" class="screen playground">
@@ -733,7 +733,7 @@
 			}
 
 			var G = null;						
-			var sounds = true;
+			var sounds = false;
 			var playing = null;
 			var hints = [];
 			var good_count = 0;
@@ -767,12 +767,6 @@
 			}, false);
 			
 			draw_keyboard();
-			
-			// Improving audio
-			elts = document.getElementsByTagName("audio");
-			for (i = 0; i < elts.length; i++) {
-				elts[i].addEventListener("ended", function (e) {e.currentTime = 0; });
-			}
 			
 			if (reloadJSON) {
 				load_puzzles(welcome);
