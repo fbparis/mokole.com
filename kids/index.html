@@ -578,7 +578,7 @@
 				// Get new puzzle
 				G = datas[currentGrid];
 				currentGrid = (currentGrid + 1) % datas.length;
-				reloadJSON = currentGrid == 0;
+				reloadJSON = reloadJSON || (currentGrid == 0);
 				document.getElementById("puzzle").classList.remove("closed");
 				draw_puzzle();
 				hints = G.g.slice(0);
@@ -652,17 +652,21 @@
 				document.getElementById("overlay").classList.remove("closed");
 				document.getElementById("loading").classList.remove("closed");
 				loadJSON(function(response) {
-					json = JSON.parse(response);
-					if (json.buildOn != lastBuild) {
-						lastBuild = json.buildOn;
-						currentGrid = 0;
-						datas = json.d;
-						shuffle(datas);
+					if (response == null) {
+						datas = [];
+					} else {
+						json = JSON.parse(response);
+						if (json.buildOn != lastBuild) {
+							reloadJSON = false;
+							lastBuild = json.buildOn;
+							currentGrid = 0;
+							datas = json.d;
+							shuffle(datas);
+						}						
 					}
 					document.getElementById("loading").classList.add("closed");
 					if (datas.length > 0) {	
 						document.getElementById("overlay").classList.add("closed");
-						reloadJSON = false;		
 						f();
 					} else {
 						document.getElementById("panic").classList.remove("closed");
@@ -685,8 +689,12 @@
 				xobj.overrideMimeType("application/json");
 				xobj.open('GET', 'mokole-kids.json', true); 
 				xobj.onreadystatechange = function () {
-					if (xobj.readyState == 4 && xobj.status == "200") {
-						callback(xobj.responseText);
+					if (xobj.readyState == 4) {
+						if (xobj.status == "200") {
+							callback(xobj.responseText);
+						} else {
+							callback(null);
+						}
 					}
 				};
 				xobj.send(null);  
