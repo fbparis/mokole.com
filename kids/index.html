@@ -657,7 +657,14 @@
 			function loadJSON(callback) {   
 				var xobj = new XMLHttpRequest();
 				xobj.overrideMimeType("application/json");
-				xobj.open('GET', 'mokole-kids.json', true); 
+				if (window.location.href.indexOf("?easy") != -1) {
+					json_url = "easy.json";
+				} else if (window.location.href.indexOf("?hard") != -1) {
+					json_url = "hard.json";
+				} else {
+					json_url = "mokole-kids.json";
+				}
+				xobj.open('GET', json_url, true); 
 				xobj.onreadystatechange = function () {
 					if (xobj.readyState == 4) {
 						if (xobj.status == "200") {
