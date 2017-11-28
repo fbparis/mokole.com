@@ -732,12 +732,18 @@
 			}
 			
 			function init_audio() {
-				sounds = true;
+				if ("mk_sounds" in localStorage) {
+					sounds = JSON.parse(localStorage.getItem("mk_sounds"));
+				} else sounds = true;
 				player.removeAttribute("muted");
 				player.muted = false;
 				x = document.getElementById("toggle-sound");
 				x.addEventListener("click", function () { toggle_sound(this); }, false);
 				x.classList.remove("closed");
+				if (!sounds) {
+					x.classList.add("unmute");
+					x.classList.remove("mute");
+				}
 			}
 			
 			function fix_audio() {
@@ -774,9 +780,6 @@
 				if ("mk_currentGrid" in localStorage) currentGrid = Number(localStorage.getItem("mk_currentGrid"));
 				if ("mk_datas" in localStorage) datas = JSON.parse(localStorage.getItem("mk_datas"));
 				if ("mk_lastBuild" in localStorage) lastBuild = localStorage.getItem("mk_lastBuild")
-				if ("mk_sounds" in localStorage) {
-					audioIsLoaded = !JSON.parse(localStorage.getItem("mk_sounds"));
-				}
 			}
 			
 			window.addEventListener("keypress", function (event) {
