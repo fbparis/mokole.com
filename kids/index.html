@@ -531,6 +531,10 @@
 				G = datas[currentGrid];
 				currentGrid = (currentGrid + 1) % datas.length;
 				reloadJSON = reloadJSON || (currentGrid == 0);
+				if (localStorage) {
+					localStorage.setItem("mk_currentGrid", currentGrid);
+					if (reloadJSON) localStorage.setItem("mk_reloadJSON", JSON.stringify(true));		
+				} 
 				document.getElementById("puzzle").classList.remove("closed");
 				draw_puzzle();
 				hints = G.g.slice(0);
@@ -605,7 +609,7 @@
 				document.getElementById("loading").classList.remove("closed");
 				loadJSON(function(response) {
 					if (response == null) {
-						datas = [{"c": {"A": "4", "C": "2", "E": "9", "I": "1", "L": "10", "O": "7", "N": "6", "S": "3", "R": "11", "U": "5", "V": "0", "Y": "8"}, "g": ["A", "C", "Y", "I"], "h": 6, "k": ["7_3", "9_1", "3_0", "6_2", "9_4", "9_0", "3_3", "8_1", "6_3", "5_3", "6_4", "3_2", "0_0", "9_3", "1_0", "3_5", "8_3", "9_2", "6_1", "3_1", "2_0", "4_3", "3_4"], "w": 10, "v": ["Y", "U", "S", "I", "E", "S", "E", "A", "O", "V", "N", "L", "V", "R", "O", "L", "E", "C", "L", "O", "U", "N", "I"]}];
+						// do nothing
 					} else {
 						json = JSON.parse(response);
 						if (json.buildOn != lastBuild) {
@@ -614,6 +618,12 @@
 							currentGrid = 0;
 							datas = json.d;
 							shuffle(datas);
+							if (localStorage) {
+								localStorage.setItem("mk_reloadJSON", JSON.stringify(false));
+								localStorage.setItem("mk_lastBuild", lastBuild);
+								localStorage.setItem("mk_currentGrid", 0);
+								localStorage.setItem("mk_datas", JSON.stringify(datas));
+							}
 						}						
 					}
 					document.getElementById("loading").classList.add("closed");
@@ -755,6 +765,16 @@
 			var loadedAudioFiles = [];
 			var audioIsLoaded = false;
 			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+			
+			if (localStorage) {
+				if ("mk_reloadJSON" in localStorage) reloadJSON = JSON.parse(localStorage.getItem("mk_reloadJSON"));
+				if ("mk_currentGrid" in localStorage) currentGrid = Number(localStorage.getItem("mk_currentGrid"));
+				if ("mk_datas" in localStorage) datas = JSON.parse(localStorage.getItem("mk_datas"));
+				if ("mk_lastBuild" in localStorage) lastBuild = localStorage.getItem("mk_lastBuild")
+				if ("mk_sounds" in localStorage) {
+					audioIsLoaded = !JSON.parse(localStorage.getItem("mk_sounds"));
+				}
+			}
 			
 			window.addEventListener("keypress", function (event) {
 				fix_audio();
