@@ -273,7 +273,7 @@
 			<div class="main">
 				<div class="topbar">
 					<h1 class="logo">MOKOLÉ Kids</h1>
-					<div id="toggle-sound" class="volume unmute"></div>
+					<div id="toggle-sound" class="volume mute pulse closed"></div>
 				</div>
 				<div id="screen-container" class="screen-container">
 					<div id="game-screen" class="screen playground">
@@ -721,10 +721,8 @@
 				player.removeAttribute("muted");
 				player.muted = false;
 				x = document.getElementById("toggle-sound");
-				x.classList.add("mute");
-				x.classList.remove("unmute");
 				x.addEventListener("click", function () { toggle_sound(this); }, false);
-				x.classList.add("pulse");
+				x.classList.remove("closed");
 			}
 			
 			var G = null;						
