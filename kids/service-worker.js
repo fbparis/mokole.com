@@ -5,7 +5,7 @@ console.log('WORKER: executing.');
 /* A version number is useful when updating the worker logic,
    allowing you to remove outdated cache entries during the update.
 */
-var version = 'v1.6::';
+var version = 'v1.7::';
 
 /* These resources will be downloaded and cached by the service worker
    during the installation process. If any resource fails to be downloaded,
@@ -16,7 +16,7 @@ var offlineFundamentals = [
 	"favicon.ico",
 	"img/tinified/hand1-64.png",
 	"img/tinified/hand2-64.png",
-	"img/tinified/loading.apng",
+	"img/tinified/loading.png",
 	"img/tinified/mokole-kids.png",
 	"img/tinified/sprite-volume.png",
 	"img/tinified/wood-bg-01.png",
