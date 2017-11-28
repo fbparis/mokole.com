@@ -701,9 +701,10 @@
 			
 			function preload_audio(id) {
 				var audio = new Audio();
-				console.log(id, audioFiles[id]);
+				console.log(audioFiles[id]);
 				audio.addEventListener("canplaythrough", loaded_audio, false);
 				audio.src = audioFiles[id];
+				console.log(audio.readyState);
 			}
 			
 			function loaded_audio() {
@@ -763,12 +764,6 @@
 			}, false);
 			
 			window.addEventListener("click", function() {
-				if (iOS) {
-					iOS = false;
-					for (id in audioFiles) {
-						preload_audio(id);
-					}
-				}
 				if (!document.getElementById("modal-overlay").classList.contains("closed")) {
 					new_game();
 				} 
