@@ -354,6 +354,9 @@
 					e.classList.add("unmute");
 					sounds = false;
 				}
+				if (localStorage) {
+					localStorage.setItem("mk_sounds", JSON.stringify(sounds));
+				}
 			}
 			
 			function handle_play(e) {
