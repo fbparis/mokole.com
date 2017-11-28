@@ -701,13 +701,14 @@
 			
 			function preload_audio(id) {
 				var audio = new Audio();
+				console.log(id, audioFiles[id]);
 				audio.addEventListener("canplaythrough", loaded_audio, false);
 				audio.src = audioFiles[id];
 			}
 			
 			function loaded_audio() {
 				loadedAudio += 1;
-				if (loadedAudio == audioFiles.length) {
+				if (loadedAudio == 4) {
 					init_audio();
 				}
 			}
@@ -717,7 +718,7 @@
 				x = document.getElementById("toggle-sound");
 				x.classList.add("mute");
 				x.classList.remove("unmute");
-				x.addEventListener("click", toggle_sound, false);
+				x.addEventListener("click", function () { toggle_sound(this); }, false);
 				x.classList.add("pulse");
 			}
 			
