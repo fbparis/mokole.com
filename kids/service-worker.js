@@ -1,6 +1,6 @@
 var version = "v1.3::";
 
-self.addEventListener("install", function (e) {
+self.addEventListener("install", function (event) {
 	console.log("worker: install event fired.");
 	event.waitUntil(
 		caches.open(version + "mk").then(function (cache) {
@@ -24,11 +24,11 @@ self.addEventListener("install", function (e) {
 // 	return self.skipWaiting();
 });
 
-self.addEventListener("fetch", function (e) {
+self.addEventListener("fetch", function (event) {
 	console.log("worker: fetch event fired.");
 });
 
-self.addEventListener("activate", function (e) {
+self.addEventListener("activate", function (event) {
 	console.log("worker: activate event fired.");
 	event.waitUntil(
 		caches.keys().then(function (keys) {
