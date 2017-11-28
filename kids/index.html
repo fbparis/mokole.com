@@ -701,16 +701,17 @@
 			
 			function preload_audio(id) {
 				var audio = new Audio();
-				console.log(audioFiles[id]);
-				audio.addEventListener("canplaythrough", loaded_audio, false);
+				audio.addEventListener("canplaythrough", function () { loaded_audio(id); }, false);
+				audio.addEventListener("load", function () { loaded_audio(id); }, false);
 				audio.src = audioFiles[id];
-				console.log(audio.readyState);
 			}
 			
-			function loaded_audio() {
-				console.log("loaded audio !");
-				loadedAudio += 1;
-				if (loadedAudio == 4) {
+			function loaded_audio(id) {
+				console.log("loaded audio " + id);
+				if (loadedAudio.indexOf(id) == -1) {
+					loadedAudio.push(id);
+				}
+				if (loadedAudio.length == 4) {
 					init_audio();
 				}
 			}
@@ -743,7 +744,7 @@
 				wrong: "sound/wrong.mp3",
 				win: "sound/win.mp3"
 			};
-			var loadedAudio = 0;
+			var loadedAudio = [];
 			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 			
 			window.addEventListener("keypress", function (event) {
