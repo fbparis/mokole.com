@@ -320,7 +320,7 @@
 			<div id="modal-overlay" class="overlay closed"></div>
 			<div id="overlay" class="overlay"><div id="cursor" class="closed"></div></div>
 		</div>
-		<audio id="player"></audio>
+		<audio id="player" muted></audio>
 		<script type="text/javascript">
 			// Generate initial keyboard in playground screen			
 			var ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -605,7 +605,7 @@
 				document.getElementById("loading").classList.remove("closed");
 				loadJSON(function(response) {
 					if (response == null) {
-						datas = [];
+						datas = [{"c": {"A": "4", "C": "2", "E": "9", "I": "1", "L": "10", "O": "7", "N": "6", "S": "3", "R": "11", "U": "5", "V": "0", "Y": "8"}, "g": ["A", "C", "Y", "I"], "h": 6, "k": ["7_3", "9_1", "3_0", "6_2", "9_4", "9_0", "3_3", "8_1", "6_3", "5_3", "6_4", "3_2", "0_0", "9_3", "1_0", "3_5", "8_3", "9_2", "6_1", "3_1", "2_0", "4_3", "3_4"], "w": 10, "v": ["Y", "U", "S", "I", "E", "S", "E", "A", "O", "V", "N", "L", "V", "R", "O", "L", "E", "C", "L", "O", "U", "N", "I"]}];
 					} else {
 						json = JSON.parse(response);
 						if (json.buildOn != lastBuild) {
@@ -707,6 +707,7 @@
 			}
 			
 			function loaded_audio() {
+				console.log("loaded audio !");
 				loadedAudio += 1;
 				if (loadedAudio == 4) {
 					init_audio();
@@ -715,6 +716,8 @@
 			
 			function init_audio() {
 				sounds = true;
+				player.removeAttribute("muted");
+				player.muted = false;
 				x = document.getElementById("toggle-sound");
 				x.classList.add("mute");
 				x.classList.remove("unmute");
