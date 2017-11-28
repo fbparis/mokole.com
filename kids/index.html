@@ -732,7 +732,7 @@
 			}
 			
 			function init_audio() {
-				if ("mk_sounds" in localStorage) {
+				if (localStorage && ("mk_sounds" in localStorage)) {
 					sounds = JSON.parse(localStorage.getItem("mk_sounds"));
 				} else sounds = true;
 				player.removeAttribute("muted");
