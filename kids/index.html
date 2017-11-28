@@ -704,6 +704,7 @@
 				audio.addEventListener("canplaythrough", function () { loaded_audio(id); }, false);
 				audio.addEventListener("load", function () { loaded_audio(id); }, false);
 				audio.src = audioFiles[id];
+				if (audio.readyState == 4) loaded_audio(id);
 			}
 			
 			function loaded_audio(id) {
