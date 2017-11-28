@@ -1,0 +1,19 @@
+CACHE MANIFEST
+# VERSION 1::
+index.html
+favicon.ico
+img/tinified/hand1-64.png
+img/tinified/hand2-64.png
+img/tinified/loading.apng
+img/tinified/mokole-kids.png
+img/tinified/sprite-volume.png
+img/tinified/wood-bg-01.png
+img/tinified/wood-bg-02.png
+img/tinified/wood-bg-03.png
+sound/newgame.mp3
+sound/good.mp3
+sound/wrong.mp3
+sound/win.mp3
+
+NETWORK:
+mokole-kids.json
