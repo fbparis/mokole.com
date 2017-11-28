@@ -630,7 +630,7 @@
 						}						
 					}
 					document.getElementById("loading").classList.add("closed");
-					if (datas.length > 0) {	
+					if (datas && (datas.length > 0)) {	
 						document.getElementById("overlay").classList.add("closed");
 						f();
 					} else {
