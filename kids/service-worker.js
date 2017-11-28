@@ -1,4 +1,4 @@
-var version = "v1.3::";
+var version = "v1.4::";
 
 self.addEventListener("install", function (event) {
 	console.log("worker: install event fired.");
@@ -33,7 +33,7 @@ self.addEventListener("activate", function (event) {
 	event.waitUntil(
 		caches.keys().then(function (keys) {
 			return Promise.all(
-				keys.filter(function (key) { return !key.startWith(version); }).map(function (key) {
+				keys.filter(function (key) { return !key.startsWith(version); }).map(function (key) {
 					return caches.delete(key);
 				})
 			)
