@@ -5,7 +5,7 @@ console.log('WORKER: executing.');
 /* A version number is useful when updating the worker logic,
    allowing you to remove outdated cache entries during the update.
 */
-var version = 'v1.7::';
+var version = 'v1.8::';
 
 /* These resources will be downloaded and cached by the service worker
    during the installation process. If any resource fails to be downloaded,
@@ -26,6 +26,12 @@ var offlineFundamentals = [
 	"sound/good.mp3",
 	"sound/wrong.mp3",
 	"sound/win.mp3"
+];
+
+var excludeFromCache = [
+	"easy.json",
+	"hard.json",
+	"mokole-kids.json"	
 ];
 
 /* The install event fires when the service worker is first installed.
@@ -71,7 +77,7 @@ self.addEventListener("fetch", function(event) {
   /* We should only cache GET requests, and deal with the rest of method in the
      client-side, by handling failed POST,PUT,PATCH,etc. requests.
   */
-  if (event.request.method !== 'GET') {
+  if ((event.request.method !== 'GET') || excludeFromCache.some(function(v) { return event.request.url.indexOf(v) >= 0; })) {
     /* If we don't block the event as shown below, then the request will go to
        the network as usual.
     */
