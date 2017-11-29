@@ -5,33 +5,35 @@ console.log('WORKER: executing.');
 /* A version number is useful when updating the worker logic,
    allowing you to remove outdated cache entries during the update.
 */
-var version = 'v1.8::';
+var version = 'v1.9::';
 
 /* These resources will be downloaded and cached by the service worker
    during the installation process. If any resource fails to be downloaded,
    then the service worker won't be installed either.
 */
 var offlineFundamentals = [
-	"index.html",
-	"favicon.ico",
-	"img/tinified/hand1-64.png",
-	"img/tinified/hand2-64.png",
-	"img/tinified/loading.png",
-	"img/tinified/mokole-kids.png",
-	"img/tinified/sprite-volume.png",
-	"img/tinified/wood-bg-01.png",
-	"img/tinified/wood-bg-02.png",
-	"img/tinified/wood-bg-03.png",
-	"sound/newgame.mp3",
-	"sound/good.mp3",
-	"sound/wrong.mp3",
-	"sound/win.mp3"
+	"/kids/",
+	"/kids/index.html",
+	"/kids/favicon.ico",
+	"/kids/img/tinified/hand1-64.png",
+	"/kids/img/tinified/hand2-64.png",
+	"/kids/img/tinified/loading.png",
+	"/kids/img/tinified/mokole-kids.png",
+	"/kids/img/tinified/sprite-volume.png",
+	"/kids/img/tinified/wood-bg-01.png",
+	"/kids/img/tinified/wood-bg-02.png",
+	"/kids/img/tinified/wood-bg-03.png",
+	"/kids/sound/newgame.mp3",
+	"/kids/sound/good.mp3",
+	"/kids/sound/wrong.mp3",
+	"/kids/sound/win.mp3",
+	"/kids/manifest.json"
 ];
 
 var excludeFromCache = [
-	"easy.json",
-	"hard.json",
-	"mokole-kids.json"	
+	"/kids/easy.json",
+	"/kids/hard.json",
+	"/kids/mokole-kids.json"	
 ];
 
 /* The install event fires when the service worker is first installed.
