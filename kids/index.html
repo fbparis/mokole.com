@@ -818,7 +818,7 @@
 			
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", function () {
-					navigator.serviceWorker.register("/kids/service-worker.js").then(
+					navigator.serviceWorker.register("/kids/service-worker.js", {scope: "/kids/"}).then(
 						function () { console.log("serviceWorker registration complete."); },
 						function () { console.log("serviceWorker registration failure."); }
 					);
