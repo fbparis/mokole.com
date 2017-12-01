@@ -106,8 +106,8 @@ self.addEventListener("fetch", function(event) {
 	url.hostname === 'ssl.google-analytics.com') &&
 	url.pathname.indexOf("/collect") != -1) {
 		//Analytics 
+		console.log("WORKER: handling analytics request");
 		event.respondWith(
-			console.log("WORKER: handling analytics request");
 			fetch(event.request).then(function(response) {
 				if (response.status >= 400) {
 					throw Error('Error status returned from Google Analytics request.');
