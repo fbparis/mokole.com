@@ -2,7 +2,7 @@
 
 console.log('WORKER: executing.');
 
-var version = 'v2.4::';
+var version = 'v2.5::';
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -96,11 +96,15 @@ self.addEventListener("fetch", function(event) {
 		console.log('WORKER: fetch event ignored.', event.request.method, event.request.url);
 		return;
 	}
-	//Analytics first
+	// Adsense
+	if (event.request.url.indexOf(ADS_URL) !== -1) {
+		return;
+	}	
 	var url = new URL(event.request.url);
 	if ((url.hostname === 'www.google-analytics.com' ||
 	url.hostname === 'ssl.google-analytics.com') &&
 	url.pathname.indexOf("/collect") != -1) {
+		//Analytics 
 		event.respondWith(
 			fetch(event.request).then(function(response) {
 				if (response.status >= 400) {
@@ -115,66 +119,63 @@ self.addEventListener("fetch", function(event) {
 				return error;
 			})
 		);
-	}
-	// Adsense
-	if (event.request.url.indexOf(ADS_URL) !== -1) {
-		return;
-	}	
-	// Else...
-	event.respondWith(
-		caches.open(offline).then(function(cache) {
-			function fetchedOfflineFromNetwork(response) {
-				caches.open(offline).then(function add(cache) {
-					return cache.put(event.request, response);
-				}).then(function() {
-					console.log("WORKER: fetch response stored in offline cache.", event.request.url);
-				}).catch(function(error) {
-					console.log(error, event.request);
-				});
-			}
-			function fetchedDynamicFromNetwork(response) {
-				var cacheCopy = response.clone();
-				caches.open(dynamic).then(function add(cache) {
-					return cache.put(event.request, cacheCopy);
-				}).then(function() {
-					console.log("WORKER: fetch response stored in dynamic cache.", event.request.url);
-				}).catch(function(error) {
-					console.log(error, event.request);
-				});
-				return response;
-			}
-			function unableToResolve() {
-				console.log("WORKER: unable to resolve", event.request.url);
-		        return new Response('<h1>Service Unavailable</h1>', {
-					status: 503,
-					statusText: 'Service Unavailable',
-					headers: new Headers({
-						'Content-Type': 'text/html'
-					})
-				});
-			}
-			return cache.match(event.request, {ignoreSearch: true}).then(function(cachedOffline) {
-				if (cachedOffline) {
-					console.log('WORKER: fetch event [offline cached]', event.request.url);
-					if (event.request.url.indexOf("?") == -1) {
-						fetch(event.request).then(fetchedOfflineFromNetwork, unableToResolve);				
-					}
-					return cachedOffline;
+	} else {
+		// Else...
+		event.respondWith(
+			caches.open(offline).then(function(cache) {
+				function fetchedOfflineFromNetwork(response) {
+					caches.open(offline).then(function add(cache) {
+						return cache.put(event.request, response);
+					}).then(function() {
+						console.log("WORKER: fetch response stored in offline cache.", event.request.url);
+					}).catch(function(error) {
+						console.log(error, event.request);
+					});
 				}
-				return fetch(event.request).then(fetchedDynamicFromNetwork, function() {
-					caches.open(dynamic).then(function(cache) {
-						match(event.request).then(function(cachedDynamic) {
-							if (!cachedDynamic) {
-								return unableToResolve();
-							}
-							console.log('WORKER: fetch event [dynamic cached]', event.request.url);
-							return cachedDynamic;
+				function fetchedDynamicFromNetwork(response) {
+					var cacheCopy = response.clone();
+					caches.open(dynamic).then(function add(cache) {
+						return cache.put(event.request, cacheCopy);
+					}).then(function() {
+						console.log("WORKER: fetch response stored in dynamic cache.", event.request.url);
+					}).catch(function(error) {
+						console.log(error, event.request);
+					});
+					return response;
+				}
+				function unableToResolve() {
+					console.log("WORKER: unable to resolve", event.request.url);
+			        return new Response('<h1>Service Unavailable</h1>', {
+						status: 503,
+						statusText: 'Service Unavailable',
+						headers: new Headers({
+							'Content-Type': 'text/html'
+						})
+					});
+				}
+				return cache.match(event.request, {ignoreSearch: true}).then(function(cachedOffline) {
+					if (cachedOffline) {
+						console.log('WORKER: fetch event [offline cached]', event.request.url);
+						if (event.request.url.indexOf("?") == -1) {
+							fetch(event.request).then(fetchedOfflineFromNetwork, unableToResolve);				
+						}
+						return cachedOffline;
+					}
+					return fetch(event.request).then(fetchedDynamicFromNetwork, function() {
+						caches.open(dynamic).then(function(cache) {
+							match(event.request).then(function(cachedDynamic) {
+								if (!cachedDynamic) {
+									return unableToResolve();
+								}
+								console.log('WORKER: fetch event [dynamic cached]', event.request.url);
+								return cachedDynamic;
+							});
 						});
 					});
 				});
-			});
-		})
-	);
+			})
+		);		
+	}
 });
 
 self.addEventListener("install", function(event) {
