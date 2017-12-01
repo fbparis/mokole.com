@@ -2,7 +2,7 @@
 
 console.log('WORKER: executing.');
 
-var version = 'v2.6::';
+var version = 'v2.7::';
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -42,10 +42,10 @@ var notCached = [
 
 // Offline Analytics
 function openDatabaseAndReplayRequests() {
-	console.log("WORKER: starting openDatabaseAndReplayRequests()");
+	console.log("ANALYTICS: starting openDatabaseAndReplayRequests()");
   var indexedDBOpenRequest = indexedDB.open('offline-analytics', IDB_VERSION);
   indexedDBOpenRequest.onerror = function(error) {
-    console.error('IndexedDB error:', error);
+    console.error('ANALYTICS: IndexedDB error:', error);
   };
   indexedDBOpenRequest.onupgradeneeded = function() {
     this.result.createObjectStore(STORE_NAME, {keyPath: 'url'});
@@ -71,7 +71,7 @@ function replayAnalyticsRequests() {
         var queueTime = Date.now() - savedRequest.timestamp;
         if (queueTime > STOP_RETRYING_AFTER) {
           getObjectStore(STORE_NAME, 'readwrite').delete(savedRequest.url);
-          console.warn(' Request has been queued for %d milliseconds. ' +
+          console.warn('ANALYTICS: Request has been queued for %d milliseconds. ' +
             'No longer attempting to replay.', queueTime);
         } else {
           var requestUrl = savedRequest.url + '&qt=' + queueTime + '&cd1=' + CUSTOM_DIMENSION;
@@ -79,10 +79,10 @@ function replayAnalyticsRequests() {
             if (response.status < 400) {
               getObjectStore(STORE_NAME, 'readwrite').delete(savedRequest.url);
             } else {
-              console.error(' Replaying failed:', response);
+              console.error('ANALYTICS: Replaying failed:', response);
             }
           }).catch(function(error) {
-            console.error(' Replaying failed:', error);
+            console.error('ANALYTICS: Replaying failed:', error);
           });
         }
       });
@@ -106,11 +106,11 @@ self.addEventListener("fetch", function(event) {
 	url.hostname === 'ssl.google-analytics.com') &&
 	url.pathname.indexOf("/collect") != -1) {
 		//Analytics 
-		console.log("WORKER: handling analytics request");
+		console.log("WORKER: handling analytics request", event.request.url);
 		event.respondWith(
 			fetch(event.request).then(function(response) {
 				if (response.status >= 400) {
-					throw Error('Error status returned from Google Analytics request.');
+					throw Error('ANALYTICS: Error status returned from Google Analytics request.');
 				}			
 				return response;
 			}).catch(function(error) {
