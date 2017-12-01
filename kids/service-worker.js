@@ -2,7 +2,7 @@
 
 console.log('WORKER: executing.');
 
-var version = 'v2.5::';
+var version = 'v2.6::';
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -10,7 +10,7 @@ var dynamic = version + "dynamic";
 var idbDatabase;
 var IDB_VERSION = 1;
 var STOP_RETRYING_AFTER = 86400000; // One day, in milliseconds.
-var STORE_NAME = 'analytics';
+var STORE_NAME = 'urls';
 var CUSTOM_DIMENSION = 'Offline';
 // Bypass Adsense
 var ADS_URL = "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
@@ -42,6 +42,7 @@ var notCached = [
 
 // Offline Analytics
 function openDatabaseAndReplayRequests() {
+	console.log("WORKER: starting openDatabaseAndReplayRequests()");
   var indexedDBOpenRequest = indexedDB.open('offline-analytics', IDB_VERSION);
   indexedDBOpenRequest.onerror = function(error) {
     console.error('IndexedDB error:', error);
@@ -106,6 +107,7 @@ self.addEventListener("fetch", function(event) {
 	url.pathname.indexOf("/collect") != -1) {
 		//Analytics 
 		event.respondWith(
+			console.log("WORKER: handling analytics request");
 			fetch(event.request).then(function(response) {
 				if (response.status >= 400) {
 					throw Error('Error status returned from Google Analytics request.');
