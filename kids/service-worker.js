@@ -55,7 +55,7 @@ function openDatabaseAndReplayRequests() {
     replayAnalyticsRequests();
   };
 }
-openDatabaseAndReplayRequests();
+//openDatabaseAndReplayRequests();
 function getObjectStore(storeName, mode) {
   return idbDatabase.transaction(storeName, mode).objectStore(storeName);
 }
@@ -105,7 +105,7 @@ self.addEventListener("fetch", function(event) {
 	if ((url.hostname === 'www.google-analytics.com' ||
 	url.hostname === 'ssl.google-analytics.com') &&
 	url.pathname.indexOf("/collect") != -1) {
-		//return;
+		return;
 		//Analytics 
 		console.log("WORKER: handling analytics request", event.request.url);
 		event.respondWith(
