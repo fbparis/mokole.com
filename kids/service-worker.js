@@ -2,7 +2,7 @@
 
 console.log('WORKER: executing.');
 
-var version = 'v2.8::';
+var version = 'v2.9::';
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -191,6 +191,7 @@ self.addEventListener("install", function(event) {
       })
       .then(function() {
         console.log('WORKER: install completed');
+        return self.skipWaiting();
       })
   );
 });
@@ -213,6 +214,7 @@ self.addEventListener("activate", function(event) {
       })
       .then(function() {
         console.log('WORKER: activate completed.');
+        return self.clients.claim();
       })
   );
 });
