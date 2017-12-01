@@ -2,7 +2,7 @@
 
 console.log('WORKER: executing.');
 
-var version = 'v2.3::';
+var version = 'v2.4::';
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -97,9 +97,10 @@ self.addEventListener("fetch", function(event) {
 		return;
 	}
 	//Analytics first
-	if ((event.request.url.hostname === 'www.google-analytics.com' ||
-	event.request.url.hostname === 'ssl.google-analytics.com') &&
-	event.request.url.pathname.indexOf("/collect") != -1) {
+	var url = new URL(event.request.url);
+	if ((url.hostname === 'www.google-analytics.com' ||
+	url.hostname === 'ssl.google-analytics.com') &&
+	url.pathname.indexOf("/collect") != -1) {
 		event.respondWith(
 			fetch(event.request).then(function(response) {
 				if (response.status >= 400) {
