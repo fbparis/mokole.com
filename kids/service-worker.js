@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.12::";
+var version = "v2.13::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -63,7 +63,18 @@ var notCached = [
 	};
 })();
 function getObjectStore(storeName, mode) {
-	return idbDatabase.transaction(storeName, mode).objectStore(storeName);
+	var transaction =  idbDatabase.transaction(storeName, mode);
+	transaction.oncomplete = function() {
+		console.log("ANALYTICS: transaction oncomplete.");	
+	};
+	transaction.onerror(error) {
+		console.log("ANALYTICS: transaction onerror.", error);	
+	};
+	var objectStore = transaction.objectStore(storeName);
+	objectStore.onerror = function(error) {
+		console.log("ANALYTICS: objectStore error.", error);	
+	};
+	return objectStore;
 }
 function replayAnalyticsRequests() {
 	var savedRequests = [];
