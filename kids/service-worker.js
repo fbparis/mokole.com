@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.17::";
+var version = "v2.18::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -182,7 +182,7 @@ self.addEventListener("fetch", function(event) {
 					if (cachedOffline) {
 						console.log("WORKER: fetch event [offline cached]", event.request.url);
 						if (event.request.url.indexOf("?") == -1) {
-							fetch(event.request).then(fetchedOfflineFromNetwork, unableToResolve);				
+							fetch(event.request).then(fetchedOfflineFromNetwork, unableToResolve).catch(unableToResolve);
 						}
 						return cachedOffline;
 					}
@@ -196,7 +196,7 @@ self.addEventListener("fetch", function(event) {
 								return cachedDynamic;
 							});
 						});
-					});
+					}).catch(unableToResolve);
 				});
 			})
 		);		
