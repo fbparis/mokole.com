@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.14::";
+var version = "v2.15::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -127,6 +127,7 @@ self.addEventListener("fetch", function(event) {
 			console.log("WORKER: handling analytics request", event.request.url);
 			event.respondWith(
 				fetch(event.request).then(function(response) {
+					console.log(response);
 					if (response.status >= 400) {
 						throw Error("ANALYTICS: Error status returned from Google Analytics request.");
 					}			
