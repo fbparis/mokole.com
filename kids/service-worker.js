@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.13::";
+var version = "v2.14::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -67,7 +67,7 @@ function getObjectStore(storeName, mode) {
 	transaction.oncomplete = function() {
 		console.log("ANALYTICS: transaction oncomplete.");	
 	};
-	transaction.onerror(error) = function(error) {
+	transaction.onerror = function(error) {
 		console.log("ANALYTICS: transaction onerror.", error);	
 	};
 	var objectStore = transaction.objectStore(storeName);
