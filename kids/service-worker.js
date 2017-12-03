@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.19::";
+var version = "v2.20::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -127,8 +127,8 @@ self.addEventListener("fetch", function(event) {
 			console.log("WORKER: handling analytics request", event.request.url);
 			event.respondWith(
 				fetch(event.request).then(function(response) {
-					if (response.status == 0) console.log(response.clone());
-					if (response.status >= 400) {
+					if (!response.ok) {
+// 					if (response.status >= 400) {
 						throw Error("ANALYTICS: Error status returned from Google Analytics request.");
 					}			
 					return response;
@@ -149,6 +149,9 @@ self.addEventListener("fetch", function(event) {
 		event.respondWith(
 			caches.open(offline).then(function(cache) {
 				function fetchedOfflineFromNetwork(response) {
+					if (!response.ok) {
+						throw Error("fetchedOfflineFromNetwork error for ", event.request.url);
+					}
 					caches.open(offline).then(function add(cache) {
 						return cache.put(event.request, response);
 					}).then(function() {
@@ -158,6 +161,9 @@ self.addEventListener("fetch", function(event) {
 					});
 				}
 				function fetchedDynamicFromNetwork(response) {
+					if (!response.ok) {
+						throw Error("fetchedDynamicFromNetwork error for", event.request.url);
+					}
 					var cacheCopy = response.clone();
 					caches.open(dynamic).then(function add(cache) {
 						return cache.put(event.request, cacheCopy);
