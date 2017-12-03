@@ -67,7 +67,7 @@ function getObjectStore(storeName, mode) {
 	transaction.oncomplete = function() {
 		console.log("ANALYTICS: transaction oncomplete.");	
 	};
-	transaction.onerror(error) {
+	transaction.onerror(error) = function(error) {
 		console.log("ANALYTICS: transaction onerror.", error);	
 	};
 	var objectStore = transaction.objectStore(storeName);
