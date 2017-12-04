@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.27::";
+var version = "v2.28::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -174,7 +174,7 @@ self.addEventListener("fetch", function(event) {
 						}
 					});
 					console.log("WORKER: fetch event", cached ? "(cached)" : "(network)", event.request.url);
-					return cached || networked.clone();
+					return cached || networked;
 				});
 			})
 		);
