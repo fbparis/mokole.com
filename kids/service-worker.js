@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.30::";
+var version = "v2.31::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -92,7 +92,7 @@ function replayAnalyticsRequests() {
 					"No longer attempting to replay.", queueTime);
 				} else {
 					var requestUrl = savedRequest.url + "&qt=" + queueTime + "&cd1=" + CUSTOM_DIMENSION;
-					fetch(requestUrl).then(function(response) {
+					fetch(requestUrl, {mode: "cors", credentials: "same-origin"}).then(function(response) {
 						if (response.status < 400) {
 							getObjectStore(STORE_NAME, "readwrite").delete(savedRequest.url);
 						} else {
@@ -136,7 +136,7 @@ self.addEventListener("fetch", function(event) {
 						url: event.request.url,
 						timestamp: Date.now()
 					});				
-					return error;
+					return Response.error();
 				})
 			);			
 		} else {
