@@ -1,21 +1,21 @@
 CACHE MANIFEST
-# VERSION 2.0
-# /kids/
-# /kids/index.html
-# /kids/favicon.ico
-# /kids/img/tinified/hand1-64.png
-# /kids/img/tinified/hand2-64.png
-# /kids/img/tinified/loading.png
-# /kids/img/tinified/mokole-kids.png
-# /kids/img/tinified/sprite-volume.png
-# /kids/img/tinified/wood-bg-01.png
-# /kids/img/tinified/wood-bg-02.png
-# /kids/img/tinified/wood-bg-03.png
-# /kids/sound/newgame.mp3
-# /kids/sound/good.mp3
-# /kids/sound/wrong.mp3
-# /kids/sound/win.mp3
-# /kids/manifest.json
+# VERSION 3.0
+/kids/
+/kids/index.html
+/kids/favicon.ico
+/kids/img/tinified/hand1-64.png
+/kids/img/tinified/hand2-64.png
+/kids/img/tinified/loading.png
+/kids/img/tinified/mokole-kids.png
+/kids/img/tinified/sprite-volume.png
+/kids/img/tinified/wood-bg-01.png
+/kids/img/tinified/wood-bg-02.png
+/kids/img/tinified/wood-bg-03.png
+/kids/sound/newgame.mp3
+/kids/sound/good.mp3
+/kids/sound/wrong.mp3
+/kids/sound/win.mp3
+/kids/manifest.json
 
 NETWORK:
 *

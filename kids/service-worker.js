@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.34::";
+var version = "v3.0::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -180,68 +180,6 @@ self.addEventListener("fetch", function(event) {
 				});
 			})
 		);
-		/* old version
-		event.respondWith(
-			caches.open(offline).then(function(cache) {
-				function fetchedOfflineFromNetwork(response) {
-					if (!response.ok) {
-						throw Error("fetchedOfflineFromNetwork error for ", event.request.url);
-					}
-					caches.open(offline).then(function add(cache) {
-						return cache.put(event.request, response);
-					}).then(function() {
-						console.log("WORKER: fetch response stored in offline cache.", event.request.url);
-					}).catch(function(error) {
-						console.log(error, event.request);
-					});
-				}
-				function fetchedDynamicFromNetwork(response) {
-					if (!response.ok) {
-						throw Error("fetchedDynamicFromNetwork error for", event.request.url);
-					}
-					var cacheCopy = response.clone();
-					caches.open(dynamic).then(function add(cache) {
-						return cache.put(event.request, cacheCopy);
-					}).then(function() {
-						console.log("WORKER: fetch response stored in dynamic cache.", event.request.url);
-					}).catch(function(error) {
-						console.log(error, event.request);
-					});
-					return response;
-				}
-				function unableToResolve() {
-					console.log("WORKER: unable to resolve", event.request.url);
-			        return new Response("<h1>Service Unavailable</h1>", {
-						status: 503,
-						statusText: "Service Unavailable",
-						headers: new Headers({
-							"Content-Type": "text/html"
-						})
-					});
-				}
-				return cache.match(event.request, {ignoreSearch: true}).then(function(cachedOffline) {
-					if (cachedOffline) {
-						console.log("WORKER: fetch event [offline cached]", event.request.url);
-						if (event.request.url.indexOf("?") == -1) {
-							var networked = fetch(event.request).then(fetchedOfflineFromNetwork, unableToResolve).catch(unableToResolve);
-						}
-						return cachedOffline;
-					}
-					return fetch(event.request).then(fetchedDynamicFromNetwork, function() {
-						caches.open(dynamic).then(function(cache) {
-							match(event.request).then(function(cachedDynamic) {
-								if (!cachedDynamic) {
-									return unableToResolve();
-								}
-								console.log("WORKER: fetch event [dynamic cached]", event.request.url);
-								return cachedDynamic;
-							});
-						});
-					});
-				});
-			})
-		);
-		*/		
 	}
 });
 
