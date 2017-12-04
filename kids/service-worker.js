@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.28::";
+var version = "v2.29::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -126,7 +126,7 @@ self.addEventListener("fetch", function(event) {
 		if (idbDatabase) {
 			console.log("WORKER-ANALYTICS: handling analytics request", event.request.url);
 			event.respondWith(
-				fetch(event.request).then(function(response) {
+				fetch(event.request, {mode: "cors"}).then(function(response) {
 					if (response.status >= 400) {
 						throw Error("WORKER-ANALYTICS: Error status returned from Google Analytics request.");
 					}			
@@ -148,7 +148,7 @@ self.addEventListener("fetch", function(event) {
 		event.respondWith(
 			caches.open(offline).then(function(cache) {
 				return cache.match(event.request).then(function(cached) {
-					var networked = fetch(event.request, {mode: "cors"}).then(function(response) {
+					var networked = fetch(event.request).then(function(response) {
 						var cacheCopy = response.clone();
 						if (!cacheCopy.ok) {
 							console.log("WORKER: invalid fetch response for ", event.request.url, cacheCopy);
