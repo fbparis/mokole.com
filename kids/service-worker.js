@@ -164,13 +164,7 @@ self.addEventListener("fetch", function(event) {
 						console.log("WORKER: ", error, event.request.url);
 						if (!cached) {
 							console.log("WORKER: will retrieve dynamic cache for ", event.request.url);
-							return new Response("<h1>Service Unavailable</h1>", {
-								status: 503,
-								statusText: "Service Unavailable",
-								headers: new Headers({
-									"Content-Type": "text/html"
-								})
-							});							
+							return Response.error();
 						}
 					});
 					console.log("WORKER: fetch event", cached ? "(cached)" : "(network)", event.request.url);
