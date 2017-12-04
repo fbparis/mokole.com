@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.31::";
+var version = "v2.32::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -150,9 +150,10 @@ self.addEventListener("fetch", function(event) {
 				return cache.match(event.request).then(function(cached) {
 					var networked = fetch(event.request).then(function(response) {
 						var cacheCopy = response.clone();
-						if (!cacheCopy.ok) {
+						if ((cacheCopy.type != "opaque") && !cacheCopy.ok) {
 							console.log("WORKER: invalid fetch response for ", event.request.url, cacheCopy);
 						} else {
+							console.log(event.request.url, cacheCopy);
 							if (cached) {
 								console.log("WORKER: will update offline cache for ", event.request.url);
 							} else {
