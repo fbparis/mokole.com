@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.32::";
+var version = "v2.33::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -147,26 +147,32 @@ self.addEventListener("fetch", function(event) {
 		// Else...
 		event.respondWith(
 			caches.open(offline).then(function(cache) {
-				return cache.match(event.request).then(function(cached) {
+				return cache.match(event.request, {ignoreSearch: true}).then(function(cached) {
 					var networked = fetch(event.request).then(function(response) {
-						var cacheCopy = response.clone();
-						if ((cacheCopy.type != "opaque") && !cacheCopy.ok) {
-							console.log("WORKER: invalid fetch response for ", event.request.url, cacheCopy);
+						if ((response.type != "opaque") && !response.ok) {
+							throw Error("Invalid response");
 						} else {
-							console.log(event.request.url, cacheCopy);
-							if (cached) {
-								console.log("WORKER: will update offline cache for ", event.request.url);
-							} else {
-								console.log("WORKER: will update dynamic cache for ", event.request.url);
+							if (!cached || (event.request.url.indexOf("?") == -1)) {
+								var cacheStorage = cached ? offline : dynamic;
+								caches.open(cacheStorage).then(function add(cache) {
+									return cache.put(event.request, response.clone());
+								}).then(function () {
+									console.log("WORKER: fetch response stored ", cached ? "(offline)" : "(dynamic)", event.request.url);
+								});								
 							}
 						}
 						return response;
 					}).catch(function(error) {
 						console.log("WORKER: ", error, event.request.url);
 						if (!cached) {
-							console.log("WORKER: will retrieve dynamic cache for ", event.request.url);
-							return Response.error();
+							return caches.open(dynamic).then(function(cache) {
+								return cache.match(event.request).then(function(dyn_cached) {
+									console.log("WORKER: fetch event fallback", dyn_cached ? "(dynamic)" : "(error)", event.request.url);
+									return dyn_cached || Response.error();
+								});
+							});
 						}
+						return Response.error();
 					});
 					console.log("WORKER: fetch event", cached ? "(cached)" : "(network)", event.request.url);
 					return cached || networked;
