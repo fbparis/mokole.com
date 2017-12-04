@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.24::";
+var version = "v2.25::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -149,9 +149,9 @@ self.addEventListener("fetch", function(event) {
 			caches.open(offline).then(function(cache) {
 				return cache.match(event.request).then(function(cached) {
 					var networked = fetch(event.request).then(function(response) {
-						if (!response.ok) {
+						var cacheCopy = response.clone();
+						if (!cacheCopy.ok) {
 							console.log("WORKER: invalid fetch response for ", event.request.url);
-							return response;
 						} else {
 							if (cached) {
 								console.log("WORKER: will update offline cache for ", event.request.url);
@@ -159,6 +159,7 @@ self.addEventListener("fetch", function(event) {
 								console.log("WORKER: will update dynamic cache for ", event.request.url);
 							}
 						}
+						return response;
 					}).catch(function(error) {
 						console.log("WORKER: ", error, event.request.url);
 						if (!cached) {
