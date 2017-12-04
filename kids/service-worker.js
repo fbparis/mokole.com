@@ -148,7 +148,7 @@ self.addEventListener("fetch", function(event) {
 		event.respondWith(
 			caches.open(offline).then(function(cache) {
 				return cache.match(event.request).then(function(cached) {
-					var networked = fetch(event.request).then(function(response) {
+					var networked = fetch(event.request, {mode: "cors"}).then(function(response) {
 						var cacheCopy = response.clone();
 						if (!cacheCopy.ok) {
 							console.log("WORKER: invalid fetch response for ", event.request.url, cacheCopy);
