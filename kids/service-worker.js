@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.20::";
+var version = "v2.22::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -115,7 +115,7 @@ self.addEventListener("fetch", function(event) {
 	}
 	// Adsense
 	if (event.request.url.indexOf(ADS_URL) !== -1) {
-		console.log("WORKER: fetch event ignored.", event.request.method, event.request.url);
+		console.log("WORKER: fetch event ignored.", event.request.url);
 		return;
 	}	
 	var url = new URL(event.request.url);
@@ -124,12 +124,11 @@ self.addEventListener("fetch", function(event) {
 	url.pathname.indexOf("/collect") != -1) {
 		//Analytics 
 		if (idbDatabase) {
-			console.log("WORKER: handling analytics request", event.request.url);
+			console.log("WORKER-ANALYTICS: handling analytics request", event.request.url);
 			event.respondWith(
 				fetch(event.request).then(function(response) {
-					if (!response.ok) {
-// 					if (response.status >= 400) {
-						throw Error("ANALYTICS: Error status returned from Google Analytics request.");
+					if (response.status >= 400) {
+						throw Error("WORKER-ANALYTICS: Error status returned from Google Analytics request.");
 					}			
 					return response;
 				}).catch(function(error) {
@@ -141,11 +140,43 @@ self.addEventListener("fetch", function(event) {
 				})
 			);			
 		} else {
-			console.log("WORKER: fetch event ignored.", event.request.method, event.request.url);
+			console.log("WORKER-ANALYTICS: no idb, fetch event ignored.", event.request.url);
 			return;
 		}
 	} else {
 		// Else...
+		event.respondWith(
+			caches.open(offline).then(function(cache) {
+				return cache.match(event.request).then(function(cached) {
+					var networked = fetch(event.request).then(function(response) {
+						if (!response.ok) {
+							console.log("WORKER: invalid fetch response for ", event.request.url);
+						} else {
+							if (cached) {
+								console.log("WORKER: will update offline cache for ", event.request.url);
+							} else {
+								console.log("WORKER: will update dynamic cache for ", event.request.url);
+							}
+						}
+					}).catch(function(error) {
+						console.log("WORKER: ", error, event.request.url);
+						if (!cached) {
+							console.log("WORKER: will retrieve dynamic cache for ", event.request.url);
+							return new Response("<h1>Service Unavailable</h1>", {
+								status: 503,
+								statusText: "Service Unavailable",
+								headers: new Headers({
+									"Content-Type": "text/html"
+								})
+							});							
+						}
+					});
+					console.log("WORKER: fetch event", cached ? "(cached)" : "(network)", event.request.url);
+					return cached || networked;
+				});
+			})
+		);
+		/* old version
 		event.respondWith(
 			caches.open(offline).then(function(cache) {
 				function fetchedOfflineFromNetwork(response) {
@@ -205,7 +236,8 @@ self.addEventListener("fetch", function(event) {
 					});
 				});
 			})
-		);		
+		);
+		*/		
 	}
 });
 
