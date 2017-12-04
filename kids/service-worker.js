@@ -1,5 +1,16 @@
 "use strict";
 
+/*
+	Strategy:
+		- If online, saved google analytics are replayed
+		- POST, data:, adsense, notCached requests are ignored
+		- If offline, google analytics hits are stored in indexedDB
+		- Requests in cachedFirst (no matter query string): cache then if online: network update cache
+		- Else: if online: network then update cache else: cache or Error
+	TODO:
+		- Offline adsense fallback
+*/
+
 console.log("WORKER: executing.");
 
 var version = "v3.0::";
