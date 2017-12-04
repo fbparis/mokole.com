@@ -2,7 +2,7 @@
 
 console.log("WORKER: executing.");
 
-var version = "v2.29::";
+var version = "v2.30::";
 var offline = version + "offline";
 var dynamic = version + "dynamic";
 
@@ -126,7 +126,7 @@ self.addEventListener("fetch", function(event) {
 		if (idbDatabase) {
 			console.log("WORKER-ANALYTICS: handling analytics request", event.request.url);
 			event.respondWith(
-				fetch(event.request, {mode: "cors"}).then(function(response) {
+				fetch(event.request, {mode: "cors", credentials: "same-origin"}).then(function(response) {
 					if (response.status >= 400) {
 						throw Error("WORKER-ANALYTICS: Error status returned from Google Analytics request.");
 					}			
