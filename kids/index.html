@@ -359,10 +359,12 @@
 					e.classList.remove("unmute");
 					e.classList.add("mute");
 					sounds = true;
+					ga("send", "event", "Toggle sounds", "Unmute");
 				} else {
 					e.classList.remove("mute");
 					e.classList.add("unmute");
 					sounds = false;
+					ga("send", "event", "Toggle sounds", "Mute");
 				}
 				if (localStorage) {
 					localStorage.setItem("mk_sounds", JSON.stringify(sounds));
@@ -532,6 +534,7 @@
 				document.getElementById("overlay").classList.remove("closed");
 				// Play starting sound
 				play_sound("newgame");
+				ga("send", "event", "Game", "Start");
 				//document.getElementById("overlay").style.cursor = "none";
 				// Reset keyboard
 				elts = document.getElementById("keyboard").getElementsByClassName("keyboard-button");
@@ -602,6 +605,7 @@
 				}
 				// Play victory sound
 				play_sound("win");
+				ga("send", "event", "Game", "End", wrong_count);
 				if (wrong_count == 0) id = "ace-score";
 				else if (wrong_count <= 4) id = "champion-score";
 				else if (wrong_count <= 8) id = "average-score";
