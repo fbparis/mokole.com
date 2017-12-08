@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<title>HTML5 Speech Synthesis Testing</title>
+	</head>
+	<body>
+		<div id="output"></div>
+		<script type="text/javascript">
+			for (word in get_words_from_puzzle()) {
+				var b = document.createElement("button");
+				b.innerHTML = word;
+				b.onclick = function() { speak(this.innerHTML); }
+				document.getElementById("output").appendChild(b);
+			}
+			
+			function speak(word) {
+				var utterance = new SpeechSynthesisUtterance(word);
+				window.speechSynthesis.speak(utterance);
+			}
+			
+			function get_words_from_puzzle() {
+				return ['BONJOUR', 'TEST', 'YAOURT']
+			}
+		</script>
+	</body>
+</html>
