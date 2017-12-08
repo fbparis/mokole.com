@@ -7,7 +7,7 @@
 	<body>
 		<div id="output"></div>
 		<script type="text/javascript">
-			for (word in get_words_from_puzzle()) {
+			for (word of get_words_from_puzzle()) {
 				var b = document.createElement("button");
 				b.innerHTML = word;
 				b.onclick = function() { speak(this.innerHTML); }
