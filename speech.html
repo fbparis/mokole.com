@@ -7,12 +7,14 @@
 	<body>
 		<div id="output"></div>
 		<script type="text/javascript">
-			for (word of get_words_from_puzzle()) {
-				var b = document.createElement("button");
-				b.innerHTML = word;
-				b.onclick = function() { speak(this.innerHTML); }
-				document.getElementById("output").appendChild(b);
-			}
+			if ('speechSynthesis' in window) {
+				for (word of get_words_from_puzzle()) {
+					var b = document.createElement("button");
+					b.innerHTML = word;
+					b.onclick = function() { speak(this.innerHTML); }
+					document.getElementById("output").appendChild(b);
+				}
+			} 
 			
 			function speak(word) {
 				console.log("speak " + word);
