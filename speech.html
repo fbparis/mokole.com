@@ -15,6 +15,7 @@
 			}
 			
 			function speak(word) {
+				console.log("speak " + word);
 				var utterance = new SpeechSynthesisUtterance(word);
 				window.speechSynthesis.speak(utterance);
 			}
