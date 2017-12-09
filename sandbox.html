@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<title>Sandbox JS</title>
+		<style type="text/css">
+			body {
+				padding: 0px;
+				margin: 0px;
+				background: black url(/kids/img/tinified/wood-bg-03.png) repeat;
+				background-size: contain;
+			}
+			img {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+		</style>
+	</head>
+	<body>
+		<img id="loading" src="/kids/img/tinified/loading.png">
+		<script type="text/javascript">
+			if (self.fetch) {
+				fetch("/kids/mokole-kids.json").then(function(response) {
+					return response.json().then(function(json) {
+						var datas = json.d;
+						for (g of datas) words_from_puzzle(g);					
+						document.getElementById("loading").style.display = "none";
+					});
+				});
+			}
+			function words_from_puzzle(G) {
+				var HV = {}, W = [];
+				for (i in G.k) {
+					k = G.k[i], v = G.v[i];
+					yx = k.split("_");
+					y = Number(yx[0]), x = Number(yx[1]);
+					kx = "h" + x, ky = "v" + y;
+					if (!(kx in HV)) HV[kx] = " ".repeat(G.w).split("");
+					if (!(ky in HV)) HV[ky] = " ".repeat(G.h).split("");
+					HV[kx][y] = v, HV[ky][x] = v;
+				}
+				for (i in HV) {
+					v = HV[i].join("").split(" ");
+					for (j in v) {
+						w = v[j];
+						if (w.length >= 2) {
+							W.push(w);
+						}
+					}
+				}
+				console.log(W);
+			}
+		</script>	
+	</body>
+</html>
