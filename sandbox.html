@@ -30,6 +30,14 @@
 					});
 				});
 			}
+			function pseudo_random_checksum(s, precision=10000) {
+				x = 0;
+				for (i = 0; i < s.length; i++) {
+					x += s.charCodeAt(i) * Math.sin(i + 1)
+				}
+				x *= precision;
+				return x - Math.floor(x);
+			}
 			function words_from_puzzle(G) {
 				var HV = {}, W = [];
 				for (i in G.k) {
