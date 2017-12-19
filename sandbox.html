@@ -38,6 +38,17 @@
 				x *= precision;
 				return x - Math.floor(x);
 			}
+			function word_uri(w, base, levels=1) {
+				levels--;
+				n = Math.floor(pseudo_random_checksum(w) * Math.pow(base, levels));
+				digits = [];
+				while (n) {
+					digits.push(n % base);
+					n = Math.floor(n / base);
+				}
+				while (digits.length < levels) digits.push(0);
+				return "/" + digits.reverse().join("/") + "/" + w + ".json";
+			}
 			function words_from_puzzle(G) {
 				var HV = {}, W = [];
 				for (i in G.k) {
