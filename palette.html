@@ -38,7 +38,9 @@
 				<div class="column is-7">
 					<h4 class="title has-text-info is-4">How does it work?</h4>
 					<hr>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis ante, ultricies ut elementum a, sagittis vitae dolor. Nunc semper tellus mauris, nec suscipit nulla elementum eget. Duis sit amet neque congue, elementum ante ut, fringilla diam. Cras eu ante tristique, pharetra neque nec, viverra turpis. Proin accumsan auctor est, non sollicitudin nunc. Quisque quis neque in metus pulvinar dapibus nec nec enim. Mauris finibus varius justo, non facilisis ex laoreet nec. Curabitur leo tellus, mollis eu viverra quis, vehicula ut turpis. Nulla malesuada ante sit amet nisl dapibus, a tempus orci porta. Quisque luctus nunc sed mi efficitur hendrerit. Ut vel urna orci. Ut faucibus lectus sed varius fringilla.</p>
+					<p>Starting from a set including all <a href="https://www.w3.org/TR/css3-iccprof#x11-color">X11 colors</a>, the script will first remove darkest and brightest colors according to the values you have set for <em>minimum luminosity</em> and <em>maximum luminosity</em>.</p>
+					<p>It will then build a subset of <em>n</em> colors where each color is visually the most distinct possible from every other colors in the set. For this, colors will be manipulated in the <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">CIE Lab color space</a>, where the distance between colors is a perceptive distance (this means that if two colors values are close to each other, they will also look similar to you and if they are distant, they will be perceived as distinct colors).</p>
+					<p>Resulting palettes are ranked according to the minimal pairwise distance between colors composing it, the greater the best so. This is the number shown on the left of the palettes. The number of remaining colors after filtering dark and bright colors is also shown, as the number of random palettes generated before returning the best one.</p>
 				</div>
 				<div class="column">
 					<h4 class="title has-text-info is-4">Palette settings</h4>
@@ -139,7 +141,7 @@
 				<div class="column is-8">
 					<br>
 					<p class="title has-text-info is-5 is-marginless">Why visually distinct colors?</p>
-					<p class="is-size-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis ante, ultricies ut elementum a, sagittis vitae dolor. Nunc semper tellus mauris, nec suscipit nulla elementum eget. Duis sit amet neque congue, elementum ante ut, fringilla diam. Cras eu ante tristique, pharetra neque nec, viverra turpis. Proin accumsan auctor est, non sollicitudin nunc.</p>
+					<p class="is-size-6">There are many situations where you may need distinct colors palettes. For example if you're designing subway maps or if you want to replace letters by colors in an alphabet. It's also very useful to organize tags in a calendar or anything so that they are easily recognizable. Also, if you're a scientist or a statistician, this tool will help solving the problem of choosing colors for data visualization.</p>
 				</div>
 			</div>
 		</div>
