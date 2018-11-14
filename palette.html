@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Visually Distinct Colors Generator</title>
+		<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/slate/bulmaswatch.min.css">
+		<link rel="canonical" href="https://mokole.com/palette.html">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.0/chroma.min.js"></script>
+	</head>
+	<body>
+	<section class="section">
+		<div class="container">
+			<div class="columns">
+				<div class="column">
+					<h1 class="title">
+						I want visually distinct colors!
+					</h1>
+					<p class="subtitle">
+						Generate palettes of optimally distinct colors.
+					</p>
+				</div>
+				<div class="column">
+					<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					<script>
+					     (adsbygoogle = window.adsbygoogle || []).push({
+					          google_ad_client: "ca-pub-8237054068776864",
+					          enable_page_level_ads: true
+					     });
+					</script>					
+				</div>
+			</div>
+			<div class="columns">
+				<div class="column is-7">
+					<h4 class="title has-text-info is-4">How does it work?</h4>
+					<hr>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis ante, ultricies ut elementum a, sagittis vitae dolor. Nunc semper tellus mauris, nec suscipit nulla elementum eget. Duis sit amet neque congue, elementum ante ut, fringilla diam. Cras eu ante tristique, pharetra neque nec, viverra turpis. Proin accumsan auctor est, non sollicitudin nunc. Quisque quis neque in metus pulvinar dapibus nec nec enim. Mauris finibus varius justo, non facilisis ex laoreet nec. Curabitur leo tellus, mollis eu viverra quis, vehicula ut turpis. Nulla malesuada ante sit amet nisl dapibus, a tempus orci porta. Quisque luctus nunc sed mi efficitur hendrerit. Ut vel urna orci. Ut faucibus lectus sed varius fringilla.</p>
+				</div>
+				<div class="column">
+					<h4 class="title has-text-info is-4">Palette settings</h4>
+					<hr>
+						<div class="field has-addons">
+							<div class="control is-expanded">
+								<input type="text" id="n" class="input" value="8" placeholder="How many colors do you need?">
+								<p class="help">At least 2, more colors means less distinct they will be</p>
+							</div>
+							<div class="control">
+								<a class="button is-static">
+									colors
+								</a>
+							</div>
+						</div>
+						<div class="field has-addons">
+							<div class="control is-expanded">
+								<div class="select is-fullwidth">
+									<select id="Lmin">
+										<option value="0">Black is OK</option>
+										<option value="1">1%</option>
+										<option value="5" selected>5%</option>
+										<option value="10">10%</option>
+										<option value="15">15%</option>
+										<option value="20">20%</option>
+									</select>
+								</div>
+								<p class="help">You can exclude darker colors</p>
+							</div>
+							<div class="control">
+								<a class="button is-static">
+									minimum luminosity
+								</a>
+							</div>
+						</div>
+						<div class="field has-addons">
+							<div class="control is-expanded">
+								<div class="select is-fullwidth">
+									<select id="Lmax">
+										<option value="100">White is OK</option>
+										<option value="99">99%</option>
+										<option value="95">95%</option>
+										<option value="90" selected>90%</option>
+										<option value="85">85%</option>
+										<option value="80">80%</option>
+									</select>
+								</div>
+								<p class="help">You can exclude brighter colors</p>
+							</div>
+							<div class="control">
+								<a class="button is-static">
+									maximum luminosity
+								</a>
+							</div>
+						</div>
+						<div class="field has-addons">
+							<div class="control is-expanded">
+								<div class="select is-fullwidth">
+									<select id="maxLoops">
+										<option>1000</option>
+										<option>5000</option>
+										<option selected>10000</option>
+										<option>20000</option>
+									</select>
+								</div>
+								<p class="help">The more loops the better the results, but slower!</p>
+							</div>
+							<div class="control">
+								<a class="button is-static">
+									maximum loops
+								</a>
+							</div>
+						</div>
+						<div class="field">
+							<div class="control is-expanded">
+								<button id="submitButton" class="button is-fullwidth" onclick="submit_form()">Make a palette with this settings</button>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section>
+		<div class="container" id="palettes">
+		</div>
+	</section>
+	<div class="is-clearfix">
+		<div class="container"></div>
+	</div>
+	<footer class="has-background-black">
+		<div class="container content">
+			<div class="columns">
+				<div class="column is-4">
+					<br>
+					<p>
+						<a class="twitter-share-button" href="https://twitter.com/intent/tweet?via=fbparis" rel="nofollow" data-size="large">Tweet</a>
+					</p>
+					<p>Thanks to: <a href="https://github.com/gka/chroma.js">Chroma.js</a>, <a href="https://bulma.io/">Bulma</a></p>
+					<p>Developed by fbparis</p>
+				</div>
+				<div class="column is-8">
+					<br>
+					<p class="title has-text-info is-5 is-marginless">Why visualy distinct colors?</p>
+					<p class="is-size-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis turpis ante, ultricies ut elementum a, sagittis vitae dolor. Nunc semper tellus mauris, nec suscipit nulla elementum eget. Duis sit amet neque congue, elementum ante ut, fringilla diam. Cras eu ante tristique, pharetra neque nec, viverra turpis. Proin accumsan auctor est, non sollicitudin nunc.</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</body>
+	<script type="text/javascript">
+	function get_palette(n=8, Lmin=5, Lmax=90, maxLoops=10000) {
+		console.log(n, Lmin, Lmax, maxLoops);
+		data = new Array();
+		for (color in chroma.colors) {
+			c = chroma(color);
+			L = c.lab()[0];
+			if ((L >= Lmin) && (L <= Lmax)) {
+				data.push(c);
+			}
+		}
+		console.log(data.length + " initial colors");
+		bestScore = 0;
+		bestPalette = null;
+		generation = 0;
+		loop = 0;
+		while (loop < maxLoops) {
+			loop += 1;
+			colors = data.slice(0);
+			palette = colors.splice(Math.floor(Math.random() * colors.length), 1);
+			while (palette.length < n) {
+				availableColors = new Array();
+				colors.forEach(function (color) {
+					accepted = true;
+					for (var k in palette) {
+						if (chroma.distance(color, palette[k]) <= bestScore) {
+							accepted = false;
+							break;
+						}
+					}
+					if (accepted) {
+						availableColors.push(color);
+					}
+				});
+				if (availableColors.length < n - palette.length) {
+					break;
+				}
+				palette = palette.concat(availableColors.splice(Math.floor(Math.random() * availableColors.length), 1));
+				colors = availableColors.slice(0);
+			}
+			if (palette.length == n) {
+				generation += loop;
+				loop = 0;
+				bestScore = null;
+				for (var i = 0; i < n - 1; i++) {
+					for (var j = i + 1; j < n; j++) {
+						d = chroma.distance(palette[i], palette[j]);
+						if ((bestScore === null) || (d < bestScore)) {
+							bestScore = d;
+						}
+					}
+				}
+				bestPalette = palette.slice(0);
+				console.log("generation " + generation + ": " + bestScore);
+			}
+		}
+		console.log(generation + loop + " loops done");
+		bestPalette.sort(function (a, b) {
+			score_a = a.hsl()[0] / 360 + a.hsl()[1] * 2 + a.hsl()[2] * 5;
+			score_b = b.hsl()[0] / 360 + b.hsl()[1] * 2 + b.hsl()[2] * 5;
+			return score_a - score_b;
+		});
+		return {"total_colors": data.length, "loops_done": generation + loop, "score": bestScore, "palette": bestPalette};	
+	}
+
+	function remove_palette(b) {
+		b.parentNode.parentNode.parentNode.removeChild(b.parentNode.parentNode);
+	}
+
+	function submit_form() {
+		b = document.getElementById("submitButton");
+		b.classList.add("is-loading");
+		n = document.getElementById("n").value;
+		Lmin = document.getElementById("Lmin").value;
+		Lmax = document.getElementById("Lmax").value;
+		maxLoops = document.getElementById("maxLoops").value;
+		t = window.setTimeout(function () {
+			R = get_palette(n, Lmin, Lmax, maxLoops);
+			if (R["bestPalette"] !== null) {
+				palettes = document.getElementById("palettes");
+				newPalette = document.createElement("div");
+				newPalette.className = "media box";
+				innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + parseInt(R["score"]) + '</p><p class="is-size-7">' + R["total_colors"] + ' colors</p><p class="is-size-7">' + R["loops_done"] + ' loops</p></div><div class="media-content">';
+				R["palette"].forEach(function (color) {
+					innerHTML += '<div class="is-pulled-left box is-radiusless has-text-white has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
+				});
+				innerHTML += '</div><div class="media-right"><button class="delete" onclick="remove_palette(this)"></button></div>';
+				newPalette.innerHTML = innerHTML;
+				palettes.insertBefore(newPalette, palettes.firstChild);
+			}
+			b.classList.remove("is-loading");
+		});
+	}
+	</script>
+	<script>
+		window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+	    t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+
+	  t._e = [];
+	  t.ready = function(f) {
+	    t._e.push(f);
+	  };
+
+	  return t;
+	}(document, "script", "twitter-wjs"));
+	</script>
+</html>
