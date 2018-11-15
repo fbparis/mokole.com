@@ -40,11 +40,12 @@
 					<hr>
 					<p>Starting from a set including all <a href="https://www.w3.org/TR/css3-iccprof#x11-color">X11 colors</a>, the script will first remove darkest and brightest colors according to the values you have set for <em>minimum luminosity</em> and <em>maximum luminosity</em>.</p>
 					<p>It will then build a subset of <em>n</em> colors where each color is visually the most distinct possible from every other colors in the set. For this, colors will be manipulated in the <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">CIE Lab color space</a>, where the distance between colors is a perceptive distance (this means that if two colors values are close to each other, they will also look similar to you and if they are distant, they will be perceived as distinct colors).</p>
-					<p>Resulting palettes are ranked according to the minimal pairwise distance between colors composing it, the greater the best so. This is the number shown on the left of the palettes. The number of remaining colors after filtering dark and bright colors is also shown, as the number of random palettes generated before returning the best one.</p>
+					<p>Resulting palettes are ranked according to the minimal pairwise distance between colors composing them, the greater the best so. This is the number shown on the left of the palettes. The number of remaining colors after filtering dark and bright colors is also shown, as the number of random palettes generated before returning the best one.</p>
 				</div>
 				<div class="column">
 					<h4 class="title has-text-info is-4">Palette settings</h4>
 					<hr>
+					<form onsubmit="return submit_form();">
 						<div class="field has-addons">
 							<div class="control is-expanded">
 								<input type="text" id="n" class="input" value="8" placeholder="How many colors do you need?">
@@ -116,14 +117,18 @@
 						</div>
 						<div class="field">
 							<div class="control is-expanded">
-								<button id="submitButton" class="button is-fullwidth" onclick="submit_form()">Make a palette with this settings</button>
+								<button id="submitButton" class="button is-fullwidth" type="submit">Make a palette with this settings</button>
 							</div>
 						</div>
+					</form>	
 				</div>
 			</div>
 		</div>
 	</section>
 	<section>
+		<div class="container is-invisible" id="loading">
+			
+		</div>
 		<div class="container" id="palettes">
 		</div>
 	</section>
@@ -148,6 +153,7 @@
 	</footer>
 	</body>
 	<script type="text/javascript">
+	var isProcessing = false;
 	function get_palette(n=8, Lmin=5, Lmax=90, maxLoops=10000) {
 		console.log(n, Lmin, Lmax, maxLoops);
 		data = new Array();
@@ -216,14 +222,14 @@
 		b.parentNode.parentNode.parentNode.removeChild(b.parentNode.parentNode);
 	}
 
-	function submit_form() {
-		b = document.getElementById("submitButton");
-		b.classList.add("is-loading");
-		n = document.getElementById("n").value;
-		Lmin = document.getElementById("Lmin").value;
-		Lmax = document.getElementById("Lmax").value;
-		maxLoops = document.getElementById("maxLoops").value;
-		t = window.setTimeout(function () {
+	function process_form() {
+		console.log(isProcessing);
+		if (!isProcessing) {
+			isProcessing = true;
+			n = document.getElementById("n").value;
+			Lmin = document.getElementById("Lmin").value;
+			Lmax = document.getElementById("Lmax").value;
+			maxLoops = document.getElementById("maxLoops").value;
 			R = get_palette(n, Lmin, Lmax, maxLoops);
 			if (R["bestPalette"] !== null) {
 				palettes = document.getElementById("palettes");
@@ -232,13 +238,21 @@
 				innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + parseInt(R["score"]) + '</p><p class="is-size-7">' + R["total_colors"] + ' colors</p><p class="is-size-7">' + R["loops_done"] + ' loops</p></div><div class="media-content">';
 				R["palette"].forEach(function (color) {
 					innerHTML += '<div class="is-pulled-left box is-radiusless has-text-white has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
-				});
+					});
 				innerHTML += '</div><div class="media-right"><button class="delete" onclick="remove_palette(this)"></button></div>';
 				newPalette.innerHTML = innerHTML;
 				palettes.insertBefore(newPalette, palettes.firstChild);
 			}
 			b.classList.remove("is-loading");
-		});
+			isProcessing = false;
+		}
+	}
+
+	function submit_form() {
+			b = document.getElementById("submitButton");
+			b.classList.add("is-loading");
+			setTimeout(process_form, 1);
+			return false;
 	}
 	</script>
 	<script>
