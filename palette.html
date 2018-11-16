@@ -159,7 +159,7 @@
 		data = new Array();
 		for (color in chroma.colors) {
 			c = chroma(color);
-			L = c.lab()[0];
+			L = 100 * c.hsl()[2];
 			if ((L >= Lmin) && (L <= Lmax)) {
 				data.push(c);
 			}
@@ -211,8 +211,8 @@
 		}
 		console.log(generation + loop + " loops done");
 		bestPalette.sort(function (a, b) {
-			score_a = a.hsl()[0] / 360 + a.hsl()[1] * 2 + a.hsl()[2] * 5;
-			score_b = b.hsl()[0] / 360 + b.hsl()[1] * 2 + b.hsl()[2] * 5;
+			score_a = (a.hsl()[0] !== NaN ? a.hsl()[0] / 360 : 0) + a.hsl()[1] * 2 + a.hsl()[2] * 5;
+			score_b = (b.hsl()[0] !== NaN ? b.hsl()[0] / 360 : 0) + b.hsl()[1] * 2 + b.hsl()[2] * 5;
 			return score_a - score_b;
 		});
 		return {"total_colors": data.length, "loops_done": generation + loop, "score": bestScore, "palette": bestPalette};	
@@ -223,7 +223,6 @@
 	}
 
 	function process_form() {
-		console.log(isProcessing);
 		if (!isProcessing) {
 			isProcessing = true;
 			n = document.getElementById("n").value;
