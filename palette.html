@@ -211,11 +211,11 @@
 		}
 		console.log(generation + loop + " loops done");
 		bestPalette.sort(function (a, b) {
-			score_a = (a.hsl()[0] !== NaN ? a.hsl()[0] / 360 : 0) + a.hsl()[1] * 2 + a.hsl()[2] * 5;
-			score_b = (b.hsl()[0] !== NaN ? b.hsl()[0] / 360 : 0) + b.hsl()[1] * 2 + b.hsl()[2] * 5;
+			score_a = (a.hsl()[0] !== a.hsl()[0] ? -8 : a.hsl()[0] / 360) + a.hsl()[1] * 2 + a.hsl()[2] * 5;
+			score_b = (b.hsl()[0] !== b.hsl()[0] ? -8 : b.hsl()[0] / 360) + b.hsl()[1] * 2 + b.hsl()[2] * 5;
 			return score_a - score_b;
 		});
-		return {"total_colors": data.length, "loops_done": generation + loop, "score": bestScore, "palette": bestPalette};	
+		return {"total_colors": data.length, "loops_done": generation + loop, "score": Math.round(bestScore * 100) / 100, "palette": bestPalette};	
 	}
 
 	function remove_palette(b) {
@@ -234,7 +234,7 @@
 				palettes = document.getElementById("palettes");
 				newPalette = document.createElement("div");
 				newPalette.className = "media box";
-				innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + parseInt(R["score"]) + '</p><p class="is-size-7">' + R["total_colors"] + ' colors</p><p class="is-size-7">' + R["loops_done"] + ' loops</p></div><div class="media-content">';
+				innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + R["score"] + '</p><p class="is-size-7">' + R["total_colors"] + ' colors</p><p class="is-size-7">' + R["loops_done"] + ' loops</p></div><div class="media-content">';
 				R["palette"].forEach(function (color) {
 					innerHTML += '<div class="is-pulled-left box is-radiusless has-text-white has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
 					});
