@@ -6,7 +6,6 @@
 		<title>Visually Distinct Colors Generator</title>
 		<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/slate/bulmaswatch.min.css">
 		<link rel="canonical" href="https://mokole.com/palette.html">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.0/chroma.min.js"></script>
 	</head>
 	<body>
 	<section class="section">
@@ -151,32 +150,49 @@
 			</div>
 		</div>
 	</footer>
+	<noscript>
+		<div class="modal is-active">
+			<div class="modal-background"></div>
+			<div class="modal-content">
+				<p class="notification is-danger has-text-centered has-text-weight-bold">JavaScript is required to run this page.</p>
+			</div>
+		</div>		
+	</noscript>
+	<div class="modal" id="browser-warning">
+		<div class="modal-background"></div>
+		<div class="modal-content">
+			<p class="notification is-danger has-text-centered has-text-weight-bold">You need a <a href="https://caniuse.com/#feat=webworkers">modern browser supporting web workers</a> to run this page.</p>
+		</div>
+	</div>		
 	</body>
-	<script type="text/javascript">
-	var isProcessing = false;
+	<script type="text/js-worker">
+	"use strict";
+	console.log("palette-worker: executing");
+	importScripts("https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.0/chroma.min.js");
+
 	function get_palette(n=8, Lmin=5, Lmax=90, maxLoops=10000) {
 		console.log(n, Lmin, Lmax, maxLoops);
-		data = new Array();
-		for (color in chroma.colors) {
-			c = chroma(color);
-			L = 100 * c.hsl()[2];
+		var data = new Array();
+		for (var color in chroma.colors) {
+			var c = chroma(color);
+			var L = 100 * c.hsl()[2];
 			if ((L >= Lmin) && (L <= Lmax)) {
 				data.push(c);
 			}
 		}
 		console.log(data.length + " initial colors");
-		bestScore = 0;
-		bestPalette = null;
-		generation = 0;
-		loop = 0;
+		var bestScore = 0;
+		var bestPalette = null;
+		var generation = 0;
+		var loop = 0;
 		while (loop < maxLoops) {
 			loop += 1;
-			colors = data.slice(0);
-			palette = colors.splice(Math.floor(Math.random() * colors.length), 1);
+			var colors = data.slice(0);
+			var palette = colors.splice(Math.floor(Math.random() * colors.length), 1);
 			while (palette.length < n) {
-				availableColors = new Array();
+				var availableColors = new Array();
 				colors.forEach(function (color) {
-					accepted = true;
+					var accepted = true;
 					for (var k in palette) {
 						if (chroma.distance(color, palette[k]) <= bestScore) {
 							accepted = false;
@@ -199,7 +215,7 @@
 				bestScore = null;
 				for (var i = 0; i < n - 1; i++) {
 					for (var j = i + 1; j < n; j++) {
-						d = chroma.distance(palette[i], palette[j]);
+						var d = chroma.distance(palette[i], palette[j]);
 						if ((bestScore === null) || (d < bestScore)) {
 							bestScore = d;
 						}
@@ -211,47 +227,63 @@
 		}
 		console.log(generation + loop + " loops done");
 		bestPalette.sort(function (a, b) {
-			score_a = (a.hsl()[0] !== a.hsl()[0] ? -8 : a.hsl()[0] / 360) + a.hsl()[1] * 2 + a.hsl()[2] * 5;
-			score_b = (b.hsl()[0] !== b.hsl()[0] ? -8 : b.hsl()[0] / 360) + b.hsl()[1] * 2 + b.hsl()[2] * 5;
+			var score_a = (a.hsl()[0] !== a.hsl()[0] ? -8 : a.hsl()[0] / 360) + a.hsl()[1] * 2 + a.hsl()[2] * 5;
+			var score_b = (b.hsl()[0] !== b.hsl()[0] ? -8 : b.hsl()[0] / 360) + b.hsl()[1] * 2 + b.hsl()[2] * 5;
 			return score_a - score_b;
 		});
-		return {"total_colors": data.length, "loops_done": generation + loop, "score": Math.round(bestScore * 100) / 100, "palette": bestPalette};	
+		generation += loop;
+		var score = Math.round(bestScore * 100) / 100;
+		var innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + score + '</p><p class="is-size-7">' + data.length + ' colors</p><p class="is-size-7">' + generation + ' loops</p></div><div class="media-content">';
+		bestPalette.forEach(function (color) {
+			var textColor = chroma.distance(color, chroma("black"), "lab") > 1.2 * chroma.distance(color, chroma("white"), "lab") ? "black" : "white";
+			innerHTML += '<div class="is-pulled-left box is-radiusless has-text-' + textColor + ' has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
+			});
+		innerHTML += '</div><div class="media-right"><button class="delete" onclick="remove_palette(this)"></button></div>';
+		return {"total_colors": data.length, "loops_done": generation, "score": score, "palette": bestPalette, "paletteHTML": innerHTML};	
+	}
+
+	onmessage = function (e) {
+		console.log("palette-worker: received from main script", e.data);
+		var n, Lmin, Lmax, maxLoops;
+		[n, Lmin, Lmax, maxLoops] = e.data;
+		var R = get_palette(n, Lmin, Lmax, maxLoops);
+		postMessage(R);
+	}		
+	</script>
+	<script type="text/javascript">
+	if (window.Worker) {
+		var blob = new Blob(Array.prototype.map.call(document.querySelectorAll('script[type=\'text\/js-worker\']'), function (oScript) { return oScript.textContent; }),{type: 'text/javascript'});
+		var worker = new Worker(window.URL.createObjectURL(blob));
+		worker.onmessage = function (e) {
+			R = e.data;
+			console.log(R);
+			if (R["palette"] !== null) {
+				palettes = document.getElementById("palettes");
+				newPalette = document.createElement("div");
+				newPalette.className = "media box";
+				newPalette.innerHTML = R["paletteHTML"];
+				palettes.insertBefore(newPalette, palettes.firstChild);
+			}
+			document.getElementById("submitButton").classList.remove("is-loading");
+		}
+	} else {
+		document.getElementById("browser-warning").classList.add("is-active");		
 	}
 
 	function remove_palette(b) {
 		b.parentNode.parentNode.parentNode.removeChild(b.parentNode.parentNode);
 	}
 
-	function process_form() {
-		if (!isProcessing) {
-			isProcessing = true;
-			n = document.getElementById("n").value;
-			Lmin = document.getElementById("Lmin").value;
-			Lmax = document.getElementById("Lmax").value;
-			maxLoops = document.getElementById("maxLoops").value;
-			R = get_palette(n, Lmin, Lmax, maxLoops);
-			if (R["bestPalette"] !== null) {
-				palettes = document.getElementById("palettes");
-				newPalette = document.createElement("div");
-				newPalette.className = "media box";
-				innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + R["score"] + '</p><p class="is-size-7">' + R["total_colors"] + ' colors</p><p class="is-size-7">' + R["loops_done"] + ' loops</p></div><div class="media-content">';
-				R["palette"].forEach(function (color) {
-					textColor = chroma.distance(color, chroma("black"), "lab") > 1.2 * chroma.distance(color, chroma("white"), "lab") ? "black" : "white";
-					innerHTML += '<div class="is-pulled-left box is-radiusless has-text-' + textColor + ' has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
-					});
-				innerHTML += '</div><div class="media-right"><button class="delete" onclick="remove_palette(this)"></button></div>';
-				newPalette.innerHTML = innerHTML;
-				palettes.insertBefore(newPalette, palettes.firstChild);
-			}
-			b.classList.remove("is-loading");
-			isProcessing = false;
-		}
-	}
-
 	function submit_form() {
 			b = document.getElementById("submitButton");
-			b.classList.add("is-loading");
-			setTimeout(process_form, 1);
+			if (!b.classList.contains("is-loading")) {
+				b.classList.add("is-loading");
+				n = document.getElementById("n").value;
+				Lmin = document.getElementById("Lmin").value;
+				Lmax = document.getElementById("Lmax").value;
+				maxLoops = document.getElementById("maxLoops").value;
+				worker.postMessage([n, Lmin, Lmax, maxLoops]);			
+			}
 			return false;
 	}
 	</script>
@@ -269,7 +301,6 @@
 	  t.ready = function(f) {
 	    t._e.push(f);
 	  };
-
 	  return t;
 	}(document, "script", "twitter-wjs"));
 	</script>
