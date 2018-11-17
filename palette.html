@@ -127,7 +127,6 @@
 	<section>
 		<div class="container is-invisible" id="console">
 		</div>
-		<br>
 		<div class="container" id="palettes">
 		</div>
 		<br>
@@ -261,7 +260,7 @@
 		worker.onmessage = function (e) {
 			R = e.data;
 			if (typeof R == "string") {
-				document.getElementById("console").innerHTML = '<pre class="notification box is-primary has-text-success has-text-centered">' + R + '</pre>';
+				document.getElementById("console").innerHTML = '<pre class="notification box is-primary has-text-success has-text-centered">' + R + '</pre><br>';
 			} else {
 				if (R["palette"] !== null) {
 					palettes = document.getElementById("palettes");
@@ -270,6 +269,7 @@
 					newPalette.innerHTML = R["paletteHTML"];
 					palettes.insertBefore(newPalette, palettes.firstChild);
 				}
+				document.getElementById("console").innerHTML = "";
 				document.getElementById("console").classList.add("is-invisible");			
 				document.getElementById("submitButton").classList.remove("is-loading");			
 			}
