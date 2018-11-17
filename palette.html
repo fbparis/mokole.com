@@ -125,11 +125,12 @@
 		</div>
 	</section>
 	<section>
-		<div class="container is-invisible" id="loading">
-			
+		<div class="container is-invisible" id="console">
 		</div>
+		<br>
 		<div class="container" id="palettes">
 		</div>
+		<br>
 	</section>
 	<footer class="has-background-black">
 		<div class="container content">
@@ -170,8 +171,12 @@
 	console.log("palette-worker: executing");
 	importScripts("https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.0/chroma.min.js");
 
+	function log(s) {
+		postMessage(s);
+	}
+
 	function get_palette(n=8, Lmin=5, Lmax=90, maxLoops=10000) {
-		console.log(n, Lmin, Lmax, maxLoops);
+		log("processing with parameters n=" + n + ", Lmin=" + Lmin + ", Lmax=" + Lmax + ", maxLoops=" + maxLoops);
 		var data = new Array();
 		for (var color in chroma.colors) {
 			var c = chroma(color);
@@ -180,7 +185,7 @@
 				data.push(c);
 			}
 		}
-		console.log(data.length + " initial colors");
+		log(data.length + " initial colors");
 		var bestScore = 0;
 		var bestPalette = null;
 		var generation = 0;
@@ -222,10 +227,10 @@
 					}
 				}
 				bestPalette = palette.slice(0);
-				console.log("generation " + generation + ": " + bestScore);
+				log("generation " + generation + ": better palette found with score " + bestScore);
 			}
 		}
-		console.log(generation + loop + " loops done");
+		log(generation + loop + " loops done");
 		bestPalette.sort(function (a, b) {
 			var score_a = (a.hsl()[0] !== a.hsl()[0] ? -8 : a.hsl()[0] / 360) + a.hsl()[1] * 2 + a.hsl()[2] * 5;
 			var score_b = (b.hsl()[0] !== b.hsl()[0] ? -8 : b.hsl()[0] / 360) + b.hsl()[1] * 2 + b.hsl()[2] * 5;
@@ -243,7 +248,6 @@
 	}
 
 	onmessage = function (e) {
-		console.log("palette-worker: received from main script", e.data);
 		var n, Lmin, Lmax, maxLoops;
 		[n, Lmin, Lmax, maxLoops] = e.data;
 		var R = get_palette(n, Lmin, Lmax, maxLoops);
@@ -256,15 +260,19 @@
 		var worker = new Worker(window.URL.createObjectURL(blob));
 		worker.onmessage = function (e) {
 			R = e.data;
-			console.log(R);
-			if (R["palette"] !== null) {
-				palettes = document.getElementById("palettes");
-				newPalette = document.createElement("div");
-				newPalette.className = "media box";
-				newPalette.innerHTML = R["paletteHTML"];
-				palettes.insertBefore(newPalette, palettes.firstChild);
+			if (typeof R == "string") {
+				document.getElementById("console").innerHTML = '<pre class="notification box is-primary has-text-success has-text-centered">' + R + '</pre>';
+			} else {
+				if (R["palette"] !== null) {
+					palettes = document.getElementById("palettes");
+					newPalette = document.createElement("div");
+					newPalette.className = "media box";
+					newPalette.innerHTML = R["paletteHTML"];
+					palettes.insertBefore(newPalette, palettes.firstChild);
+				}
+				document.getElementById("console").classList.add("is-invisible");			
+				document.getElementById("submitButton").classList.remove("is-loading");			
 			}
-			document.getElementById("submitButton").classList.remove("is-loading");
 		}
 	} else {
 		document.getElementById("browser-warning").classList.add("is-active");		
@@ -278,6 +286,7 @@
 			b = document.getElementById("submitButton");
 			if (!b.classList.contains("is-loading")) {
 				b.classList.add("is-loading");
+				document.getElementById("console").classList.remove("is-invisible");
 				n = document.getElementById("n").value;
 				Lmin = document.getElementById("Lmin").value;
 				Lmax = document.getElementById("Lmax").value;
