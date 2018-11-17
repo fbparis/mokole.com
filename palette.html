@@ -236,7 +236,8 @@
 				newPalette.className = "media box";
 				innerHTML = '<div class="media-left"><p class="is-size-2 has-text-warning">' + R["score"] + '</p><p class="is-size-7">' + R["total_colors"] + ' colors</p><p class="is-size-7">' + R["loops_done"] + ' loops</p></div><div class="media-content">';
 				R["palette"].forEach(function (color) {
-					innerHTML += '<div class="is-pulled-left box is-radiusless has-text-white has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
+					textColor = chroma.distance(color, chroma("black"), "lab") > 1.2 * chroma.distance(color, chroma("white"), "lab") ? "black" : "white";
+					innerHTML += '<div class="is-pulled-left box is-radiusless has-text-' + textColor + ' has-text-weight-bold has-text-centered" style="background-color: ' + color.hex() + '"><p>' + color.name() + '</p><p>' + color.hex() + '</p></div>';
 					});
 				innerHTML += '</div><div class="media-right"><button class="delete" onclick="remove_palette(this)"></button></div>';
 				newPalette.innerHTML = innerHTML;
