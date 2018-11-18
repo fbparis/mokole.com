@@ -285,13 +285,15 @@
 	function submit_form() {
 			b = document.getElementById("submitButton");
 			if (!b.classList.contains("is-loading")) {
-				b.classList.add("is-loading");
-				document.getElementById("console").classList.remove("is-invisible");
 				n = document.getElementById("n").value;
-				Lmin = document.getElementById("Lmin").value;
-				Lmax = document.getElementById("Lmax").value;
-				maxLoops = document.getElementById("maxLoops").value;
-				worker.postMessage([n, Lmin, Lmax, maxLoops]);			
+				if ((parseInt(n) > 1) && (parseInt(n) < 116)) {
+					b.classList.add("is-loading");
+					document.getElementById("console").classList.remove("is-invisible");
+					Lmin = document.getElementById("Lmin").value;
+					Lmax = document.getElementById("Lmax").value;
+					maxLoops = document.getElementById("maxLoops").value;
+					worker.postMessage([n, Lmin, Lmax, maxLoops]);								
+				}
 			}
 			return false;
 	}
