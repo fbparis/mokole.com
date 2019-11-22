@@ -71,7 +71,7 @@
 	    </style>
 	</head>
 	<body>
-		<div style="display: inline-block;">
+		<div id="main" style="display: inline-block; transform-origin: top left;">
 			<div class="card">
 				<div class="red">
 					<div class="row">
@@ -164,7 +164,27 @@
 			</div>
 		</div>
 	    <script type="text/javascript">
-	    	screen.orientation.lock("landscape");
+			screen.orientation.lock("landscape")
+			.then(function() {
+				console.log('Screen orientation locked');
+			})
+			.catch(function(error) {
+				console.log(error);
+			});
+
+			function scale_content() {
+				// scale main div to fit the screen
+				document.getElementById('main').style.transform = '';
+				h = window.innerHeight / document.getElementById('main').getBoundingClientRect().height;
+				w = window.innerWidth / document.getElementById('main').getBoundingClientRect().width;
+				document.getElementById('main').style.transform = 'scale(' + Math.min(h, w) + ')';		
+			}
+
+			scale_content();
+
+			window.addEventListener("resize", function() {
+				scale_content();
+			}, false);
 
 	    	function update_score(id, score) {
 	    		document.getElementById(id).innerHTML = parseInt(document.getElementById(id).innerHTML) + score;
