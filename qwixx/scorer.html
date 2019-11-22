@@ -10,13 +10,230 @@
 		<meta name="apple-mobile-web-app-title" content="Qwixx Scorer">
 		<link rel="manifest" href="manifest.json">
 	    <link rel="canonical" href="//mokole.com/qwixx/scorer.html">
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+	    <link rel="stylesheet" href="normalize.css">
 	    <style type="text/css">
-	    	
+	    	body { font-weight: bold; font-family: 'Courier'; ; font-size: 20px; }
+	    	.disabled { background-color: #DDDDDF !important ; color: #AAAAAF !important; }
+	    	.row { margin-top: 1ex; padding: 1ex 1em; display: inline-block; }
+	    	.sub-row { padding: 2px; display: inline-block; font-size: 1ex; }
+	    	.round { border-radius: 8px; }
+	    	.gray { color: #666666; }
+	    	.card { background-color: #DDDDDF; color: black; padding: 1ex 1em 0ex 1em; }
+	    	.card-bottom { background-color: #AAAAAF; color: black; padding: 1ex 1em; }
+	    	.lock { margin: 2px 0ex 2px 1ex; border-radius: 25px; display: inline-block; }
+	    	.cell { width: 50px; height: 50px; text-align: center; vertical-align: middle; line-height: 50px; font-size: 40px; display: inline-block; }
+	    	.non-scored { text-align: right; padding: 1ex 0em;}
+	    	.non-scored div { display: inline-block; background-color: white; border: 2px solid #666666; border-radius: 10px; width: 20px; height: 20px; }
+
+	    	.red .row { background-color: #DB1921; }
+	    	.red .sub-row { background-color: #851619; }
+	    	.red .cell { background-color: #F9CFD0; color: #DB1921; }
+	    	.red .lock { background-color: #F9CFD0; color: #851619; border: 2px solid #851619; }
+	    	.yellow .row { background-color: #F7C933; }
+	    	.yellow .sub-row { background-color: #976514; }
+	    	.yellow .cell { background-color: #FFFED2; color: #F7C933; }
+	    	.yellow .lock { background-color: #FFFED2; color: #976514; border: 2px solid #976514; }
+	    	.green .row { background-color: #469C23; }
+	    	.green .sub-row { background-color: #09590A; }
+	    	.green .cell { background-color: #F0FFF0; color: #469C23; }
+	    	.green .lock { background-color: #F0FFF0; color: #09590A; border: 2px solid #09590A; }
+	    	.blue .row { background-color: #44719C; }
+	    	.blue .sub-row { background-color: #17436E; }
+	    	.blue .cell { background-color: #E0E0FE; color: #44719C; }
+	    	.blue .lock { background-color: #E0E0FE; color: #17436E; border: 2px solid #17436E; }
+
+	    	.card-bottom div { background-color: white; color: black; text-align: center; vertical-align: middle; line-height: 40px; font-size: 30px; display: inline-block; height: 40px; width: 60px; border: 3px solid black; border-radius: 10px; font-weight: normal; }
+
+	    	#red-score { border-color: #DB1921 !important; }
+	    	#yellow-score { border-color: #F7C933 !important; }
+	    	#green-score { border-color: #469C23 !important; }
+	    	#blue-score { border-color: #44719C !important; }
+	    	#gray-score { border-color: #666666 !important; }
+	    	#total-score { width: 120px !important; font-weight: bold !important; }
+
+			.checked {
+				background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M100 0 L0 100 ' stroke='black' stroke-width='10'/><path d='M0 0 L100 100 ' stroke='black' stroke-width='10'/></svg>");
+				background-repeat:no-repeat;
+				background-position:center center;
+				background-size: 100% 100%, auto;
+			}	    	
+
 	    </style>
 	</head>
 	<body>
-		<script type="text/javascript">
-			
-		</script>
+		<div style="display: inline-block;">
+			<div class="card">
+				<div class="red">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">2</div>
+							<div class="cell round">3</div>
+							<div class="cell round">4</div>
+							<div class="cell round">5</div>
+							<div class="cell round">6</div>
+							<div class="cell round">7</div>
+							<div class="cell round">8</div>
+							<div class="cell round">9</div>
+							<div class="cell round">10</div>
+							<div class="cell round">11</div>
+							<div class="cell round disabled">12</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="yellow">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">2</div>
+							<div class="cell round">3</div>
+							<div class="cell round">4</div>
+							<div class="cell round">5</div>
+							<div class="cell round">6</div>
+							<div class="cell round">7</div>
+							<div class="cell round">8</div>
+							<div class="cell round">9</div>
+							<div class="cell round">10</div>
+							<div class="cell round">11</div>
+							<div class="cell round disabled">12</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="green">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">12</div>
+							<div class="cell round">11</div>
+							<div class="cell round">10</div>
+							<div class="cell round">9</div>
+							<div class="cell round">8</div>
+							<div class="cell round">7</div>
+							<div class="cell round">6</div>
+							<div class="cell round">5</div>
+							<div class="cell round">4</div>
+							<div class="cell round">3</div>
+							<div class="cell round disabled">2</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="blue">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">12</div>
+							<div class="cell round">11</div>
+							<div class="cell round">10</div>
+							<div class="cell round">9</div>
+							<div class="cell round">8</div>
+							<div class="cell round">7</div>
+							<div class="cell round">6</div>
+							<div class="cell round">5</div>
+							<div class="cell round">4</div>
+							<div class="cell round">3</div>
+							<div class="cell round disabled">2</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="non-scored">
+					-5 per own non scored roll:
+					<div>&nbsp;</div>
+					<div>&nbsp;</div>
+					<div>&nbsp;</div>
+					<div>&nbsp;</div>
+				</div>
+			</div>		
+			<div class="card-bottom">
+				Total:
+				<div id="red-score">0</div> <span class="gray">+</span>
+				<div id="yellow-score">0</div> <span class="gray">+</span>
+				<div id="green-score">0</div> <span class="gray">+</span>
+				<div id="blue-score">0</div> <span class="gray">-</span>
+				<div id="gray-score">0</div> <span class="gray">=</span>				
+				<div id="total-score">0</div>
+			</div>
+		</div>
+	    <script type="text/javascript">
+	    	screen.orientation.lock("landscape");
+
+	    	function update_score(id, score) {
+	    		document.getElementById(id).innerHTML = parseInt(document.getElementById(id).innerHTML) + score;
+	    		if (id == 'gray-score') {
+	    			score = -score;
+	    		}
+	    		document.getElementById('total-score').innerHTML = parseInt(document.getElementById('total-score').innerHTML) + score;
+	    	}
+
+	    	function toggle_lock(row) {
+				var elt = row.lastElementChild.querySelector('i');
+				elt.classList.toggle('fa-unlock');
+				elt.classList.toggle('fa-lock');
+	    	}
+
+	    	function handle_click() {
+	    		if (!this.classList.contains('disabled')) {
+	    			if (this.classList.contains('lock')) {
+	    				var row = this.parentElement;
+						var skipFirst = row.firstElementChild.querySelectorAll('.checked').length < 5;
+						elt = row.firstElementChild.lastElementChild;
+						if (skipFirst) elt = elt.previousElementSibling;
+						while (elt) {
+							elt.classList.toggle('disabled');
+							if (elt.classList.contains('checked')) break;
+							elt = elt.previousElementSibling;
+						}
+	    				toggle_lock(this.parentElement)
+	    			} else {
+		    			this.classList.toggle('checked');
+	    				if (this.parentElement.classList.contains('non-scored')) {
+		    				if (this.classList.contains('checked')) {
+		    					var score = 5;
+		    				} else {
+		    					var score = -5;
+		    				}
+		    				update_score('gray-score', score);
+		    			} else {
+		    				var elt = this.previousElementSibling;
+		    				while (elt) {
+		    					elt.classList.toggle('disabled');
+		    					if (elt.classList.contains('checked')) break;
+		    					elt = elt.previousElementSibling;
+		    				}
+		    				var score = this.parentElement.querySelectorAll(".checked").length;
+		    				var last = this.parentElement.lastElementChild;
+		    				if (this == last) {
+		    					score = 2 * score + 1;
+		    					var row = this.parentElement.parentElement;
+		    					row.lastElementChild.classList.toggle('disabled');
+		    					row.lastElementChild.classList.toggle('checked');
+		    					toggle_lock(row);
+		    					this
+		    				}
+		    				if (score > 4) {
+		    					last.classList.remove('disabled');
+		    				} else {
+		    					last.classList.add('disabled');
+		    				}
+		    				if (!this.classList.contains('checked')) {
+		    					score = -(score + 1);
+		    					if (this == last) score -= 1;
+		    				}
+		    				update_score(this.parentElement.parentElement.parentElement.className + '-score', score);
+		    			}
+	    			}
+	    		}
+	    	}
+
+	    	var elts = document.getElementsByClassName("cell");
+	    	for (var i = 0; i < elts.length; i++) {
+	    		elts[i].addEventListener('click', handle_click, false);
+	    	}
+
+	    	var elts = document.querySelectorAll(".non-scored > div");
+	    	for (var i = 0; i < elts.length; i++) {
+	    		elts[i].addEventListener('click', handle_click, false);
+	    	}
+	    </script>
 	</body>
 </html>

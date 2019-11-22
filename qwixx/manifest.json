@@ -1,0 +1,9 @@
+{
+ "name": "Qwixx Scorer",
+ "short_name": "Qwixx Scorer",
+ "display": "standalone",
+ "orientation": "landscape",
+ "start_url": "/qwixx/scorer.html",
+ "icons": [
+ ]
+}
