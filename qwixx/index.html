@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en" manifest="qwixx-scorer.appcache">
+	<head>
+		<meta charset="utf-8">
+		<title>Qwixx Scorer</title>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="application-name" content="Qwixx Scorer">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Qwixx Scorer">
+		<link rel="manifest" href="manifest.json">
+	    <link rel="canonical" href="//mokole.com/qwixx/scorer.html">
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+	    <link rel="stylesheet" href="normalize.css">
+	    <style type="text/css">
+	    	body { 
+	    		font-weight: bold; font-family: 'Courier'; ; font-size: 20px; 
+			    /* unselectable text */
+			    -webkit-touch-callout: none;
+			    -webkit-user-select: none;
+			    -khtml-user-select: none;
+			    -moz-user-select: none;
+			    -ms-user-select: none;
+			    user-select: none;
+	    	}
+	    	.disabled { background-color: #DDDDDF !important ; color: #AAAAAF !important; cursor: not-allowed !important; }
+	    	.row { margin-top: 1ex; padding: 1ex 1em; display: inline-block; }
+	    	.sub-row { padding: 2px; display: inline-block; font-size: 1ex; }
+	    	.round { border-radius: 8px; }
+	    	.gray { color: #666666; }
+	    	.card { background-color: #DDDDDF; color: black; padding: 1ex 1em 0ex 1em; }
+	    	.card-bottom { background-color: #AAAAAF; color: black; padding: 1ex 1em; }
+	    	.lock { margin: 2px 0ex 2px 1ex; border-radius: 25px; display: inline-block; cursor: pointer; }
+	    	.cell { width: 50px; height: 50px; text-align: center; vertical-align: middle; line-height: 50px; font-size: 40px; display: inline-block; cursor: pointer; }
+	    	.blank { text-align: right; padding: 1ex 0em; font-size: 15px; vertical-align: middle; line-height: 30px; }
+	    	.non-scored { display: inline-block; background-color: white !important; border: 2px solid #666666; border-radius: 15px; width: 30px; height: 30px; cursor: pointer; }
+
+	    	.red .row { background-color: #DB1921; }
+	    	.red .sub-row { background-color: #851619; }
+	    	.red .cell { background-color: #F9CFD0; color: #DB1921; }
+	    	.red .lock { background-color: #F9CFD0; color: #851619; border: 2px solid #851619; }
+	    	.yellow .row { background-color: #F7C933; }
+	    	.yellow .sub-row { background-color: #976514; }
+	    	.yellow .cell { background-color: #FFFED2; color: #F7C933; }
+	    	.yellow .lock { background-color: #FFFED2; color: #976514; border: 2px solid #976514; }
+	    	.green .row { background-color: #469C23; }
+	    	.green .sub-row { background-color: #09590A; }
+	    	.green .cell { background-color: #F0FFF0; color: #469C23; }
+	    	.green .lock { background-color: #F0FFF0; color: #09590A; border: 2px solid #09590A; }
+	    	.blue .row { background-color: #44719C; }
+	    	.blue .sub-row { background-color: #17436E; }
+	    	.blue .cell { background-color: #E0E0FE; color: #44719C; }
+	    	.blue .lock { background-color: #E0E0FE; color: #17436E; border: 2px solid #17436E; }
+
+	    	.card-bottom div { background-color: white; color: black; text-align: center; vertical-align: middle; line-height: 40px; font-size: 30px; display: inline-block; height: 40px; width: 60px; border: 3px solid black; border-radius: 10px; font-weight: normal; }
+
+	    	#red-score { border-color: #DB1921 !important; }
+	    	#yellow-score { border-color: #F7C933 !important; }
+	    	#green-score { border-color: #469C23 !important; }
+	    	#blue-score { border-color: #44719C !important; }
+	    	#gray-score { border-color: #666666 !important; }
+	    	#total-score { width: 120px !important; font-weight: bold !important; }
+
+			.checked {
+				background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M100 0 L0 100 ' stroke='black' stroke-width='10'/><path d='M0 0 L100 100 ' stroke='black' stroke-width='10'/></svg>");
+				background-repeat:no-repeat;
+				background-position:center center;
+				background-size: 100% 100%, auto;
+			}
+
+			#dice { float: left; background-color: black; border-radius: 15px; padding: 4px 8px; cursor: pointer; }
+			#dice div { display: inline-block; font-size: 30px; vertical-align: middle; line-height: 30px; }
+			.red-dice { color: #DB1921; }
+			.yellow-dice { color: #F7C933; }
+			.green-dice { color: #469C23; }
+			.blue-dice { color: #44719C; }
+			.white-dice { color: white; }
+	    </style>
+	</head>
+	<body>
+		<div id="main" style="display: inline-block; transform-origin: top left; white-space: nowrap;">
+			<div class="card">
+				<div class="red">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">2</div>
+							<div class="cell round">3</div>
+							<div class="cell round">4</div>
+							<div class="cell round">5</div>
+							<div class="cell round">6</div>
+							<div class="cell round">7</div>
+							<div class="cell round">8</div>
+							<div class="cell round">9</div>
+							<div class="cell round">10</div>
+							<div class="cell round">11</div>
+							<div class="cell round disabled">12</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="yellow">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">2</div>
+							<div class="cell round">3</div>
+							<div class="cell round">4</div>
+							<div class="cell round">5</div>
+							<div class="cell round">6</div>
+							<div class="cell round">7</div>
+							<div class="cell round">8</div>
+							<div class="cell round">9</div>
+							<div class="cell round">10</div>
+							<div class="cell round">11</div>
+							<div class="cell round disabled">12</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="green">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">12</div>
+							<div class="cell round">11</div>
+							<div class="cell round">10</div>
+							<div class="cell round">9</div>
+							<div class="cell round">8</div>
+							<div class="cell round">7</div>
+							<div class="cell round">6</div>
+							<div class="cell round">5</div>
+							<div class="cell round">4</div>
+							<div class="cell round">3</div>
+							<div class="cell round disabled">2</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="blue">
+					<div class="row">
+						<div class="sub-row round">
+							<div class="cell round">12</div>
+							<div class="cell round">11</div>
+							<div class="cell round">10</div>
+							<div class="cell round">9</div>
+							<div class="cell round">8</div>
+							<div class="cell round">7</div>
+							<div class="cell round">6</div>
+							<div class="cell round">5</div>
+							<div class="cell round">4</div>
+							<div class="cell round">3</div>
+							<div class="cell round disabled">2</div>
+						</div>
+						<div class="cell lock"><i class="fas fa-unlock"></i></div>
+					</div>
+				</div>
+				<div class="blank">
+					<div id="dice" title="roll dice">
+						<div class="red-dice"><i class="fas fa-dice-one"></i></div>
+						<div class="yellow-dice"><i class="fas fa-dice-two"></i></div>
+						<div class="green-dice"><i class="fas fa-dice-three"></i></div>
+						<div class="blue-dice"><i class="fas fa-dice-four"></i></div>
+						<div class="white-dice"><i class="fas fa-dice-five"></i></div>
+						<div class="white-dice"><i class="fas fa-dice-six"></i></div>
+					</div>
+					-5 per own non scored roll:
+					<div class="non-scored">&nbsp;</div>
+					<div class="non-scored">&nbsp;</div>
+					<div class="non-scored">&nbsp;</div>
+					<div class="non-scored">&nbsp;</div>
+				</div>
+			</div>		
+			<div class="card-bottom">
+				Total:
+				<div id="red-score">0</div> <span class="gray">+</span>
+				<div id="yellow-score">0</div> <span class="gray">+</span>
+				<div id="green-score">0</div> <span class="gray">+</span>
+				<div id="blue-score">0</div> <span class="gray">-</span>
+				<div id="gray-score">0</div> <span class="gray">=</span>				
+				<div id="total-score">0</div>
+			</div>
+		</div>
+	    <script type="text/javascript">
+			screen.orientation.lock("landscape")
+			.then(function() {
+				console.log('Screen orientation locked');
+			})
+			.catch(function(error) {
+				console.log(error);
+			});
+
+			function scale_content() {
+				// scale main div to fit the screen
+				document.getElementById('main').style.transform = '';
+				h = window.innerHeight / document.getElementById('main').getBoundingClientRect().height;
+				w = window.innerWidth / document.getElementById('main').getBoundingClientRect().width;
+				document.getElementById('main').style.transform = 'scale(' + Math.min(h, w) + ')';		
+			}
+
+			scale_content();
+
+			window.addEventListener("resize", function() {
+				scale_content();
+			}, false);
+
+	    	function update_score(id, score) {
+	    		document.getElementById(id).innerHTML = parseInt(document.getElementById(id).innerHTML) + score;
+	    		if (id == 'gray-score') {
+	    			score = -score;
+	    		}
+	    		document.getElementById('total-score').innerHTML = parseInt(document.getElementById('total-score').innerHTML) + score;
+	    	}
+
+	    	function toggle_lock(row) {
+				var elt = row.lastElementChild.querySelector('i');
+				elt.classList.toggle('fa-unlock');
+				elt.classList.toggle('fa-lock');
+	    	}
+
+	    	function handle_click() {
+	    		if (!this.classList.contains('disabled')) {
+	    			if (this.classList.contains('lock')) {
+	    				var row = this.parentElement;
+						var skipFirst = row.firstElementChild.querySelectorAll('.checked').length < 5;
+						elt = row.firstElementChild.lastElementChild;
+						if (skipFirst) elt = elt.previousElementSibling;
+						while (elt) {
+							elt.classList.toggle('disabled');
+							if (elt.classList.contains('checked')) break;
+							elt = elt.previousElementSibling;
+						}
+	    				toggle_lock(this.parentElement)
+	    			} else {
+		    			this.classList.toggle('checked');
+	    				if (this.classList.contains('non-scored')) {
+		    				if (this.classList.contains('checked')) {
+		    					var score = 5;
+		    				} else {
+		    					var score = -5;
+		    				}
+		    				update_score('gray-score', score);
+		    			} else {
+		    				var elt = this.previousElementSibling;
+		    				while (elt) {
+		    					elt.classList.toggle('disabled');
+		    					if (elt.classList.contains('checked')) break;
+		    					elt = elt.previousElementSibling;
+		    				}
+		    				var score = this.parentElement.querySelectorAll(".checked").length;
+		    				var last = this.parentElement.lastElementChild;
+		    				if (this == last) {
+		    					score = 2 * score + 1;
+		    					var row = this.parentElement.parentElement;
+		    					row.lastElementChild.classList.toggle('disabled');
+		    					row.lastElementChild.classList.toggle('checked');
+		    					toggle_lock(row);
+		    					this
+		    				}
+		    				if (score > 4) {
+		    					last.classList.remove('disabled');
+		    				} else {
+		    					last.classList.add('disabled');
+		    				}
+		    				if (!this.classList.contains('checked')) {
+		    					score = -(score + 1);
+		    					if (this == last) score -= 1;
+		    				}
+		    				update_score(this.parentElement.parentElement.parentElement.className + '-score', score);
+		    			}
+	    			}
+	    		}
+	    	}
+
+	    	var elts = document.getElementsByClassName("cell");
+	    	for (var i = 0; i < elts.length; i++) {
+	    		elts[i].addEventListener('click', handle_click, false);
+	    	}
+
+	    	var elts = document.querySelectorAll(".non-scored");
+	    	for (var i = 0; i < elts.length; i++) {
+	    		elts[i].addEventListener('click', handle_click, false);
+	    	}
+
+	    	document.getElementById('dice').addEventListener('click', function() {
+	    		var children = this.children;
+	    		var dice = ['one', 'two', 'three', 'four', 'five', 'six'];
+	    		for (var i = 0; i < children.length; i++) {
+	    			children[i].querySelector('i').className = 'fas fa-dice-' + dice[Math.floor(Math.random() * dice.length)]
+	    		}
+	    	}
+	    	, false);
+	    </script>
+	</body>
+</html>
