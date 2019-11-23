@@ -314,6 +314,15 @@
 			window.addEventListener("resize", scale_content, false);
 
 			scale_content();
+
+			if ("serviceWorker" in navigator) {
+				window.addEventListener("load", function () {
+					navigator.serviceWorker.register("/qwixx/service-worker.js", {scope: "/qwixx/"}).then(
+						function () { console.log("serviceWorker registration complete."); },
+						function () { console.log("serviceWorker registration failure."); }
+					);
+				});
+			} else console.log("serviceWorker is not supported.");							
 	    </script>
 	</body>
 </html>
