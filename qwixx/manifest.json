@@ -1,6 +1,8 @@
 {
  "name": "Qwixx Interactive Score Sheet",
  "short_name": "Qwixx Scorer",
+ "background_color": "#ffffff",
+ "theme_color": "#ffffff",
  "display": "standalone",
  "orientation": "landscape",
  "start_url": "/qwixx/index.html",
