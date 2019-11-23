@@ -1,9 +1,9 @@
 {
- "name": "Qwixx Scorer",
+ "name": "Qwixx Interactive Score Sheet",
  "short_name": "Qwixx Scorer",
  "display": "standalone",
  "orientation": "landscape",
- "start_url": "/qwixx/scorer.html",
+ "start_url": "/qwixx/index.html",
  "icons": [
  ]
 }

@@ -2,7 +2,7 @@
 <html lang="en" manifest="qwixx-scorer.appcache">
 	<head>
 		<meta charset="utf-8">
-		<title>Qwixx Scorer</title>
+		<title>Qwixx Interactive Score Sheet</title>
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="application-name" content="Qwixx Scorer">
@@ -75,6 +75,9 @@
 			.green-dice { color: #469C23; }
 			.blue-dice { color: #44719C; }
 			.white-dice { color: white; }
+			.removed { color: black !important; }
+
+			#reset { float:left;  background-color: #666666; color: #DDDDDF; cursor: pointer; border-radius: 15px; padding: 4px 8px; margin-left: 1.5em; font-size: 20px; }
 	    </style>
 	</head>
 	<body>
@@ -161,6 +164,9 @@
 						<div class="white-dice"><i class="fas fa-dice-five"></i></div>
 						<div class="white-dice"><i class="fas fa-dice-six"></i></div>
 					</div>
+					<div id="reset" title="reset the score sheet">
+						<i class="fas fa-power-off"></i>
+					</div>
 					-5 per own non scored roll:
 					<div class="non-scored">&nbsp;</div>
 					<div class="non-scored">&nbsp;</div>
@@ -195,12 +201,6 @@
 				document.getElementById('main').style.transform = 'scale(' + Math.min(h, w) + ')';		
 			}
 
-			scale_content();
-
-			window.addEventListener("resize", function() {
-				scale_content();
-			}, false);
-
 	    	function update_score(id, score) {
 	    		document.getElementById(id).innerHTML = parseInt(document.getElementById(id).innerHTML) + score;
 	    		if (id == 'gray-score') {
@@ -213,6 +213,7 @@
 				var elt = row.lastElementChild.querySelector('i');
 				elt.classList.toggle('fa-unlock');
 				elt.classList.toggle('fa-lock');
+				elt = document.getElementById('dice').querySelector('.' + row.parentElement.className + '-dice').classList.toggle('removed');
 	    	}
 
 	    	function handle_click() {
@@ -283,10 +284,20 @@
 	    		var children = this.children;
 	    		var dice = ['one', 'two', 'three', 'four', 'five', 'six'];
 	    		for (var i = 0; i < children.length; i++) {
-	    			children[i].querySelector('i').className = 'fas fa-dice-' + dice[Math.floor(Math.random() * dice.length)]
+    				children[i].querySelector('i').className = 'fas fa-dice-' + dice[Math.floor(Math.random() * dice.length)]
 	    		}
 	    	}
 	    	, false);
+
+	    	document.getElementById('reset').addEventListener('click',function() {
+	    		if (confirm("This will reset the score sheet to start a new game.")) {
+	    			window.location.reload()
+	    		}
+	    	},false);
+
+			window.addEventListener("resize", scale_content, false);
+
+			scale_content();
 	    </script>
 	</body>
 </html>
