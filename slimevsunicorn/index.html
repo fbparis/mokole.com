@@ -96,15 +96,21 @@
                 grid-area: info;
                 background-color: #b0b0b0;
                 font-size: 0.5rem;
-                /*align-self: center;*/
+                align-self: stretch;
+                align-content: center;
+                display: inline-grid;
             }
             .controls-up {
-                /*align-self: center;*/
                 text-align: center;
+                display: inline-grid;
+                align-items: center;
+                justify-items: center;
             }
             #remaining-gems { 
                 grid-area: remaining-gems;
                 font-size: 0.5em;
+                display: inline;
+                align-self: center;
             }
             #bag-of-gems { grid-area: bag-of-gems; }
             #pub-gem1 { grid-area: pub-gem1; }
@@ -118,8 +124,10 @@
                 background-color: #b0b0b0;
             }
             .controls-down {
-                /*align-self: center;*/
                 text-align: center;
+                display: inline-grid;
+                align-items: center;
+                justify-items: center;
             }
             #gem1 { grid-area: gem1; }
             #gem2 { grid-area: gem2; }
@@ -138,6 +146,11 @@
             .fa-gem, .fa-medal, .fa-sun {
                 font-size: .6em;
             }
+            .slime-node { fill: black; }
+            .slime-edge { stroke: black; stroke-width: 1; }
+            .unicorn-node { fill: white; }
+            .unicorn-edge { stroke: white; stroke-width: 1; }
+            .selectable { stroke: yellow !important; }
         </style>
     </head>
     <body>

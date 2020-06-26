@@ -6,13 +6,15 @@ const nodesIds = 'abcdefghijkl';
 let defaultNode = {
 	'stroke-width': 2,
 	'fill-opacity': 1,
-	'r': 4
+	'r': 4,
+	'class': 'slime-node'
 };
 
 let defaultEdge = {
 	'stroke': '#808080',
 	'stroke-width': 0.5,
 	'stroke-linecap': 'round',
+	'class': 'slime-edge'
 	// 'stroke-dasharray': '1,3'
 };
 
