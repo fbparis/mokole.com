@@ -1,21 +1,17 @@
 "use strict";
 
 const nodesColors = ['#800000', '#9A6324', '#808000', '#E6194B', '#F58231', '#FFE119', '#BFEF45', '#AAFFC3', '#4363D8', '#911EB4', '#F03206', '#DCBEFF'];
-const nodesIds = 'abcdefghijkl';
 
 let defaultNode = {
 	'stroke-width': 2,
 	'fill-opacity': 1,
-	'r': 4,
-	'class': 'slime-node'
+	'r': 4
 };
 
 let defaultEdge = {
 	'stroke': '#808080',
 	'stroke-width': 0.5,
-	'stroke-linecap': 'round',
-	'class': 'slime-edge'
-	// 'stroke-dasharray': '1,3'
+	'stroke-linecap': 'round'
 };
 
 function choice(items) {
@@ -37,11 +33,12 @@ function shuffle(a) {
 
 
 class SvgGraph {
-	constructor(graphs, parentElement) {
+	constructor(graphs, parentElement, colorsStylesheetElement) {
 		this.scaleFactor = 12;
 		this.graphs = this.scale(graphs);
 		console.log(this.graphs);
 		this.parentElement = parentElement;
+		this.colorsStylesheetElement = colorsStylesheetElement;
 		// console.log(parentElement.getBoundingClientRect())
 		// console.log(parentElement.offsetWidth, parentElement.offsetHeight);
 		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -77,13 +74,14 @@ class SvgGraph {
 			[xmin, xmax, ymin, ymax] = [Math.min(x1, xmin), Math.max(x1, xmax), Math.min(y1, ymin), Math.max(y1, ymax)];
 			edges.forEach(edge => {
 				[x2, y2] = g[edge][0];
-				this.draw_edge(x1, y1, x2, y2)
+				this.draw_edge(x1, y1, x2, y2, {'class': `edge n${i} n${edge}`});
 			});
 		};
 		// then node
 		for (let i = 0; i < g.length; i++) {
 			[[x1, y1], edges] = g[i];
-			this.draw_node(x1, y1, {stroke: nodesColors[i],fill: nodesColors[i]});
+			this.draw_node(x1, y1, {class: `node n${i}`});
+			// this.draw_node(x1, y1, {stroke: nodesColors[i],fill: nodesColors[i], class: `node n${i}`});
 		}
 		xmin -= this.scaleFactor / 2;
 		ymin -= this.scaleFactor / 2;
@@ -91,10 +89,17 @@ class SvgGraph {
 		ymax += this.scaleFactor / 2;
 		this.svg.setAttribute('viewBox', `${xmin} ${ymin} ${xmax - xmin} ${ymax - ymin}`);
 		// this.svg.setAttribute('preserveAspectRatio', 'none');
-		this.render();
+		this.render(nodesCount);
 	}
 
-	render() {
+	render(nodesCount) {
+		// update colors
+		let colorsDefinitions = '';
+		for (let i = 0; i < nodesCount; i++) {
+			colorsDefinitions += `.node.n${i} {stroke: ${nodesColors[i]}; fill: ${nodesColors[i]};} .gem.n${i} {color: ${nodesColors[i]};} `;
+		}
+		this.colorsStylesheetElement.innerHTML = colorsDefinitions;
+		// show svg
 		this.parentElement.appendChild(this.svg);
 	}
 
