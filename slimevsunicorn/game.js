@@ -83,7 +83,7 @@ function array_in_array(needle, haystack) {
 
 class SlimeVsUnicorn {
 
-    constructor(graph_data) {
+    constructor(graph_data, animator=null) {
         let nodesCount = graph_data.length;
         let edgesCount = 0;
         let bagOfGems = shuffle([...Array(nodesCount).keys(), ...Array(nodesCount).keys()]);
@@ -120,6 +120,7 @@ class SlimeVsUnicorn {
             edges.forEach(edge => board[i].edges.push({owner: -1, to: edge}));
         }
         this.state = {
+            animator: animator,
             nodesCount: nodesCount,
             edgesCount: edgesCount,
             randomSeed: Math.random(),
@@ -140,6 +141,7 @@ class SlimeVsUnicorn {
             gameOver: false,
             winner: -1
         };
+        if (this.state.animator !== null) this.state.animator.say(`player${this.state.playerTurn} plays first`);
     }
 
     getState() {
@@ -288,6 +290,7 @@ class SlimeVsUnicorn {
     updateEdge(node_from, node_to, owner, animate) {
         // todo animate
         // update owner on both sides
+        if (animate && (this.state.animator !== null)) this.state.animator.edgeOwner(owner, node_from, node_to);
         this.getEdge(node_from, node_to).owner = owner;
         this.getEdge(node_to, node_from).owner = owner;
         // cascading shit with style
@@ -295,12 +298,13 @@ class SlimeVsUnicorn {
         for (let node of nodes_to_check) {
             newOwner = this.nodeOwner(node);
             if (newOwner != this.state.board[node].owner) {
-                if (animate) {
+                if (animate && (this.state.animator !== null)) {
+                    this.state.animator.nodeOwner(newOwner, node);
                     if (this.state.board[node].owner != -1) {
-                        console.log(`player${this.state.board[node].owner} has lost node ${node}`);
+                        this.state.animator.say(`player${this.state.board[node].owner} has lost node ${node}`);
                     }                 
                     if (newOwner != -1) {
-                        console.log(`player${newOwner} has taken node ${node}`);
+                        this.state.animator.say(`player${newOwner} has taken node ${node}`);
                     }                 
                 }
                 this.state.board[node].owner = newOwner;
@@ -309,6 +313,7 @@ class SlimeVsUnicorn {
                     this.state.board[node].edges.forEach(edge => {
                         if ([-1, newOwner].indexOf(edge.owner) == -1) {
                             edge.owner = -1;
+                            if (animate && (this.state.animator !== null)) this.state.animator.edgeOwner(-1, node, edge.to);
                             // will have to check other side of the edge...
                             if (nodes_to_check.indexOf(edge.to) == -1) {
                                 nodes_to_check.push(edge.to);
@@ -404,9 +409,12 @@ class SlimeVsUnicorn {
                     } else this.state.winner = (player1Score > player2Score) ? 1 : 2;
                 } else this.state.winner = (this.state.player1Score > this.state.player2Score) ? 1 : 2;
                 this.state.gameOver = true;
-                if (animate) {
-                    if (this.state.winner == -1) console.log(`draw game with score ${this.state.player1Score}-${this.state.player2Score}`);
-                    else console.log(`player${this.state.winner} won the game with score ${this.state.player1Score}-${this.state.player2Score}`);
+                if (animate && (this.state.animator !== null)) {
+                    this.state.animator.updatePoints(1, this.state.player1Score);
+                    this.state.animator.updatePoints(2, this.state.player2Score);
+                    this.state.animator.updateScore(this.state.winner, 1);
+                    if (this.state.winner == -1) this.state.animator.say(`draw game with score ${this.state.player1Score}-${this.state.player2Score}`);
+                    else this.state.animator.say(`player${this.state.winner} won the game with score ${this.state.player1Score}-${this.state.player2Score}`);
                 }
             }
         } else if (roundEnded) {
@@ -423,8 +431,10 @@ class SlimeVsUnicorn {
                 } else if (player2Score > player1Score) {
                     this.state.player2Score += this.state.round;
                 } 
-                if (animate) {
-                    console.log(`round ${this.state.round} ended on score ${this.state.player1Score}-${this.state.player2Score}`);
+                if (animate && (this.state.animator !== null)) {
+                    this.state.animator.updatePoints(1, this.state.player1Score);
+                    this.state.animator.updatePoints(2, this.state.player2Score);                    
+                    this.state.animator.say(`round ${this.state.round} ended on score ${this.state.player1Score}-${this.state.player2Score}`);
                 }
                 // init the board for next round
                 Math.seedrandom(this.state.toSource());
@@ -463,8 +473,8 @@ class SlimeVsUnicorn {
         if (this.gameOver()) throw 'can not play move when game is over';
         this.state.movesCount++;
         // todo: decompose steps
-        if (animate) {
-            console.log(`player${this.state.playerTurn} plays move ${move.toSource()}`);
+        if (animate && (this.state.animator !== null)) {
+            this.state.animator.log(`player${this.state.playerTurn} plays move ${move.toSource()}`);
         }
         const [actions, discard, take] = move;
 
