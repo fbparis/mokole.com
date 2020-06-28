@@ -325,7 +325,6 @@ class SlimeVsUnicorn {
                 }
             }
         }
-        if (animate) console.log(nodes_to_check.toSource());
     }
 
     nodeOwner(node) {
