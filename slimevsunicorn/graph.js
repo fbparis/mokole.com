@@ -11,7 +11,8 @@ let defaultNode = {
 let defaultEdge = {
 	'stroke': '#808080',
 	'stroke-width': 0.5,
-	'stroke-linecap': 'round'
+	'stroke-linecap': 'round',
+	'stroke-dasharray': '1,1'
 };
 
 function choice(items) {
@@ -36,7 +37,6 @@ class SvgGraph {
 	constructor(graphs, parentElement, colorsStylesheetElement) {
 		this.scaleFactor = 12;
 		this.graphs = this.scale(graphs);
-		console.log(this.graphs);
 		this.parentElement = parentElement;
 		this.colorsStylesheetElement = colorsStylesheetElement;
 		// console.log(parentElement.getBoundingClientRect())
@@ -67,14 +67,17 @@ class SvgGraph {
 		let edges, x1, x2, y1, y2;
 		let [xmin, xmax, ymin, ymax] = [1, -1, 1, -1];
 		let g = choice(this.graphs[nodesCount]);
+		this.graph = g;
 		shuffle(nodesColors);
 		// draw edges first
 		for (let i = 0; i < g.length; i++) {
 			[[x1, y1], edges] = g[i];
 			[xmin, xmax, ymin, ymax] = [Math.min(x1, xmin), Math.max(x1, xmax), Math.min(y1, ymin), Math.max(y1, ymax)];
 			edges.forEach(edge => {
-				[x2, y2] = g[edge][0];
-				this.draw_edge(x1, y1, x2, y2, {'class': `edge n${i} n${edge}`});
+				if (edge > i) { 
+					[x2, y2] = g[edge][0];
+					this.draw_edge(x1, y1, x2, y2, {'class': `edge n${i} n${edge}`});
+				}
 			});
 		};
 		// then node

@@ -1,4 +1,12 @@
 
+function check_same(obj1, obj2) {
+    if (obj1.toSource() != obj2.toSource()) {
+        console.log(j1.toSource());
+        console.log(j2.toSource());
+        throw 'objects are not identical'
+    }
+}
+
 class MCTSNode {
     constructor(moves, parent){
         this.parent = parent
@@ -6,6 +14,7 @@ class MCTSNode {
         this.wins = 0 
         this.numUnexpandedMoves = moves.length
         this.children = new Array(this.numUnexpandedMoves).fill(null) //temporary store move for debugging purposes
+        this.moves = moves;
     }   
 }
 
@@ -68,7 +77,6 @@ class MCTS {
         return possibleMoves[maxIndex]
     }
     selectNode(root){
-
         const c = this.exploration
 
         while (root.numUnexpandedMoves == 0){
@@ -85,7 +93,9 @@ class MCTS {
                     maxIndex = i
                 }
             }
-            const moves = this.game.moves()
+            if (maxIndex == -1) throw 'maxIndex == -1 in selectedNode';
+            const moves = root.moves
+            // const moves = this.game.moves()
             this.game.playMove(moves[maxIndex])
            
             root = root.children[maxIndex]
@@ -93,6 +103,7 @@ class MCTS {
                 return root
             }
         }
+
         return root
     }
 
@@ -100,15 +111,25 @@ class MCTS {
         if (this.game.gameOver()){
             return node
         }
-        let moves = this.game.moves() 
+
+        // check_same(this.game.state, node.state);
+
+        // let moves = this.game.moves() 
+        let moves = node.moves; 
         const childIndex = this.selectRandomUnexpandedChild(node)
+
+        if (childIndex >= moves.length) {
+            console.log(game.state);
+            throw `moves.length == ${moves.length} and childIndex == ${childIndex}`;
+        }
+
         this.game.playMove(moves[childIndex])
 
         moves = this.game.moves()
         const newNode = new MCTSNode(moves, node)
         node.children[childIndex] = newNode
         node.numUnexpandedMoves -= 1
-       
+
         return newNode
     }
 
@@ -131,6 +152,7 @@ class MCTS {
     // returns index of a random unexpanded child of node
     selectRandomUnexpandedChild(node){
         const choice = Math.floor(Math.random() * node.numUnexpandedMoves) //expand random nth unexpanded node
+        // if (node.numUnexpandedMoves == 0) console.log('numUnexpandedMoves == 0');
         let count = -1
         for (let i in node.children){
             const child = node.children[i]
@@ -141,6 +163,7 @@ class MCTS {
                 return i
             }
         }
+        throw 'sould not be here (selectRandomUnexpandedChild)';
     }
 
     computeUCB(wi, ni, c, Ni){

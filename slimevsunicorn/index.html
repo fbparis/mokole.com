@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+        <script src="seedrandom.min.js" type="text/javascript" async></script>
         <script src="graph.js" type="text/javascript" async></script>
         <script src="game.js" type="text/javascript" async></script>
         <script src="mcts.js" type="text/javascript" async></script>
@@ -204,7 +205,25 @@
         }        
     </style>
     <script type="text/javascript">
-        let svg;
+        var svg, game;
+
+        async function play_random_game() {
+            let iterations = 100;
+            let player1 = new MCTS(game, 1, iterations);
+            let player2 = new MCTS(game, 2, iterations);
+            let first_player = (game.state.playerTurn == 1) ? player1 : player2;
+            let last_player = (game.state.playerTurn == 2) ? player1 : player2;
+            let first_player_move, last_player_move;
+            console.log(`player${first_player.player} plays first`);
+            while (!game.gameOver()) {
+                first_player_move = first_player.selectMove();
+                game.playMove(first_player_move, true);
+                if (game.gameOver()) break;
+                last_player_move = last_player.selectMove();
+                game.playMove(last_player_move, true);
+            }
+            console.log(game.state.toSource());            
+        }
 
         document.addEventListener('DOMContentLoaded', (event) => {
             console.log('DOM fully loaded and parsed');
@@ -212,13 +231,16 @@
 
         window.addEventListener('load', (event) => {
             console.log('window loaded');
+            Math.seedrandom();
             fetch('graphs.json')
             .then(response => response.json())
             .then(data => {
                 console.log('json graphs loaded');
                 svg = new SvgGraph(data, document.getElementById('board'), document.getElementById('colors'))
                 // svg.draw(4+Math.floor(Math.random() * 9));
-                svg.draw(6);
+                svg.draw(4+Math.floor(Math.random() * 3));
+                game = new SlimeVsUnicorn(svg.graph);
+                setTimeout(play_random_game, 0);
             });
         });
     </script>
