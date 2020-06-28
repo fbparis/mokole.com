@@ -210,21 +210,25 @@
         var svg, game;
         var canPlay = true;
 
-        async function play_random_game() {
+        function first_player_play(first_player, last_player, game) {
+            let move = first_player.selectMove();
+            game.playMove(move, true);
+            if (!game.gameOver()) setTimeout(last_player_play, 1000, first_player, last_player, game);
+        }
+
+        function last_player_play(first_player, last_player, game) {
+            let move = last_player.selectMove();
+            game.playMove(move, true);
+            if (!game.gameOver()) setTimeout(first_player_play, 1000, first_player, last_player, game);
+        }
+
+        function play_random_game() {
             let iterations = 100;
             let player1 = new MCTS(game, 1, iterations);
             let player2 = new MCTS(game, 2, iterations);
             let first_player = (game.state.playerTurn == 1) ? player1 : player2;
             let last_player = (game.state.playerTurn == 2) ? player1 : player2;
-            let first_player_move, last_player_move;
-            while (!game.gameOver()) {
-                first_player_move = first_player.selectMove();
-                game.playMove(first_player_move, true);
-                if (game.gameOver()) break;
-                last_player_move = last_player.selectMove();
-                game.playMove(last_player_move, true);
-            }
-            // console.log(game.state.toSource());            
+            setTimeout(first_player_play, 1000, first_player, last_player, game);
         }
 
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -256,7 +260,7 @@
                     player2Edge='unicorn-edge',
                 );
                 game = new SlimeVsUnicorn(svg.graph, animator);
-                setTimeout(play_random_game, 0);
+                setTimeout(play_random_game, 1000);
             });
         });
     </script>
