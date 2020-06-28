@@ -294,7 +294,8 @@ class SlimeVsUnicorn {
         this.getEdge(node_from, node_to).owner = owner;
         this.getEdge(node_to, node_from).owner = owner;
         // cascading shit with style
-        let nodes_to_check =  [node_from, node_to], newOwner;
+        var nodes_to_check =  [node_from, node_to]
+        let newOwner;
         for (let node of nodes_to_check) {
             newOwner = this.nodeOwner(node);
             if (newOwner != this.state.board[node].owner) {
@@ -310,19 +311,21 @@ class SlimeVsUnicorn {
                 this.state.board[node].owner = newOwner;
                 // if new owner is a player, remove other player's edges
                 if (newOwner != -1) {
-                    this.state.board[node].edges.forEach(edge => {
+                    for (let edge of this.state.board[node].edges) {
                         if ([-1, newOwner].indexOf(edge.owner) == -1) {
                             edge.owner = -1;
+                            this.getEdge(edge.to, node).owner = -1;
                             if (animate && (this.state.animator !== null)) this.state.animator.edgeOwner(-1, node, edge.to);
                             // will have to check other side of the edge...
                             if (nodes_to_check.indexOf(edge.to) == -1) {
                                 nodes_to_check.push(edge.to);
                             }
                         }
-                    });
+                    }
                 }
             }
         }
+        if (animate) console.log(nodes_to_check.toSource());
     }
 
     nodeOwner(node) {
