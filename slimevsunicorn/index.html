@@ -240,7 +240,7 @@
                 console.log('json graphs loaded');
                 svg = new SvgGraph(data, document.getElementById('board'), document.getElementById('colors'))
                 // svg.draw(4+Math.floor(Math.random() * 9));
-                svg.draw(4+Math.floor(Math.random() * 3));
+                svg.draw(4+Math.floor(Math.random() * 2));
                 animator = new Animator(
                     info=document.getElementById('info'),
                     player1='Slime',
@@ -256,12 +256,7 @@
                     player2Edge='unicorn-edge',
                 );
                 game = new SlimeVsUnicorn(svg.graph, animator);
-            });
-            window.addEventListener('click', e => {
-                if (canPlay) {
-                    canPlay = false;
-                    setTimeout(play_random_game, 0);
-                }
+                setTimeout(play_random_game, 0);
             });
         });
     </script>
