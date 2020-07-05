@@ -1,5 +1,6 @@
 "use strict";
 
+
 class Animator {
 
 	constructor(info=null, player1='player1', player2='player2', player1Points=null, player2Points=null, player1Score=null, player2Score=null, log_to_console=true, player1Node='player1node', player2Node='player2node', player1Edge='player1edge', player2Edge='player2edge') {

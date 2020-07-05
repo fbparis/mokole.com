@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MCTS</title>
+	<script type="text/javascript">
+		var myWorker = new Worker('worker.js');
+		myWorker.onmessage = function (e) {
+			console.log(e.data);
+		}
+	</script>
+</head>
+<body>
+
+</body>
+</html>
