@@ -1,10 +1,10 @@
 "use strict";
 
-// ImportScripts();
+importScripts('fbmcts.js');
 
 
 var UCBExploration = Math.SQRT1_2;
-var MCTSIsRunning = true;
+var MCTSIsRunning = false;
 var MCTSMessage = null;
 
 
@@ -42,20 +42,20 @@ function distinct_combinations(array, k) {
 }
 
 
-function Player(id, gems=[], score=0, points=0) {
-	return {
-		id: id,
-		gems: gems,
-		score: score,
-		points: points
+class Player {
+	constructor(id, gems=[], score=0, points=0) {		
+		this.id = id;
+		this.gems = gems;
+		this.score = score;
+		this.points = points;
 	}
 }
 
 
-class SlimeVsUnicon {
+class SlimeVsUnicorn {
 	constructor(graph_data, playersId=['player1', 'player2'], animator=null) {
 		const [nodesCount, edgesCount, board, bagOfGems] = this._loadGraph(graph_data), maxGemsPerPlayer = 3, players = [];
-		for (let i = 0; i < 2; i++) players.push(new Player(playersId[i], gems=bagOfGems.splice(0, maxGemsPerPlayer)));
+		for (let i = 0; i < 2; i++) players.push(new Player(playersId[i], bagOfGems.splice(0, maxGemsPerPlayer)));
 		this.state = {
 			animator: animator,
 			nodesCount: nodesCount,
@@ -104,14 +104,14 @@ class SlimeVsUnicon {
 	cloneState() { return JSON.parse(JSON.stringify(this.state)); }
 	cloneAndRandomizeState(player) {
 		const state = this.cloneState();
-		state.randomSeed = Math.random();
+		//state.randomSeed = Math.random();
 		state.players.forEach((p, i) => {
 			if (i != player) {
 				state.bagOfGems = state.bagOfGems.concat(p.gems);
 				p.gems = [];
 			}
 		});
-		shuffle(state.bagOfGems);
+		state.bagOfGems = shuffle(state.bagOfGems);
 		state.players.forEach((p, i) => {
 			if (i != player) {
 				p.gems = state.bagOfGems.splice(0, state.maxGemsPerPlayer);
@@ -125,12 +125,14 @@ class SlimeVsUnicon {
 			const moves = [], player = this.state.players[this.state.playerTurn];
 			distinct_combinations(player.gems, 1).forEach(([from]) => {
 				for (let to in this.state.board[from].edges) {
+					to = parseInt(to);
 					if (this.state.board[from].edges[to] == -1) moves.push([from, to]);
 				}
 			});
 			distinct_combinations(player.gems, 2).forEach(([from, to]) => {
 				if (from == to) {
 					for (let to in this.state.board[from].edges) {
+						to = parseInt(to);
 						if (![-1, this.state.playerTurn].includes(this.state.board[from].edges[to])) moves.push([from, from, to]);
 					}
 				} else {
@@ -144,12 +146,13 @@ class SlimeVsUnicon {
 		return this.state.moves;
 	}
 	_nodeOwner(node) {
-		let n = Math.floor(this.state.board[node].edges.length / 2), i;
-		const total = {-1: 0, 0: 0, 1: 0};
+		let n = Math.floor(Object.entries(this.state.board[node].edges).length / 2), i;
+		const total = {'-1': 0, '0': 0, '1': 0};
 		for (let edge in this.state.board[node].edges) {
-			i = Math.max(0, this.state.board[node].edges[edge]);
-			if (++total[i] > n) return i;
+			i = this.state.board[node].edges[parseInt(edge)];
+			if (++total[`${i}`] > n) return i;
 		}
+		return -1;
 	}
 	_updateEdge(from, to, animate) {
 		let value = (this.state.board[from].edges[to] == -1) ? this.state.playerTurn : -1, nodeOwner;
@@ -159,6 +162,7 @@ class SlimeVsUnicon {
 		for (let node of nodesToCheck) {
 			nodeOwner = this._nodeOwner(node);
 			if (nodeOwner != this.state.board[node].owner) {
+				// console.log('update', from, to, node, nodeOwner);
 				if (nodeOwner == -1) this.state.players[this.state.board[node].owner].points--;
 				// todo: animate
 				this.state.board[node].owner = nodeOwner;
@@ -166,6 +170,7 @@ class SlimeVsUnicon {
 					this.state.players[nodeOwner].points++;
 					// remove other player's edges if some
 					for (let edge in this.state.board[node].edges) {
+						edge = parseInt(edge);
 						if (![-1, nodeOwner].includes(this.state.board[node].edges[edge])) {
 							// todo: animate
 							this.state.board[node].edges[edge] = -1; 
@@ -183,7 +188,7 @@ class SlimeVsUnicon {
 		if (move === null) { // game is over / todo: animate
 			this.state.gameOver = true;
 			this.state.winner = -1;
-			for (let i = 0; i < 2) {
+			for (let i = 0; i < 2; i++) {
 				const [player, opponent] = [this.state.players[i], this.state.players[1 - i]];
 				this.state.rewards[i] = player.points - opponent.points;
 				if (this.state.rewards[i] > 0) {
@@ -199,8 +204,8 @@ class SlimeVsUnicon {
 			// do move
 			this._updateEdge(move[0], move[move.length - 1], animate);
 			// reset moves and assign next player / todo: animate
-			this.state.moves = null;
 			this.state.playerTurn = (this.state.playerTurn == 0) ? 1 : 0;
+			this.state.moves = null;
 		}
 	}
 	reward(player) { return this.state.rewards[player]; }
@@ -241,21 +246,26 @@ class ISMCTS {
 		const originalState = this.game.getState();
 		//const possibleMoves = this.game.moves();
 		const player = this.game.playerTurn();
-		const root = new ISMCTSNode(null, this.game.playerTurn);
+		var root = new ISMCTSNode(null, this.game.playerTurn());
 		let maxVisits = 0, maxVisitsMove;
-		let selectedNode, expandedNode, reward;
+		let selectedNode, expandedNode, reward, move, visits;
 		while (MCTSIsRunning) {
-			const clonedState = this.game.cloneAndRandomizeState();
+			if ((root.player != player) || (this.game.playerTurn() != player)) this.log(`root.player=${root.player}, player=${player}, game.playerTurn=${this.game.playerTurn()}`);
+			const clonedState = this.game.cloneAndRandomizeState(player);
 			this.game.setState(clonedState);
-			let expandedNode = this.selectAndExpandNode(root);
+			expandedNode = this.selectAndExpandNode(root);
 			this.playout(expandedNode);
-			const [move, visits] = this.backprop(expandedNode);
+			let r = this.backprop(expandedNode);
+			[root, move, visits] = r;
 			if (visits > maxVisits) {
 				maxVisits = visits;
 				maxVisitsMove = move;
 			}
 			this.game.setState(originalState);
-			if ((max_iterations > 0) && (root.visits >= max_iterations)) break;
+			if (this.max_iterations > 0) {
+				if (root.visits >= this.max_iterations) break;
+				else if (root.visits == this.max_iterations - 1) MCTSMessage = 'info';
+			} 
 			if (MCTSMessage !== null) {
 				switch (MCTSMessage) {
 					case 'stop':
@@ -263,12 +273,12 @@ class ISMCTS {
 						break;
 					case 'info':
 						this.log(`${root.visits} games simulated with average reward of ${root.rewards / root.visits}`);
-						const [maxRewards maxAverageReward] = [-Infinity -Infinity];
-						const [maxRewardsIndex maxAverageRewardIndex maxVisitsIndex] = [-1 -1, -1];
+						let [maxRewards, maxAverageReward] = [-Infinity, -Infinity];
+						let [maxRewardsIndex, maxAverageRewardIndex, maxVisitsIndex] = [-1, -1, -1];
 						let i = 0;
 						for (move in root.children) {
 							i++;
-							const [rewards averageReward] = [root.children[move].rewards root.children[move].rewards / root.children[move].visits];
+							let [rewards, averageReward] = [root.children[move].rewards, root.children[move].rewards / root.children[move].visits];
 							if (rewards > maxRewards) {
 								maxRewards = rewards;
 								maxRewardsIndex = i;
@@ -289,19 +299,21 @@ class ISMCTS {
 				MCTSMessage = null;
 			}
 		}
-		if (verbose) {
-			console.timeEnd('worker:ISMCTSNode:selectedMove');
+		if (this.verbose) {
+			console.timeEnd('worker:ISMCTS:selectMove');
 			this.log(`${root.visits} games simulated with average reward of ${root.rewards / root.visits}`);
 		}
 		return maxVisitsMove;
 	}
 	get legalMoves() {
-		return this.game.moves.map(move => JSON.stringify(move));
+		return this.game.moves().map(move => JSON.stringify(move));
 	}
 	selectAndExpandNode(root) {
 		let selectedMove, maxUCBScore, UCBScore;
+		let unexpandedMoves, expandedMoves;
 		while (true) {
-			const unexpandedMoves = [], expandedMoves = [];
+			unexpandedMoves = [];
+			expandedMoves = [];
 			if (this.game.gameOver()) break;
 			maxUCBScore = -Infinity;
 			this.legalMoves.forEach(move => {
@@ -325,8 +337,8 @@ class ISMCTS {
 		if (unexpandedMoves.length == 0) { // means game over
 			if (this.game.reward(root.player) < 0) root.rewards = Number.MIN_SAFE_INTEGER;
 		} else {
-			move = unexpandedMoves[Math.floor(Math.random() * unexpandedMoves.length)];
-			root.children[move] = new ISMCTSNode(move, this.game.playerTurn, root);
+			let move = unexpandedMoves[Math.floor(Math.random() * unexpandedMoves.length)];
+			root.children[move] = new ISMCTSNode(move, this.game.playerTurn(), root);
 			root = root.children[move];
 			this.game.playMove(root.move);
 		}
@@ -339,11 +351,12 @@ class ISMCTS {
 		}
 	}
 	backprop(node) {
+		var r = [];
 		while(node !== null) {
 			node.visits++;
 			node.rewards += this.game.reward(node.player);
-			if (node.parent !== null) const r = [node.move, node.visits];
-			else return r;
+			if (node.parent !== null) r = [node.move, node.visits];
+			else return [node, ...r];
 			node = node.parent;
 		}
 		throw 'ISMCTS: backprop from null node'; 
@@ -353,5 +366,38 @@ class ISMCTS {
 
 onmessage = function(e) {
 	console.log(`worker: message received: ${e.data}`);
-	MCTSMessage = e.data;
+	if (MCTSIsRunning) MCTSMessage = e.data;
+	else {
+
+	}
 }
+
+function run(g) {
+	MCTSIsRunning = true;
+	//console.log(g);
+	let game = new SlimeVsUnicorn(g, ['IS', 'FB']);
+	console.log(game);
+	// let players = [new ISMCTS(game, 200, true), new FBMCTS(game, 200, true)];
+	let players = [new ISMCTS(game, 200, true), new FBMCTS(game, 2000, true)];
+	console.log(players);
+	console.log(`player ${game.playerTurn()} starts`);
+	while (!game.gameOver()) {
+		let move = players[game.playerTurn()].selectMove();
+		game.playMove(move, true);
+		console.log(`game turn ${game.state.movesCount}`);
+	}
+	if (game.winner() == -1) console.log('draw game');
+	else console.log(`${game.state.players[game.winner()].id} won`)
+	console.log(game.state);
+};
+
+var G;
+
+fetch('../graphs.json')
+.then(response => response.json())
+.then(data => {
+	G = data;
+	//console.log(G);
+	run(G[9][0]);
+});
+
