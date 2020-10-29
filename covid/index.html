@@ -17,7 +17,13 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 });
 
 function makeCode () {		
-	var fuckmacron = "Cree le: 29/10/2020 a 23h03;";
+	var fuckmacron = `Cree le: 29/10/2020 a 23h02;
+ Nom: BOUDOT;
+ Prenom: Francois;
+ Naissance: 05/06/1973 a PARIS;
+ Adresse: 8 rue Sourde 45390 Echilleuses;
+ Sortie: 29/10/2020 a 23:00;
+ Motifs: sport_animaux`;
 	qrcode.makeCode(fuckmacron);
 }
 
