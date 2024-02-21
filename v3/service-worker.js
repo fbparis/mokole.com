@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = 'v2';
+const CACHE_NAME = 'v1';
 const urlsToCache = [
   '',
   'index.html',
@@ -29,7 +29,6 @@ self.addEventListener('fetch', event => {
     caches.match(urlWithoutQuery)
       .then(response => {
         if (response) {
-          console.log(`[SW] ${event.request.url} -> Response from cache`);
           return response;
         }
         return fetch(event.request);
