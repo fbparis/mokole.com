@@ -1,8 +1,8 @@
 "use strict";
 
-const CACHE_NAME = 'v2';
+const CACHE_NAME = 'v4';
 const urlsToCache = [
-  '',
+  '/v3/',
   'index.html',
   'words.json',
   'qr-code-mokole.png',
