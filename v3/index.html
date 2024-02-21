@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOKOLE</title>
+    <link rel="icon" href="favicon.png" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.json" />
+    <style>
+:root {
+    --cell-size: 50px; 
+    --button-size: 50px; 
+    --cell-font-size: calc(max(20px, var(--cell-size) / 2.5));
+    --cell-font-smaller: calc(max(16px, var(--cell-size) / 3.3));
+    --cell-border-color: #ffffff;
+    --cell-number-color: #aaa;
+    --cell-background-color: #0077c7;
+    --text-color: #ffffff;
+    --background-color: #2b2b2b;
+    --button-color: #666;
+    --button-font-size: calc(var(--button-size) / 3.125);
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    font-family: sans-serif;
+    color: var(--text-color);
+    user-select: none;
+}
+button:disabled {
+    pointer-events: none;
+}
+
+.container {
+    max-width: 1024px;
+    width: 100vw;
+    margin: auto 0px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+header {
+    height: 75px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--button-color);
+    margin-bottom: 16px;
+}
+.header-icons {
+    display: flex;
+    align-items: center;
+}
+.header-icons .left {
+    margin-right: auto; 
+}
+.header-icons .right {
+    margin-left: auto; 
+}
+header h1 {
+    margin: 0;
+    padding: 0 15px; 
+    font-size: 40px;
+}
+header button {
+    background: none;
+    border: none;
+    font-size: 20px; 
+    cursor: pointer;
+    padding: 10px;
+}
+header button:hover {
+    opacity: 0.7; 
+}
+
+#grid {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+.grid {
+    border-collapse: collapse; 
+}
+.grid td {
+    position: relative;
+    width: var(--cell-size);
+    height: var(--cell-size);
+    text-align: center;
+    vertical-align: middle;
+    font-family: monospace;
+    font-size: var(--cell-font-size);
+}
+.grid td:not(:empty) {
+    border: 1px solid var(--cell-border-color);
+    background-color: var(--cell-background-color);
+    /*color: var(--text-color);*/
+    position: relative;
+}
+.grid td:not(:empty)::before {
+    content: attr(data-number);
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: var(--cell-font-smaller);
+    color: var(--cell-number-color);
+    padding: 4px;
+}
+.grid td.no-number::before {
+    content: '' !important;
+}
+.grid td.highlight {
+    background-color: orange;
+}
+.grid td:empty {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+#keyboard {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.key {
+    width: var(--button-size); 
+    height: var(--button-size); 
+    margin: calc(var(--button-size) / 10);
+    background-color: var(--button-color);
+    color: var(--text-color);
+    border: 1px solid #444;
+    border-radius: 5px;
+    font-size: var(--button-font-size);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+.key:active {
+    background-color: #555;
+}
+.key:hover {
+    background-color: #777;
+}
+.key.correct {
+    background-color: green;
+}
+.key.incorrect {
+    background-color: red;
+}
+.key.disabled {
+    pointer-events: none;
+}
+
+.modal {
+    border: 1px solid var(--text-color);
+    background-color: var(--background-color);
+    position: fixed;
+    height: calc(100vh - 100px);
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: calc(min(800px, 90vw));
+}
+.modal-scrollable-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+.modal-content { 
+    display: none;
+    position: relative;
+    padding: 10px;
+}
+.modal-close {
+    position: absolute; 
+    top: 0;
+    right: 0; 
+    cursor: pointer;
+    z-index: 1010;
+    background-color: var(--text-color);
+    color: var(--background-color);
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+.modal-title {
+    text-align: center;
+}
+.modal-body {
+    border-top: 1px solid var(--text-color);
+    color: #eee;
+}
+.modal-body p {
+    text-align: center;
+}
+.score-comment {
+    text-align: center;
+}
+.share-score span {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.modal-body img {
+    max-width: 100%; 
+    height: auto; 
+    display: block; 
+    margin: 5px auto; 
+}
+#modal-help p {
+    text-align: justify;
+}
+#modal-help li strong, #modal-daily .modal-title, #modal-game .modal-title {
+    color: #FFD700;
+}
+.modal { display: none; }
+.copy-success, .copy-failure {
+    color: #aaa;
+    display: none;
+}
+    </style>
+</head>
+<body>    
+    <div class="container">
+        <header>
+            <div class="header-icons left">
+                <button id="daily-puzzle" class="icon-home-button" title="Défi quotidien" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 30px; width: 30px;"><g class="" transform="translate(0,0)" style=""><path d="M256 19.27L25.637 249.638 19.27 256 32 268.73l6.363-6.367L256 44.727l217.637 217.636L480 268.73 492.73 256l-6.367-6.363zM96 48v107.273l64-64.002V48zm160 20.727l-192 192V486h64V320h96v166h224V260.727zM288 320h96v80h-96z" fill="#fff" fill-opacity="1"></path></g></svg>
+                </button>
+                <button onclick="showModalContent('help');" class="icon-home-button" title="Aide" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 30px; width: 30px;"><g class="" transform="translate(0,0)" style=""><path d="M256 16C123.45 16 16 123.45 16 256s107.45 240 240 240 240-107.45 240-240S388.55 16 256 16zm0 60c99.41 0 180 80.59 180 180s-80.59 180-180 180S76 355.41 76 256 156.59 76 256 76zm0 30c-66.274 0-120 40.294-120 90 0 30 60 30 60 0 0-16.57 26.862-30 60-30 33.138 0 60 13.43 60 30s-30 15-60 30c-1.875.938-3.478 2.126-4.688 3.28C226.53 244.986 226 271.926 226 286v15c0 16.62 13.38 30 30 30 16.62 0 30-13.38 30-30v-15c0-45 90-40.294 90-90s-53.726-90-120-90zm0 240a30 30 0 0 0-30 30 30 30 0 0 0 30 30 30 30 0 0 0 30-30 30 30 0 0 0-30-30z" fill="#fff" fill-opacity="1"></path></g></svg>
+                </button>
+            </div>
+            <h1>MOKOLE</h1>
+            <div class="header-icons right">
+                <button id="random-puzzle" class="icon-home-button" title="Grille aléatoire" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 30px; width: 30px;"><g class="" transform="translate(0,0)" style=""><path d="M138.798 35.342L28.73 114.268l95.777 29.095 111.305-87.09-97.014-20.93zm112.986 31.082l-118.047 89.96 51.07 131.102 8.534-7.455 4.23-15.708a18.338 13.102 76.863 0 1-9.08-20.45 18.338 13.102 76.863 0 1 10.997-13.727 18.338 13.102 76.863 0 1 3.62.53 18.338 13.102 76.863 0 1 3.113 1.544l7.94-29.48a9 9 0 0 1 .353-1.04 9 9 0 0 1 .058-.128 9 9 0 0 1 .32-.685 9 9 0 0 1 .09-.153 9 9 0 0 1 .37-.625 9 9 0 0 1 .534-.723 9 9 0 0 1 .066-.074 9 9 0 0 1 .54-.594 9 9 0 0 1 .65-.593 9 9 0 0 1 .004-.002 9 9 0 0 1 .46-.342 9 9 0 0 1 .266-.197 9 9 0 0 1 .502-.3 9 9 0 0 1 .27-.157 9 9 0 0 1 .44-.208 9 9 0 0 1 .38-.178 9 9 0 0 1 .437-.152 9 9 0 0 1 .41-.143 9 9 0 0 1 .404-.1 9 9 0 0 1 .47-.114 9 9 0 0 1 .51-.07 9 9 0 0 1 .37-.05 9 9 0 0 1 .01 0 9 9 0 0 1 .01-.003l33.624-2.873a18.338 13.102 76.863 0 1 10.326-9.777 18.338 13.102 76.863 0 1 3.622.53 18.338 13.102 76.863 0 1 8.527 7.327l13.043-1.113-39.442-123.783zM137.25 74.03a9.8 19.77 77.916 0 1 12.798 8.734 9.8 19.77 77.916 0 1-21.938 11.998 9.8 19.77 77.916 0 1-16.57-8.602 9.8 19.77 77.916 0 1 21.938-12 9.8 19.77 77.916 0 1 3.77-.13zm100.228 23.517a18.338 13.102 76.863 0 1 .002 0 18.338 13.102 76.863 0 1 3.62.53 18.338 13.102 76.863 0 1 12.112 21.94 18.338 13.102 76.863 0 1-14.617 13.196 18.338 13.102 76.863 0 1-12.114-21.94 18.338 13.102 76.863 0 1 10.998-13.726zM24.22 131.71l46.992 114.124 94.236 40.38-45.988-125.57-95.24-28.935zm147.886 17.43a18.338 13.102 76.863 0 1 3.622.528 18.338 13.102 76.863 0 1 12.11 21.94 18.338 13.102 76.863 0 1-14.616 13.197 18.338 13.102 76.863 0 1-12.112-21.94 18.338 13.102 76.863 0 1 10.996-13.726zm-75.123 13.016a19.454 9.134 59.254 0 1 16.955 15.078 19.454 9.134 59.254 0 1-.425 19.485A19.454 9.134 59.254 0 1 95.6 181.78a19.454 9.134 59.254 0 1 .424-19.48 19.454 9.134 59.254 0 1 .96-.144zm263.393 40.21l-112.102 9.577 113.762 79.926 113.598-16.956-115.258-72.55zM70.82 212.022A19.454 9.134 59.254 0 1 87.777 227.1a19.454 9.134 59.254 0 1-.425 19.484 19.454 9.134 59.254 0 1-17.913-14.938 19.454 9.134 59.254 0 1 .425-19.482 19.454 9.134 59.254 0 1 .96-.14zm157.378 7.813L186.66 374.023l115.616 99.454 47.147-168.47-121.225-85.17zm126.987 11.168a21.76 8.898 15.267 0 1 19.693 4.783 21.76 8.898 15.267 0 1 7.607 14.244 21.76 8.898 15.267 0 1-28.886-3.182 21.76 8.898 15.267 0 1-7.61-14.244 21.76 8.898 15.267 0 1 9.195-1.6zM487.78 291.3L366.9 309.343l-46.823 167.316 116.297-31.77L487.78 291.3zm-181.808 10.8a25.834 15.573 84.277 0 1 4.238.943 25.834 15.573 84.277 0 1 12.873 31.72 25.834 15.573 84.277 0 1-18.105 17.893 25.834 15.573 84.277 0 1-12.874-31.72 25.834 15.573 84.277 0 1 13.868-18.836zm154.086 11.636a13.237 21.96 28.62 0 1 7.673 4.13 13.237 21.96 28.62 0 1-6.176 28.435 13.237 21.96 28.62 0 1-21.287 3.878 13.237 21.96 28.62 0 1 6.175-28.434 13.237 21.96 28.62 0 1 13.616-8.008zM391.362 324.4a13.237 21.96 28.62 0 1 7.672 4.13 13.237 21.96 28.62 0 1-6.176 28.435 13.237 21.96 28.62 0 1-21.287 3.877 13.237 21.96 28.62 0 1 6.177-28.434 13.237 21.96 28.62 0 1 13.615-8.008zm-173.996 13.305a25.834 15.573 84.277 0 1 4.24.945 25.834 15.573 84.277 0 1 12.872 31.72 25.834 15.573 84.277 0 1-18.106 17.894 25.834 15.573 84.277 0 1-12.873-31.72 25.834 15.573 84.277 0 1 13.866-18.84zm212.278 60.87a13.237 21.96 28.62 0 1 7.67 4.13 13.237 21.96 28.62 0 1-6.174 28.434 13.237 21.96 28.62 0 1-21.287 3.876 13.237 21.96 28.62 0 1 6.175-28.434 13.237 21.96 28.62 0 1 13.616-8.008zm-70.332 19.488a13.237 21.96 28.62 0 1 7.67 4.132 13.237 21.96 28.62 0 1-6.174 28.434 13.237 21.96 28.62 0 1-21.287 3.874 13.237 21.96 28.62 0 1 6.176-28.434 13.237 21.96 28.62 0 1 13.616-8.007z" fill="#fff" fill-opacity="1"></path></g></svg>
+                </button>
+                <button onclick="showModalContent('share');" class="icon-home-button" title="Partager" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 30px; width: 30px;"><g class="" transform="translate(0,0)" style=""><path d="M384 64a64 64 0 0 0-64 64 64 64 0 0 0 1.1 11.3l-146.3 73.2A64 64 0 0 0 128 192a64 64 0 0 0-64 64 64 64 0 0 0 64 64 64 64 0 0 0 46.8-20.5L321 372.7a64 64 0 0 0-1 11.3 64 64 0 0 0 64 64 64 64 0 0 0 64-64 64 64 0 0 0-64-64 64 64 0 0 0-46.8 20.5L191 267.4a64 64 0 0 0 1-11.4 64 64 0 0 0-1.1-11.4l146.3-73.1A64 64 0 0 0 384 192a64 64 0 0 0 64-64 64 64 0 0 0-64-64z" fill="#fff" fill-opacity="1"></path></g></svg>
+                </button>
+            </div>
+        </header>
+        <div id="grid">Génératon de la grille en cours…</div>
+        <div id="keyboard">
+            <div class="keyboard-row">
+                <button class="key" disabled>A</button>
+                <button class="key" disabled>Z</button>
+                <button class="key" disabled>E</button>
+                <button class="key" disabled>R</button>
+                <button class="key" disabled>T</button>
+                <button class="key" disabled>Y</button>
+                <button class="key" disabled>U</button>
+                <button class="key" disabled>I</button>
+                <button class="key" disabled>O</button>
+                <button class="key" disabled>P</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key" disabled>Q</button>
+                <button class="key" disabled>S</button>
+                <button class="key" disabled>D</button>
+                <button class="key" disabled>F</button>
+                <button class="key" disabled>G</button>
+                <button class="key" disabled>H</button>
+                <button class="key" disabled>J</button>
+                <button class="key" disabled>K</button>
+                <button class="key" disabled>L</button>
+                <button class="key" disabled>M</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key" disabled>W</button>
+                <button class="key" disabled>X</button>
+                <button class="key" disabled>C</button>
+                <button class="key" disabled>V</button>
+                <button class="key" disabled>B</button>
+                <button class="key" disabled>N</button>
+            </div>
+        </div>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-close">&times;</div>
+        <div class="modal-scrollable-content">
+            <div id="modal-help" class="modal-content">        
+                <h2 class="modal-title">Aide du jeu</h2>
+                <div class="modal-body">
+                    <p><strong>MOKOLE</strong> est basé sur la découverte de mots à travers une grille codée en choisissant des lettres une par une.</p>
+                    <p>L'objectif est de trouver tous les mots de la grille en faisant le moins d'erreurs possibles.</p>
+                    <h3>Comment jouer ?</h3>
+                    <p>Vous pouvez choisir les lettres de deux manières :</p>
+                    <ul>
+                        <li>Clavier virtuel : en utilisant le clavier affiché à l'écran.</li>
+                        <li>Clavier physique : en tapant directement sur le clavier.</li>
+                    </ul>
+                    <h3>Calcul du score</h3>
+                    <p>Le score est évalué en fonction du nombre d'erreurs commises :</p>
+                    <ul>
+                        <li><strong>&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</strong> : aucune erreur, la perfection !</li>
+                        <li><strong>&#x2605;&#x2605;&#x2605;&#x2605;&#x2606;</strong> : une erreur.</li>
+                        <li><strong>&#x2605;&#x2605;&#x2605;&#x2606;&#x2606;</strong> : deux erreurs.</li>
+                        <li><strong>&#x2605;&#x2605;&#x2606;&#x2606;&#x2606;</strong> : trois erreurs.</li>
+                        <li><strong>&#x2605;&#x2606;&#x2606;&#x2606;&#x2606;</strong> : quatre erreurs.</li>
+                        <li><strong>&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</strong> : cinq erreurs et plus.</li>
+                    </ul>
+                    <h3>Les mots utilisés</h3>
+                    <p>Les grilles sont générées à partir d'environ 15 000 mots, parmi les plus fréquents de la langue française.</p>
+                    <p>Les onomatopés ont été exclues, les verbes sont à l'infinif, les noms au singulier et les adjectifs au masculin singulier. Tous les mots sont présentés sans accents, utilisant uniquement des lettres allant de A à Z.</p>
+                    <p>A noter que tous les mots de la liste sont présents dans l'ODS 9 (Officiel du Scrabble).</p>
+                    <h3>Lettres déjà placées ?</h3>
+                    <p>Dans la mesure du possible, les problèmes générés ont une solution unique et pour cela il faut parfois placer une ou plusieurs lettres initiales afin de résoudre les ambiguités.</p>
+                    <p>Bien sûr cela n'est pas parfait, la vérification des grilles se faisant par rapport à la liste des mots utilisés il se peut que des mots plus rares du français ne soient pas pris en compte lors de cette vérification.</p>
+                    <p>Dans de rares cas il peut aussi arriver que certaines grilles soient trop longues à vérifier et dans ce cas quelques lettres seront "offertes".</p>
+                </div>
+            </div>
+            <div id="modal-share" class="modal-content">        
+                <h2 class="modal-title">Faites découvrir MOKOLE autour de vous</h2>
+                <div class="modal-body">
+                    <img src="qr-code-mokole.png" alt="QRCode Officiel MOKOLE" />
+                    <p><small>Vous pouvez également présenter ce code QR officiel de <strong>MOKOLE</strong> en cas de contrôle.</small></p>
+                </div>
+            </div>
+            <div id="modal-daily" class="modal-content">        
+                <h2 class="modal-title"></h2>
+                <div class="modal-body">
+                    <h3 class="score-comment"></h3>
+                    <p class="share-score">&#x2192;&nbsp;<span onclick="copyToClipboard();">Partager votre score en cliquant ici.</span>&nbsp;&#x2190;</p>
+                    <p class="copy-success"><small>copié avec succès !</small></p>
+                    <p class="copy-failure"><small>non copié...</small></p>
+                    <p><small>(le texte à partager sera copié dans votre presse-papier)</small></p>
+                    <p class="game-summary"></p>
+                    <p></p>
+                    <p><em>Appuyez sur ESPACE pour faire une autre partie.</em></p>
+                </div>
+            </div>
+            <div id="modal-game" class="modal-content">        
+                <h2 class="modal-title"></h2>
+                <div class="modal-body">
+                    <h3 class="score-comment"></h3>
+                    <p class="share-score">&#x2192;&nbsp;<span onclick="copyToClipboard();">Partager cette grille et votre score en cliquant ici.</span>&nbsp;&#x2190;</p>
+                    <p class="copy-success"><small>copié avec succès !</small></p>
+                    <p class="copy-failure"><small>non copié...</small></p>
+                    <p><small>(le texte à partager sera copié dans votre presse-papier)</small></p>
+                    <p class="game-summary"></p>
+                    <p></p>
+                    <p><em>Appuyez sur ESPACE pour faire une autre partie.</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+"use strict";
+// W1siQlJJR0lUVEUiLCJNQUNST04iLCJFU1QiLCJKRUFOIiwiTUlDSEVMIiwiVFJPR05FVVgiXSxbXV0=
+// Random management functions
+
+function RC4Random(seed=getDateSeed()) {
+    const key = Array.from(new TextEncoder().encode(seed.toString()));
+    const S = Array(256);
+    let j = 0, temp;
+
+    for (let i = 0; i < 256; i++) {
+        S[i] = i;
+    }
+
+    for (let i = 0; i < 256; i++) {
+        j = (j + S[i] + key[i % key.length]) % 256;
+        temp = S[i];
+        S[i] = S[j];
+        S[j] = temp;
+    }
+
+    let i = 0;
+    j = 0;
+
+    function random() {
+        i = (i + 1) % 256;
+        j = (j + S[i]) % 256;
+        temp = S[i];
+        S[i] = S[j];
+        S[j] = temp;
+        const k = S[(S[i] + S[j]) % 256];
+        return k / 256;
+    }
+
+    return random;
+}
+function fisherYatesShuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(randomFunction() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+function randomChoice(array) {
+    return array[Math.floor(randomFunction() * array.length)];
+}
+function randomSample(array, size) {
+    const shuffled = fisherYatesShuffle([...array], randomFunction);
+    return shuffled.slice(0, size);
+}
+function getDateSeed() {
+    const parisDate = new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
+
+    const [date, time] = parisDate.split(', ');
+    const [day, month, year] = date.split('/').map(num => parseInt(num, 10));
+
+    return year * 10000 + month * 100 + day;
+}
+
+// Utils functions
+
+function areSetsEqual(set1, set2) {
+    if (set1.size !== set2.size) return false; 
+    for (let item of set1) {
+        if (!set2.has(item)) return false; 
+    }
+    return true; 
+}
+function areArraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
+function copyToClipboard() {
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+          Array.from(modalWindow.getElementsByClassName("copy-success")).forEach(elt => elt.style.display = "block");
+          setTimeout(() => {
+              Array.from(modalWindow.getElementsByClassName("copy-success")).forEach(elt => elt.style.display = "none");
+          }, 2000);
+      })
+      .catch(err => {
+          Array.from(modalWindow.getElementsByClassName("copy-failure")).forEach(elt => elt.style.display = "block");
+          setTimeout(() => {
+              Array.from(modalWindow.getElementsByClassName("copy-failure")).forEach(elt => elt.style.display = "none");
+          }, 2000);
+      });
+}
+
+// Grid generation functions
+
+function selectWords(words, targetNumLetters = 12, targetNumWords = 6) {
+    const targetNumLettersPerStep = Array.from({ length: targetNumWords }, (_, i) => (i + 1) * targetNumLetters / targetNumWords);
+
+    while (true) {
+        let selectedWords = [];
+        let selectedLetters = new Set();
+
+        const forbiddenLetters = new Set(randomSample("EASINRTOLU".split(''), 4));
+
+        for (const word of fisherYatesShuffle(words)) {
+            const letters = new Set(word.split(''));
+
+            if ([...letters].some(letter => forbiddenLetters.has(letter))) continue;
+
+            if ((new Set([...selectedLetters].filter(letter => letters.has(letter)))).size < selectedWords.length) continue;
+
+            const lenLetters = new Set([...selectedLetters, ...letters]).size;
+
+            if (lenLetters < targetNumLettersPerStep[selectedWords.length]) continue;
+
+            if (lenLetters <= targetNumLetters) {
+                selectedWords.push(word);
+                selectedLetters = new Set([...selectedLetters, ...letters]);
+                if (selectedWords.length === targetNumWords) return selectedWords;
+            }
+        }
+    }
+}
+function makeGridFromWords(words, maxIterations=30000) {
+    let gridWidth = document.querySelector('#grid').getBoundingClientRect().width;
+    let gridHeight = document.querySelector('#grid').getBoundingClientRect().height;
+    let targetRatio = gridWidth / gridHeight;
+    let maxWidth = Math.floor(gridWidth / 40 - 1); 
+    let maxHeight = Math.floor(gridHeight / 40 - 1); 
+
+    let bestGrids = null;
+    let bestScore;
+
+    function placeWordInGrid(word, i, xy, dx, dy, grid, anchors) {
+        let [x, y] = xy.split(",").map(Number);
+        x -= dx * i;
+        y -= dy * i;
+
+        if (grid[`${x - dx},${y - dy}`] !== undefined || grid[`${x + word.length * dx},${y + word.length * dy}`] !== undefined) {
+            return false;
+        }
+
+        for (let letter of word) {
+            if (grid[`${x},${y}`] !== undefined) {
+                if (grid[`${x},${y}`] !== letter) return false;
+                anchors[dx].delete(`${x},${y}`);
+            } else {
+                if (grid[`${x - dy},${y - dx}`] !== undefined || grid[`${x + dy},${y + dx}`] !== undefined) return false;
+                grid[`${x},${y}`] = letter;
+                anchors[dy].add(`${x},${y}`);                
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        return true;
+    }
+
+    for (let iter = 0; iter < maxIterations; iter++) {
+        let grid = {};
+        let dx = Math.floor(randomFunction() * 2), dy = 1 - dx;
+        let anchors = [new Set(), new Set()];
+        let isValid = true;
+        let wordsShuffled = fisherYatesShuffle([...words]);
+        let newPos = null;
+
+        for (let word of wordsShuffled) {
+            if (newPos === null) {
+                newPos = ["0,0"];
+            } else {
+                anchors[dx].forEach(xy => {
+                    if (word.includes(grid[xy])) {
+                        newPos.push(xy);
+                    }
+                });            
+            }
+    
+            if (!newPos.length) {
+                isValid = false;
+                break;
+            }
+
+            let xy = randomChoice(newPos);
+            let i = 0;
+
+            if (Object.keys(grid).length) {
+                let possiblePositions = [...word].map((letter, index) => letter === grid[xy] ? index : -1).filter(index => index !== -1);
+                i = randomChoice(possiblePositions);
+            }
+
+            isValid = placeWordInGrid(word, i, xy, dx, dy, grid, anchors);
+
+            if (!isValid) break;
+
+            [dx, dy] = [dy, dx];
+            newPos = [];
+        }
+
+        if (!isValid) continue;
+
+        let keys = Object.keys(grid).map(key => key.split(",").map(Number));
+        let minX = Math.min(...keys.map(([x, _]) => x));
+        let maxX = Math.max(...keys.map(([x, _]) => x));
+        let minY = Math.min(...keys.map(([_, y]) => y));
+        let maxY = Math.max(...keys.map(([_, y]) => y));
+
+        let w = maxX - minX;
+        let h = maxY - minY;
+
+        if ((w > maxWidth) || (h > maxHeight)) continue;
+
+        let score = [Math.max(w / maxWidth, h / maxHeight), Math.abs(targetRatio - w / h)];
+
+        if (bestGrids === null || score[0] < bestScore[0] || (score[0] === bestScore[0] && score[1] < bestScore[1])) {
+            bestScore = score;
+            if (bestGrids === null || score[0] < bestScore[0]) {
+                bestGrids = [];
+            }
+            let normalizedGrid = {};
+            keys.forEach(([x, y]) => {
+                normalizedGrid[`${x - minX},${y - minY}`] = grid[`${x},${y}`];
+            });
+            bestGrids.push(normalizedGrid);
+        }
+    }
+
+    if (bestGrids === null) {
+        return false;
+    }
+    // console.log(bestScore);
+    return randomChoice(bestGrids);
+}
+function findSolutions(words, selectedWords, maxHelpers=null, timeout=2000) {
+    const startingTime = Date.now();
+
+    function getMaskForWord(word, letterToIndex) {
+        const mask = [];
+        for (const letter of word) {
+            if (!(letter in letterToIndex)) {
+                letterToIndex[letter] = Object.keys(letterToIndex).length;
+            }
+            mask.push(letterToIndex[letter]);
+        }
+        return [mask, letterToIndex];
+    }
+
+    const numLetters = new Set(selectedWords.join("")).size;
+
+    if (maxHelpers === null) {
+        maxHelpers = Math.max(0, Math.floor(numLetters / 3) - 1)
+    }
+
+    let candidates = [];
+    for (const referenceWord of selectedWords) {
+        let [referenceMask, ] = getMaskForWord(referenceWord, {});
+        const referenceLen = referenceWord.length;
+        const wordCandidates = words.filter(word => {
+            if (word.length !== referenceLen) return false;
+            const [wordMask, ] = getMaskForWord(word, {});
+            return areArraysEqual(wordMask, referenceMask);
+        });
+        candidates.push([...wordCandidates, referenceWord]);
+    }
+
+    const allCandidates = candidates.sort((a, b) => a.length - b.length);
+    selectedWords = allCandidates.map(candidates => candidates.pop());
+
+    let problemMask = [];
+    let problemMapping = {};
+    for (const word of selectedWords) {
+        let [mask, newMapping] = getMaskForWord(word, problemMapping);
+        problemMask.push(mask);
+        problemMapping = newMapping;
+    }
+
+    const counter = {};
+    selectedWords.join("").split("").forEach(letter => counter[letter] = (counter[letter] || 0) + 1);
+    const sortedLetters = Object.keys(counter).sort((a, b) => counter[a] - counter[b]);
+
+    let helpers = new Set();
+    let availableHelpers = new Set(sortedLetters);
+    const validSolution = new Set(selectedWords);
+
+    while (helpers.size <= maxHelpers) {
+        const currentSolution = Array(selectedWords.length).fill("");
+        const stack = [{ listIdx: 0, eltIdx: 0, mapping: {} }];
+
+        candidates = [];
+        for (let i = 0; i < selectedWords.length; i++) {
+            let word = selectedWords[i];
+            let wordCandidates = allCandidates[i].filter(w => 
+                [...word].every((c, j) => w[j] === c || ![w[j], c].some(letter => helpers.has(letter)))
+            );
+            candidates.push(wordCandidates);
+        }
+
+        let sortedSolution = false;
+
+        while (stack.length > 0) {
+            const { listIdx, eltIdx, mapping } = stack.pop();
+
+            if (eltIdx < candidates[listIdx].length - 1) {
+                const newMapping = Object.assign({}, mapping);
+                stack.push({ listIdx, eltIdx: eltIdx + 1, mapping: newMapping });
+            }
+
+            const word = candidates[listIdx][eltIdx];
+            if (currentSolution.slice(0, listIdx).includes(word)) continue;
+
+            const [mask, newMapping] = getMaskForWord(word, mapping);
+            if (!areArraysEqual(mask, problemMask[listIdx])) continue;
+
+            currentSolution[listIdx] = word;
+
+            if (listIdx < candidates.length - 1) {
+                // check timeout here
+                if (Date.now() - startingTime > timeout) {
+                    console.log("aborting search for solutions");
+                    return [selectedWords, sortedLetters.slice(0, maxHelpers)];
+                }
+                stack.push({ listIdx: listIdx + 1, eltIdx: 0, mapping: newMapping });
+            } else { //if (Object.keys(newMapping).length === numLetters) {
+                sortedSolution = new Set(currentSolution);
+                if (!areSetsEqual(sortedSolution, validSolution)) {
+                    let possibleHelpers = new Set([...availableHelpers].filter(x => !helpers.has(x) && !Object.keys(newMapping).includes(x)));
+                    if (possibleHelpers.size === 0) {
+                        possibleHelpers = new Set([...availableHelpers].filter(x => !helpers.has(x)));
+                    }
+                    const firstPossibleHelper = [...sortedLetters].find(letter => possibleHelpers.has(letter));
+                    if (firstPossibleHelper !== undefined) {
+                        helpers.add(firstPossibleHelper);
+                    }
+                    break;
+                } else {
+                    sortedSolution = true;
+                }
+            }
+        }
+
+        if (sortedSolution === true) {
+            return [selectedWords, Array.from(helpers)];
+        }
+    }
+
+    return [null, null];
+}
+
+// Data retrieval functions
+
+function getGameQuery() {
+    try {
+        return JSON.parse(atob(window.location.search.substring(1)));
+    } catch (e) {
+        // console.error(e);
+        return [null, null];
+    }
+}
+function setGameQuery(wordsToGuess, givenLetters) {
+    let q = btoa(JSON.stringify([wordsToGuess, givenLetters]));
+    return q;
+}
+function setGameCookie(seed, sequence) {
+  const date = new Date(); 
+  date.setTime(date.getTime() + (24 * 60 * 60 * 1000));  // 24h
+  const expires = "expires=" + date.toUTCString();
+  document.cookie = "gs=" + seed + "-" + sequence + ";" + expires + ";path=/";
+}
+function getGameCookie() {
+  const name = "gs=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const ca = decodedCookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      const parts = c.substring(name.length, c.length).split('-');
+      return [parseInt(parts[0]), parts[1].split(',')];
+    }
+  }
+  return [];
+}
+function loadListOfWords() {
+    return fetch('words.json').then(response => response.json());
+}
+
+// DOM Manipulation functions
+
+function showGrid(grid, helpers, dailySeed=false, savedSequence=null) {
+    gridContainer.innerHTML = '';
+    resetKeyboard();
+    inputSequence = savedSequence ? savedSequence : [];
+    let maxX = 0, maxY = 0;
+    const lettersMap = {};
+    let letterCount = 0;
+    
+    Object.keys(grid).forEach(key => {
+        const [x, y] = key.split(',').map(Number);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+        const value = grid[key];
+        if (value && !(value in lettersMap)) {
+            lettersMap[value] = ++letterCount;
+        }
+    });
+
+    const gridWidth = maxX + 1;
+    const gridHeight = maxY + 1;
+
+    const cellSize = .9 * Math.min(gridContainer.getBoundingClientRect().width / gridWidth, gridContainer.getBoundingClientRect().height /gridHeight);
+
+    document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
+
+    const table = document.createElement('table');
+    table.classList.add('grid');
+
+    for (let y = 0; y < gridHeight; y++) {
+        const row = table.insertRow();
+        for (let x = 0; x < gridWidth; x++) {
+            const cell = row.insertCell();
+            const key = `${x},${y}`;
+            let value = grid[key];
+            cell.textContent = value ? (helpers.includes(value) ? value : ' ') : ''; 
+            if (value) {
+                cell.setAttribute('data-number', lettersMap[value]);
+                cell.addEventListener('mouseenter', highlightCells);
+                cell.addEventListener('mouseleave', unhighlightCells);
+            }
+        }
+    }
+
+    gridContainer.appendChild(table);
+
+    keyboardKeyElements.forEach(key => {
+        key.addEventListener('click', function() {
+            const letter = this.textContent;
+            const isLetterInGrid = Object.values(grid).includes(letter);
+            this.classList.add(isLetterInGrid ? 'correct' : 'incorrect');
+            this.classList.add('disabled'); 
+            this.disabled = true;
+            if (!helpers.includes(letter)) {
+                if (dailySeed) {
+                    if (!inputSequence.includes(letter)) {
+                        inputSequence.push(letter);
+                        setGameCookie(dailySeed, inputSequence);
+                    }
+                } else {
+                    inputSequence.push(letter);
+                }
+            }
+            if (isLetterInGrid) {
+                letterCount--;
+                document.querySelectorAll('#grid td').forEach(cell => {
+                    if (cell.getAttribute('data-number') === lettersMap[letter].toString()) {
+                        cell.textContent = letter;
+                        cell.classList.add('no-number');
+                    }
+                });                
+            }
+            if (letterCount === 0) endGame(dailySeed !== false);
+        });
+    });
+
+    [...helpers, ...inputSequence].forEach(key => {
+        keyboardKeyElements.forEach(button => {
+            if (button.textContent === key) {
+                button.click();
+            }
+        })
+    });
+}
+function highlightCells(event) {
+    const number = event.target.getAttribute('data-number');
+    document.querySelectorAll(`td[data-number='${number}']`).forEach(cell => {
+        cell.classList.add('highlight'); 
+    });
+}
+function unhighlightCells(event) {
+    const number = event.target.getAttribute('data-number');
+    document.querySelectorAll(`td[data-number='${number}']`).forEach(cell => {
+        cell.classList.remove('highlight'); 
+    });
+}
+function qotd(randomized=false) {
+    while (gridContainer.firstChild) {
+        gridContainer.removeChild(gridContainer.firstChild);
+    }
+    let msg = "Génération de la grille en cours…";
+    if (randomized && (qotdSentences.length > 0) && (randomFunction() < 0.2)) {
+        msg = qotdSentences.splice(Math.floor(qotdSentences.length * randomFunction()), 1)[0];
+    }
+    gridContainer.innerHTML = msg;
+}
+function setButtonSize() {
+    const windowWidth = window.innerWidth; 
+    const containerWidth = Math.min(windowWidth, document.querySelector('.container').getBoundingClientRect().width);
+    const buttonSize = Math.min(containerWidth / 12, 50);
+    document.documentElement.style.setProperty('--button-size', `${buttonSize}px`);
+}
+function showModalContent(contentId) {
+    document.activeElement.blur();
+    buttonElements.forEach(button => {
+        if (!button.disabled) {
+            button.setAttribute('data-was-active', 'true');
+        }
+        button.disabled = true;
+    });
+    document.querySelectorAll('.modal-content').forEach(function(content) {
+        content.style.display = 'none';
+    });
+
+    const contentToShow = document.getElementById("modal-" + contentId);
+    if(contentToShow) {
+        modalWindow.style.display = "block";
+        contentToShow.style.display = "block";
+    }
+}
+function closeModal() {
+    if (modalWindow.style.display !== "none") {
+        modalWindow.style.display = "none";
+        enablePreviouslyActiveButtons();        
+    }
+}
+function enablePreviouslyActiveButtons() {
+    const buttons = document.querySelectorAll('button[data-was-active="true"]');
+    buttons.forEach(button => {
+        button.disabled = false;
+        button.removeAttribute('data-was-active');
+    });
+}
+function errorGeneratingGrid() {
+    gridContainer.innerHTML = "Génération de la grille impossible.";
+    gameReady = true;
+}
+function resetKeyboard() {
+    keyboardKeyElements.forEach(button => {
+        button.disabled = false;
+        button.className = "key";
+        let newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+    });
+    keyboardKeyElements = document.querySelectorAll("button.key");
+}
+function endGame(isDaily) {
+    gameReady = true;
+    keyboardKeyElements.forEach(button => button.disabled = true);
+    const domElt = document.getElementById("modal-" + (isDaily ? "daily" : "game"));
+    let score = Math.min(6, document.querySelectorAll("button.key.incorrect").length);
+    domElt.querySelector(".modal-title").innerHTML = rankByScore[score];
+    domElt.querySelector(".score-comment").innerHTML = commentByScore[score];
+    const validLetters = new Set(wordsToGuess.join(""));
+    const summaryElt = domElt.querySelector(".game-summary");
+    summaryElt.innerHTML = "";
+    inputSequence.forEach(letter => summaryElt.innerHTML += (validLetters.has(letter) ? succesIcon : failureIcon));
+    if (isDaily) {
+        const dateOptions = { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric', 
+          timeZone: 'Europe/Paris' 
+        };
+        const dateString = new Intl.DateTimeFormat('fr-FR', dateOptions).format(new Date());
+        textToCopy = `#MOKOLE du ${dateString} ${rankByScore[score].replaceAll("&#x2605;", "★").replaceAll("&#x2606;", "☆").replaceAll("&#x1F4A9;", "💩")}\n${summaryElt.innerHTML.replaceAll(succesIcon, "✅").replaceAll(failureIcon, "❌")}\n${window.location.href.replace(/\/(index\.html)?(\?.*)?$/, '/')}`;
+    } else {
+        textToCopy = `#MOKOLE à ${wordsToGuess.length} mots / ${validLetters.size} lettres ${rankByScore[score].replaceAll("&#x2605;", "★").replaceAll("&#x2606;", "☆").replaceAll("&#x1F4A9;", "💩")}\n${summaryElt.innerHTML.replaceAll(succesIcon, "✅").replaceAll(failureIcon, "❌")}\n${window.location.href.replace(/\/(index\.html)?(\?.*)?$/, '/')}?${setGameQuery(wordsToGuess, givenLetters)}`;
+    }
+    showModalContent(isDaily ? "daily" : "game");
+}
+function loadPuzzle(timeout=10000) {
+    gameReady = false;
+    const startingTime = Date.now();
+    let words = [...listOfAllWords];
+    let grid = null;
+    while (true) {
+        while (true) {
+            wordsToGuess = selectWords(words, randomChoice(numPossibleLetters), randomChoice(numPossibleWords));
+            [wordsToGuess, givenLetters] = findSolutions(listOfAllWords, wordsToGuess);
+            if (wordsToGuess) break;
+            else if (Date.now() - startingTime > timeout) return [null, null, null];
+        }
+        grid = makeGridFromWords(wordsToGuess);
+        if (grid) return [wordsToGuess, givenLetters, grid];
+    }
+}
+function loadDailyPuzzle() {
+    document.activeElement.blur();
+    qotd();
+    const seed = getDateSeed();
+    randomFunction = RC4Random(seed);
+    let [savedSeed, savedSequence] = getGameCookie();
+    setTimeout(() => {
+        const [wordsToGuess, givenLetters, grid] = loadPuzzle();
+        if (grid) {
+            if (savedSeed !== seed) {
+                savedSequence = [];
+                setGameCookie(seed, savedSequence);
+            }
+            showGrid(grid, givenLetters, seed, savedSequence);
+        } else errorGeneratingGrid();
+    }, 50);
+}
+function loadRandomPuzzle() {
+    document.activeElement.blur();
+    qotd(true);
+    randomFunction = Math.random;
+    setTimeout(() => {
+        const [wordsToGuess, givenLetters, grid] = loadPuzzle();
+        if (grid) showGrid(grid, givenLetters);
+        else errorGeneratingGrid();
+    }, 50);
+}
+function loadSharedPuzzle() {
+    qotd();
+    randomFunction = Math.random;
+    const grid = makeGridFromWords(wordsToGuess);
+    if (grid) showGrid(grid, givenLetters);
+    else errorGeneratingGrid();
+}
+
+// Global variables
+
+const rankByScore = ["&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;", "&#x2605;&#x2605;&#x2605;&#x2605;&#x2606;", "&#x2605;&#x2605;&#x2605;&#x2606;&#x2606;", "&#x2605;&#x2605;&#x2606;&#x2606;&#x2606;", "&#x2605;&#x2606;&#x2606;&#x2606;&#x2606;", "&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;", "&#x1F4A9;"];
+const commentByScore = ["Bravo, c'est un sans faute !", "Une seule erreur, presque parfait !", "Seulement deux erreurs, c'est bien !", "Trois erreurs, pas mal.", "Quatre erreurs, une étoile quand même.", "Cinq erreurs, pas d'étoile.", "Six erreurs ou plus, il va falloir s'entrainer..."];
+const qotdSentences = ["Brigitte Macron est un homme.", "La prochaine grille ne contient pas de E.", "La prochaine grille contient trois W.", "Vous allez faire une rencontre qui va changer le cours de votre vie.", "knock knock", "Gérard Larcher a repris trois fois des cailles rôties ce matin. Il vous remercie.", "Le saviez vous : Gérard Larcher a fait perdre 100 kilos à sa mère en naissant.", "Si l'attente est trop longue, pourquoi ne pas me faire un don !", "N'oubliez pas de mettre un pouce, elle vous remerciera.", "Sarah Connor ?", "La prochaine grille va vous surprendre.", "Le dictionnaire a été changé avec succès pour la langue suivante : ALLEMAND"];
+const succesIcon = "&#x2705;";
+const failureIcon = "&#x274C;";
+const [savedSeed, savedSequence] = getGameCookie();
+const numPossibleLetters = [10, 11, 11, 12, 12, 12, 13, 13, 14];
+const numPossibleWords = [4, 5, 5, 6, 6, 6, 7, 7, 8];
+let randomFunction = Math.random;
+let modalWindow, gridContainer, buttonElements, keyboardKeyElements;
+let listOfAllWords;
+let gameReady = false;
+let wordsToGuess, givenLetters, inputSequence;
+let textToCopy;
+
+// Service Worker
+
+// if ('serviceWorker' in navigator) {
+//     window.addEventListener('load', function() {
+//         navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+//             console.log('ServiceWorker registration successful with scope: ', registration.scope);
+//         }, function(err) {
+//             console.log('ServiceWorker registration failed: ', err);
+//         });
+//     });
+// }
+
+// Main
+
+const domReady = new Promise(resolve => {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', resolve);
+    } else {
+        resolve();
+    }
+});
+
+Promise.all([domReady, loadListOfWords()]).then(([_, data]) => {
+    // Set some common variables
+    listOfAllWords = data;
+    modalWindow = document.getElementById("modal");
+    gridContainer = document.getElementById("grid");
+    buttonElements =  document.querySelectorAll("button");
+    keyboardKeyElements = document.querySelectorAll("button.key");
+    // Set stuff
+    setButtonSize();
+    document.getElementById("daily-puzzle").addEventListener("click", loadDailyPuzzle);
+    document.getElementById("random-puzzle").addEventListener("click", loadRandomPuzzle);
+    document.querySelector(".modal-close").addEventListener("click", closeModal);
+    window.addEventListener("resize", setButtonSize);
+    document.querySelectorAll("button.icon-home-button").forEach(button => button.disabled = false);
+    document.addEventListener("keydown", function (event) {
+        if (event.key.length === 1 && event.key.match(/[a-zA-Z]/)) {
+            const key = event.key.toUpperCase();
+            keyboardKeyElements.forEach(button => {
+                if (button.textContent === key) {
+                    button.click();
+                }
+            });
+        } else if (event.key === "Escape") {
+            closeModal();
+        } else if (event.key === ' ' || event.key === 'Spacebar') {
+            if (gameReady) {
+                closeModal();
+                loadRandomPuzzle();
+            }
+        }
+    });
+    // check if some shared game to load
+    [wordsToGuess, givenLetters] = getGameQuery();
+    if (wordsToGuess !== null) loadSharedPuzzle();
+    else loadDailyPuzzle();
+}).catch(error => {
+    console.error(error);
+});
+</script>
+</body>
+</html>
