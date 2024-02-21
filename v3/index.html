@@ -748,7 +748,7 @@ function getGameCookie() {
     }
     if (c.indexOf(name) == 0) {
       const parts = c.substring(name.length, c.length).split('-');
-      return [parseInt(parts[0]), parts[1].split(',')];
+      return [parseInt(parts[0]), parts[1] ? parts[1].split(',') : []];
     }
   }
   return [];
