@@ -347,7 +347,7 @@ header button:hover {
                 <h2 class="modal-title"></h2>
                 <div class="modal-body">
                     <h3 class="score-comment"></h3>
-                    <p class="share-score">&#x2192;&nbsp;<span onclick="copyToClipboard();">Partager votre score en cliquant ici.</span>&nbsp;&#x2190;</p>
+                    <p class="share-score" style="display: flex; align-items: center; justify-content: center; gap: 10px;">&#x2192;<span onclick="copyToClipboard();">Partagez votre score en cliquant ici.</span>&#x2190;</p>
                     <p class="copy-success"><small>copié avec succès !</small></p>
                     <p class="copy-failure"><small>non copié...</small></p>
                     <p><small>(le texte à partager sera copié dans votre presse-papier)</small></p>
@@ -360,7 +360,7 @@ header button:hover {
                 <h2 class="modal-title"></h2>
                 <div class="modal-body">
                     <h3 class="score-comment"></h3>
-                    <p class="share-score">&#x2192;&nbsp;<span onclick="copyToClipboard();">Partager cette grille et votre score en cliquant ici.</span>&nbsp;&#x2190;</p>
+                    <p class="share-score" style="display: flex; align-items: center; justify-content: center; gap: 10px;">&#x2192;<span onclick="copyToClipboard();">Partagez cette grille et votre score en cliquant ici.</span>&#x2190;</p>
                     <p class="copy-success"><small>copié avec succès !</small></p>
                     <p class="copy-failure"><small>non copié...</small></p>
                     <p><small>(le texte à partager sera copié dans votre presse-papier)</small></p>
@@ -996,7 +996,7 @@ function loadSharedPuzzle() {
 // Global variables
 
 const rankByScore = ["&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;", "&#x2605;&#x2605;&#x2605;&#x2605;&#x2606;", "&#x2605;&#x2605;&#x2605;&#x2606;&#x2606;", "&#x2605;&#x2605;&#x2606;&#x2606;&#x2606;", "&#x2605;&#x2606;&#x2606;&#x2606;&#x2606;", "&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;", "&#x1F4A9;"];
-const commentByScore = ["Bravo, c'est un sans faute !", "Une seule erreur, presque parfait !", "Seulement deux erreurs, c'est bien !", "Trois erreurs, pas mal.", "Quatre erreurs, une étoile quand même.", "Cinq erreurs, pas d'étoile.", "Six erreurs ou plus, il va falloir s'entrainer..."];
+const commentByScore = ["Bravo, c'est un sans faute&nbsp;!", "Une seule erreur, presque parfait&nbsp;!", "Seulement deux erreurs, c'est bien&nbsp;!", "Trois erreurs, pas mal.", "Quatre erreurs, une étoile quand même.", "Cinq erreurs, pas d'étoile.", "Six erreurs ou plus, il va falloir s'entrainer..."];
 const qotdSentences = ["Brigitte Macron est un homme.", "La prochaine grille ne contient pas de E.", "La prochaine grille contient trois W.", "Vous allez faire une rencontre qui va changer le cours de votre vie.", "Toc.Toc.", "Gérard Larcher a repris trois fois des cailles rôties ce matin. Il vous remercie.", "Le saviez vous : Gérard Larcher a fait perdre 100 kilos à sa mère en naissant.", "Si l'attente est trop longue, pourquoi ne pas me faire un don !", "N'oubliez pas de mettre un pouce, elle vous remerciera.", "Sarah Connor ?", "La prochaine grille va vous surprendre.", "Le dictionnaire a été changé avec succès pour la langue suivante : ALLEMAND", "🐞"];
 const succesIcon = "&#x2705;";
 const failureIcon = "&#x274C;";
