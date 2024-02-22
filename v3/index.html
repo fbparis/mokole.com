@@ -222,7 +222,7 @@ header button:hover {
 .score-comment {
     text-align: center;
 }
-.share-score span {
+.share-score span, span.newgame {
     text-decoration: underline;
     cursor: pointer;
 }
@@ -353,7 +353,7 @@ header button:hover {
                     <p><small>(le texte à partager sera copié dans votre presse-papier)</small></p>
                     <p class="game-summary"></p>
                     <p></p>
-                    <p><em>Appuyez sur ESPACE pour faire une autre partie.</em></p>
+                    <p><em>Appuyez sur <span class="newgame">ESPACE</span> pour faire une autre partie.</em></p>
                 </div>
             </div>
             <div id="modal-game" class="modal-content">        
@@ -366,7 +366,7 @@ header button:hover {
                     <p><small>(le texte à partager sera copié dans votre presse-papier)</small></p>
                     <p class="game-summary"></p>
                     <p></p>
-                    <p><em>Appuyez sur ESPACE pour faire une autre partie.</em></p>
+                    <p><em>Appuyez sur <span class="newgame">ESPACE</span> pour faire une autre partie.</em></p>
                 </div>
             </div>
         </div>
@@ -926,6 +926,7 @@ function endGame(isDaily) {
     summaryElt.innerHTML = "";
     inputSequence.forEach(letter => summaryElt.innerHTML += (validLetters.has(letter) ? succesIcon : failureIcon));
     if (isDaily) {
+        randomFunction = Math.random;
         const dateOptions = { 
           weekday: 'long', 
           year: 'numeric', 
@@ -975,6 +976,7 @@ function loadDailyPuzzle() {
 }
 function loadRandomPuzzle() {
     document.activeElement.blur();
+    closeModal();
     qotd(true);
     randomFunction = Math.random;
     setTimeout(() => {
@@ -1041,6 +1043,7 @@ Promise.all([domReady, loadListOfWords()]).then(([_, data]) => {
     setButtonSize();
     document.getElementById("daily-puzzle").addEventListener("click", loadDailyPuzzle);
     document.getElementById("random-puzzle").addEventListener("click", loadRandomPuzzle);
+    document.querySelectorAll("span.newgame").forEach(span => span.addEventListener("click", loadRandomPuzzle));
     document.querySelector(".modal-close").addEventListener("click", closeModal);
     window.addEventListener("resize", setButtonSize);
     document.querySelectorAll("button.icon-home-button").forEach(button => button.disabled = false);
@@ -1056,7 +1059,6 @@ Promise.all([domReady, loadListOfWords()]).then(([_, data]) => {
             closeModal();
         } else if (event.key === ' ' || event.key === 'Spacebar') {
             if (gameReady) {
-                closeModal();
                 loadRandomPuzzle();
             }
         }
