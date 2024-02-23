@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = 'v9';
+const CACHE_NAME = 'v10';
 const urlsToCache = [
   '/v3/',
   'index.html',
@@ -51,4 +51,10 @@ self.addEventListener('activate', event => {
       return clients.claim();
     })
   );
+});
+
+self.addEventListener('message', function(event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
