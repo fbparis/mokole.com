@@ -786,6 +786,9 @@ function showGrid(grid, helpers, dailySeed=false, savedSequence=null) {
 
     const table = document.createElement('table');
     table.classList.add('grid');
+    if (navigator.userAgent.indexOf("Firefox") > -1) {
+        table.style.borderCollapse = "separate";
+    }    
 
     for (let y = 0; y < gridHeight; y++) {
         const row = table.insertRow();
