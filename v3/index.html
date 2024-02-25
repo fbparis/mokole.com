@@ -1030,7 +1030,7 @@ if ('serviceWorker' in navigator) {
         }, function(err) {
             console.log('ServiceWorker registration failed: ', err);
         });
-        //navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
+        navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
     });
 }
 
