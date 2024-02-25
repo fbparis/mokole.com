@@ -735,10 +735,10 @@ function setGameCookie(seed, sequence) {
   const date = new Date(); 
   date.setTime(date.getTime() + (24 * 60 * 60 * 1000));  // 24h
   const expires = "expires=" + date.toUTCString();
-  document.cookie = "gs=" + seed + "-" + sequence + ";" + expires + ";path=/";
+  document.cookie = "d=" + seed + "-" + sequence + ";" + expires + ";path=/";
 }
 function getGameCookie() {
-  const name = "gs=";
+  const name = "d=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
   for(let i = 0; i < ca.length; i++) {
