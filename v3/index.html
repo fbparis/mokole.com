@@ -70,7 +70,7 @@ header {
 header h1 {
     margin: 0;
     padding: 0 15px; 
-    font-size: calc(max(20px, min(40px, 100vw - 430px)));    
+    font-size: calc(max(20px, min(40px, 100vw - 430px)));
 }
 header button {
     background: none;
@@ -735,10 +735,10 @@ function setGameCookie(seed, sequence) {
   const date = new Date(); 
   date.setTime(date.getTime() + (24 * 60 * 60 * 1000));  // 24h
   const expires = "expires=" + date.toUTCString();
-  document.cookie = "d=" + seed + "-" + sequence + ";" + expires + ";path=/";
+  document.cookie = COOKIE_NAME + "=" + seed + "-" + sequence + ";" + expires + ";path=/";
 }
 function getGameCookie() {
-  const name = "d=";
+  const name = COOKIE_NAME + "=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
   for(let i = 0; i < ca.length; i++) {
@@ -753,6 +753,10 @@ function getGameCookie() {
   }
   return [];
 }
+function deleteCookie() {
+  document.cookie = COOKIE_NAME + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+}
+
 function loadListOfWords() {
     return fetch('words.json').then(response => response.json());
 }
@@ -788,7 +792,7 @@ function showGrid(grid, helpers, dailySeed=false, savedSequence=null) {
     table.classList.add('grid');
     if (navigator.userAgent.indexOf("Firefox") > -1) {
         table.style.borderCollapse = "separate";
-    }    
+    }
 
     for (let y = 0; y < gridHeight; y++) {
         const row = table.insertRow();
@@ -904,8 +908,8 @@ function enablePreviouslyActiveButtons() {
         button.removeAttribute('data-was-active');
     });
 }
-function errorGeneratingGrid() {
-    gridContainer.innerHTML = "Génération de la grille impossible.";
+function errorGeneratingGrid(msg="Impossible de générer la grille. Probalement parce que la taille de l'écran est trop petite.") {
+    gridContainer.innerHTML = `<div style="text-align: center;"><p>${msg}</p><p><em>Appuyez sur <span class="newgame" onclick="loadRandomPuzzle();">ESPACE</span> pour tenter de générer une autre grille aléatoire à la place.</em></p></div>`;
     gameReady = true;
 }
 function resetKeyboard() {
@@ -947,11 +951,10 @@ function endGame(isDaily) {
 function loadPuzzle(timeout=10000) {
     gameReady = false;
     const startingTime = Date.now();
-    let words = [...listOfAllWords];
     let grid = null;
     while (true) {
         while (true) {
-            wordsToGuess = selectWords(words, randomChoice(numPossibleLetters), randomChoice(numPossibleWords));
+            wordsToGuess = selectWords([...listOfAllWords], randomChoice(numPossibleLetters), randomChoice(numPossibleWords));
             [wordsToGuess, givenLetters] = findSolutions(listOfAllWords, wordsToGuess);
             if (wordsToGuess) break;
             else if (Date.now() - startingTime > timeout) return [null, null, null];
@@ -967,7 +970,9 @@ function loadDailyPuzzle() {
     randomFunction = RC4Random(seed);
     let [savedSeed, savedSequence] = getGameCookie();
     setTimeout(() => {
-        const [wordsToGuess, givenLetters, grid] = loadPuzzle();
+        wordsToGuess = selectWords([...listOfAllWords], randomChoice(numPossibleLetters), randomChoice(numPossibleWords));
+        [wordsToGuess, givenLetters] = findSolutions(listOfAllWords, wordsToGuess);
+        let grid = wordsToGuess ? makeGridFromWords(wordsToGuess) : null;
         if (grid) {
             if (savedSeed !== seed) {
                 savedSequence = [];
@@ -998,6 +1003,7 @@ function loadSharedPuzzle() {
 
 // Global variables
 
+const COOKIE_NAME = "c";
 const rankByScore = ["&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;", "&#x2605;&#x2605;&#x2605;&#x2605;&#x2606;", "&#x2605;&#x2605;&#x2605;&#x2606;&#x2606;", "&#x2605;&#x2605;&#x2606;&#x2606;&#x2606;", "&#x2605;&#x2606;&#x2606;&#x2606;&#x2606;", "&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;", "&#x1F4A9;"];
 const commentByScore = ["Bravo, c'est un sans faute&nbsp;!", "Une seule erreur, presque parfait&nbsp;!", "Seulement deux erreurs, c'est bien&nbsp;!", "Trois erreurs, pas mal.", "Quatre erreurs, une étoile quand même.", "Cinq erreurs, pas d'étoile.", "Six erreurs ou plus, il va falloir s'entrainer..."];
 const qotdSentences = ["Brigitte Macron est un homme.", "La prochaine grille ne contient pas de E.", "La prochaine grille contient trois W.", "Vous allez faire une rencontre qui va changer le cours de votre vie.", "Toc.Toc.", "Gérard Larcher a repris trois fois des cailles rôties ce matin. Il vous remercie.", "Le saviez vous : Gérard Larcher a fait perdre 100 kilos à sa mère en naissant.", "Si l'attente est trop longue, pourquoi ne pas me faire un don !", "N'oubliez pas de mettre un pouce, elle vous remerciera.", "Sarah Connor ?", "La prochaine grille va vous surprendre.", "Le dictionnaire a été changé avec succès pour la langue suivante : ALLEMAND", "🐞"];
@@ -1030,7 +1036,11 @@ if ('serviceWorker' in navigator) {
         }, function(err) {
             console.log('ServiceWorker registration failed: ', err);
         });
-        //navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            deleteCookie();
+            alert("Afin de terminer l'installation de la dernière version du jeu, cette page va maintenant se recharger.");
+            window.location.reload();
+        });
     });
 }
 
