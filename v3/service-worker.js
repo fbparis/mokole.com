@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = 'v16';
+const CACHE_NAME = 'v19';
 const urlsToCache = [
   '/v3/',
   'index.html',
