@@ -869,7 +869,7 @@ function qotd(randomized=false) {
     if (randomized && (qotdSentences.length > 0) && (randomFunction() < 0.2)) {
         msg = qotdSentences.splice(Math.floor(qotdSentences.length * randomFunction()), 1)[0];
     }
-    gridContainer.innerHTML = msg;
+    gridContainer.innerHTML = `<div style="text-align: center">${msg}</div>`;
 }
 function setButtonSize() {
     const windowWidth = window.innerWidth; 
