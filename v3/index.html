@@ -167,6 +167,22 @@ header button:hover {
 }
 .key.incorrect {
     background-color: red;
+    position: relative;
+}
+.key.incorrect::before, .key.incorrect::after {
+    content: ""; 
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 2px; 
+    width: 100%;
+    background-color: rgba(204, 204, 204, 0.4); 
+}
+.key.incorrect::before {
+    transform: rotate(45deg); 
+}
+.key.incorrect::after {
+    transform: rotate(-45deg); 
 }
 .key.disabled {
     pointer-events: none;
