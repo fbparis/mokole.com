@@ -1038,6 +1038,7 @@ let textToCopy;
 // Service Worker
 
 if ('serviceWorker' in navigator) {
+    let mayReload = navigator.serviceWorker.controller !== null;
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('service-worker.js').then(function(registration) {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
@@ -1053,9 +1054,13 @@ if ('serviceWorker' in navigator) {
             console.log('ServiceWorker registration failed: ', err);
         });
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-            deleteCookie();
-            alert("Afin de terminer l'installation de la dernière version du jeu, cette page va maintenant se recharger.");
-            window.location.reload();
+            if (mayReload) {
+                deleteCookie();
+                alert("Afin de terminer l'installation de la dernière version du jeu, cette page va maintenant se recharger.");
+                window.location.reload();
+            } else {
+                mayReload = true;
+            }
         });
     });
 }
